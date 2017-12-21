@@ -50,7 +50,7 @@ class Configuration(object):
     environments = {
         Environment.PRODUCTION: {
             Server.DEFAULT: 'https://tapi.telstra.com/v2',
-            Server.ACCESS_TOKEN_SERVER: 'https://sapi.telstra.com/v1/oauth',
+            Server.ACCESS_TOKEN_SERVER: 'https://tapi.telstra.com/v1/oauth',
         },
     }
 

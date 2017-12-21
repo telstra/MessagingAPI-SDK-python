@@ -78,7 +78,7 @@ class OAuth2:
         token = OAuthAuthorizationController().create_request_token(
             cls.build_basic_auth_header(),
             ' '.join(scope) if (isinstance(scope, list)) else scope,
-			additional_params
+            additional_params
         )
         cls.update_token(token)
         return token

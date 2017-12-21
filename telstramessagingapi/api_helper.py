@@ -7,6 +7,7 @@
 """
 
 import re
+import sys
 import datetime
 import calendar
 import email.utils as eut
@@ -117,14 +118,22 @@ class APIHelper(object):
         """
         tuples = []
 
-        if formatting is "unindexed":
-            tuples += [("{0}[]".format(key), element) for element in array]
-        elif formatting is "indexed":
-            tuples += [("{0}[{1}]".format(key, index), element) for index, element in enumerate(array)]
-        elif formatting is "plain":
-            tuples += [(key, element) for element in array]
+        if sys.version_info[0] < 3:
+            serializable_types = (str, int, long, float, bool, datetime.date, APIHelper.CustomDate)
         else:
-            raise ValueError("Invalid format provided.")
+            serializable_types = (str, int, float, bool, datetime.date, APIHelper.CustomDate)
+
+        if isinstance(array[0], serializable_types):
+            if formatting is "unindexed":
+                tuples += [("{0}[]".format(key), element) for element in array]
+            elif formatting is "indexed":
+                tuples += [("{0}[{1}]".format(key, index), element) for index, element in enumerate(array)]
+            elif formatting is "plain":
+                tuples += [(key, element) for element in array]
+            else:
+                raise ValueError("Invalid format provided.")
+        else:
+            tuples += [("{0}[{1}]".format(key, index), element) for index, element in enumerate(array)]
 
         return tuples
 
@@ -187,7 +196,7 @@ class APIHelper(object):
 
         for key, value in parameters.items():
             seperator = '&' if '?' in url else '?'
-            if not value is None:
+            if value is not None:
                 if isinstance(value, list):
                     value = [element for element in value if element]
                     if array_serialization is "csv":
@@ -253,7 +262,6 @@ class APIHelper(object):
             encoded += APIHelper.form_encode(value, key, array_serialization)
 
         return encoded
-
 
     @staticmethod
     def form_encode(obj,
