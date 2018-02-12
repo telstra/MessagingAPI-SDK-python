@@ -33,17 +33,16 @@ class ProvisioningApi(object):
             api_client = ApiClient()
         self.api_client = api_client
 
-    def create_subscription(self, authorization, body, **kwargs):  # noqa: E501
+    def create_subscription(self, body, **kwargs):  # noqa: E501
         """Create Subscription  # noqa: E501
 
         Provision a mobile number  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async=True
-        >>> thread = api.create_subscription(authorization, body, async=True)
+        >>> thread = api.create_subscription(body, async=True)
         >>> result = thread.get()
 
         :param async bool
-        :param str authorization: An OAUTH bearer token that is entitled to use the 'SUBSCRIPTION' scope. (required)
         :param ProvisionNumberRequest body: A JSON payload containing the required attributes (required)
         :return: ProvisionNumberResponse
                  If the method is called asynchronously,
@@ -51,29 +50,28 @@ class ProvisioningApi(object):
         """
         kwargs['_return_http_data_only'] = True
         if kwargs.get('async'):
-            return self.create_subscription_with_http_info(authorization, body, **kwargs)  # noqa: E501
+            return self.create_subscription_with_http_info(body, **kwargs)  # noqa: E501
         else:
-            (data) = self.create_subscription_with_http_info(authorization, body, **kwargs)  # noqa: E501
+            (data) = self.create_subscription_with_http_info(body, **kwargs)  # noqa: E501
             return data
 
-    def create_subscription_with_http_info(self, authorization, body, **kwargs):  # noqa: E501
+    def create_subscription_with_http_info(self, body, **kwargs):  # noqa: E501
         """Create Subscription  # noqa: E501
 
         Provision a mobile number  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async=True
-        >>> thread = api.create_subscription_with_http_info(authorization, body, async=True)
+        >>> thread = api.create_subscription_with_http_info(body, async=True)
         >>> result = thread.get()
 
         :param async bool
-        :param str authorization: An OAUTH bearer token that is entitled to use the 'SUBSCRIPTION' scope. (required)
         :param ProvisionNumberRequest body: A JSON payload containing the required attributes (required)
         :return: ProvisionNumberResponse
                  If the method is called asynchronously,
                  returns the request thread.
         """
 
-        all_params = ['authorization', 'body']  # noqa: E501
+        all_params = ['body']  # noqa: E501
         all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
@@ -88,10 +86,6 @@ class ProvisioningApi(object):
                 )
             params[key] = val
         del params['kwargs']
-        # verify the required parameter 'authorization' is set
-        if ('authorization' not in params or
-                params['authorization'] is None):
-            raise ValueError("Missing the required parameter `authorization` when calling `create_subscription`")  # noqa: E501
         # verify the required parameter 'body' is set
         if ('body' not in params or
                 params['body'] is None):
@@ -104,8 +98,6 @@ class ProvisioningApi(object):
         query_params = []
 
         header_params = {}
-        if 'authorization' in params:
-            header_params['Authorization'] = params['authorization']  # noqa: E501
 
         form_params = []
         local_var_files = {}
@@ -140,45 +132,45 @@ class ProvisioningApi(object):
             _request_timeout=params.get('_request_timeout'),
             collection_formats=collection_formats)
 
-    def delete_subscription(self, authorization, **kwargs):  # noqa: E501
+    def delete_subscription(self, body, **kwargs):  # noqa: E501
         """Delete Subscription  # noqa: E501
 
         Delete a mobile number subscription from an account  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async=True
-        >>> thread = api.delete_subscription(authorization, async=True)
+        >>> thread = api.delete_subscription(body, async=True)
         >>> result = thread.get()
 
         :param async bool
-        :param str authorization: An OAUTH bearer token that is entitled to use the 'SUBSCRIPTION' scope. (required)
+        :param DeleteNumberRequest body: EmptyArr (required)
         :return: None
                  If the method is called asynchronously,
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
         if kwargs.get('async'):
-            return self.delete_subscription_with_http_info(authorization, **kwargs)  # noqa: E501
+            return self.delete_subscription_with_http_info(body, **kwargs)  # noqa: E501
         else:
-            (data) = self.delete_subscription_with_http_info(authorization, **kwargs)  # noqa: E501
+            (data) = self.delete_subscription_with_http_info(body, **kwargs)  # noqa: E501
             return data
 
-    def delete_subscription_with_http_info(self, authorization, **kwargs):  # noqa: E501
+    def delete_subscription_with_http_info(self, body, **kwargs):  # noqa: E501
         """Delete Subscription  # noqa: E501
 
         Delete a mobile number subscription from an account  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async=True
-        >>> thread = api.delete_subscription_with_http_info(authorization, async=True)
+        >>> thread = api.delete_subscription_with_http_info(body, async=True)
         >>> result = thread.get()
 
         :param async bool
-        :param str authorization: An OAUTH bearer token that is entitled to use the 'SUBSCRIPTION' scope. (required)
+        :param DeleteNumberRequest body: EmptyArr (required)
         :return: None
                  If the method is called asynchronously,
                  returns the request thread.
         """
 
-        all_params = ['authorization']  # noqa: E501
+        all_params = ['body']  # noqa: E501
         all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
@@ -193,10 +185,10 @@ class ProvisioningApi(object):
                 )
             params[key] = val
         del params['kwargs']
-        # verify the required parameter 'authorization' is set
-        if ('authorization' not in params or
-                params['authorization'] is None):
-            raise ValueError("Missing the required parameter `authorization` when calling `delete_subscription`")  # noqa: E501
+        # verify the required parameter 'body' is set
+        if ('body' not in params or
+                params['body'] is None):
+            raise ValueError("Missing the required parameter `body` when calling `delete_subscription`")  # noqa: E501
 
         collection_formats = {}
 
@@ -205,13 +197,13 @@ class ProvisioningApi(object):
         query_params = []
 
         header_params = {}
-        if 'authorization' in params:
-            header_params['Authorization'] = params['authorization']  # noqa: E501
 
         form_params = []
         local_var_files = {}
 
         body_params = None
+        if 'body' in params:
+            body_params = params['body']
         # HTTP header `Accept`
         header_params['Accept'] = self.api_client.select_header_accept(
             ['application/json'])  # noqa: E501
@@ -239,45 +231,43 @@ class ProvisioningApi(object):
             _request_timeout=params.get('_request_timeout'),
             collection_formats=collection_formats)
 
-    def get_subscription(self, authorization, **kwargs):  # noqa: E501
+    def get_subscription(self, **kwargs):  # noqa: E501
         """Get Subscription  # noqa: E501
 
         Get mobile number subscription for an account  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async=True
-        >>> thread = api.get_subscription(authorization, async=True)
+        >>> thread = api.get_subscription(async=True)
         >>> result = thread.get()
 
         :param async bool
-        :param str authorization: An OAUTH bearer token that is entitled to use the 'SUBSCRIPTION' scope. (required)
-        :return: list[ProvisionNumberResponse]
+        :return: GetSubscriptionResponse
                  If the method is called asynchronously,
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
         if kwargs.get('async'):
-            return self.get_subscription_with_http_info(authorization, **kwargs)  # noqa: E501
+            return self.get_subscription_with_http_info(**kwargs)  # noqa: E501
         else:
-            (data) = self.get_subscription_with_http_info(authorization, **kwargs)  # noqa: E501
+            (data) = self.get_subscription_with_http_info(**kwargs)  # noqa: E501
             return data
 
-    def get_subscription_with_http_info(self, authorization, **kwargs):  # noqa: E501
+    def get_subscription_with_http_info(self, **kwargs):  # noqa: E501
         """Get Subscription  # noqa: E501
 
         Get mobile number subscription for an account  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async=True
-        >>> thread = api.get_subscription_with_http_info(authorization, async=True)
+        >>> thread = api.get_subscription_with_http_info(async=True)
         >>> result = thread.get()
 
         :param async bool
-        :param str authorization: An OAUTH bearer token that is entitled to use the 'SUBSCRIPTION' scope. (required)
-        :return: list[ProvisionNumberResponse]
+        :return: GetSubscriptionResponse
                  If the method is called asynchronously,
                  returns the request thread.
         """
 
-        all_params = ['authorization']  # noqa: E501
+        all_params = []  # noqa: E501
         all_params.append('async')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
@@ -292,10 +282,6 @@ class ProvisioningApi(object):
                 )
             params[key] = val
         del params['kwargs']
-        # verify the required parameter 'authorization' is set
-        if ('authorization' not in params or
-                params['authorization'] is None):
-            raise ValueError("Missing the required parameter `authorization` when calling `get_subscription`")  # noqa: E501
 
         collection_formats = {}
 
@@ -304,8 +290,6 @@ class ProvisioningApi(object):
         query_params = []
 
         header_params = {}
-        if 'authorization' in params:
-            header_params['Authorization'] = params['authorization']  # noqa: E501
 
         form_params = []
         local_var_files = {}
@@ -330,7 +314,7 @@ class ProvisioningApi(object):
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='list[ProvisionNumberResponse]',  # noqa: E501
+            response_type='GetSubscriptionResponse',  # noqa: E501
             auth_settings=auth_settings,
             async=params.get('async'),
             _return_http_data_only=params.get('_return_http_data_only'),

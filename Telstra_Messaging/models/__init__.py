@@ -15,8 +15,10 @@
 from __future__ import absolute_import
 
 # import models into model package
+from Telstra_Messaging.models.delete_number_request import DeleteNumberRequest
 from Telstra_Messaging.models.error_error import ErrorError
 from Telstra_Messaging.models.error_error_error import ErrorErrorError
+from Telstra_Messaging.models.get_subscription_response import GetSubscriptionResponse
 from Telstra_Messaging.models.inbound_poll_response import InboundPollResponse
 from Telstra_Messaging.models.mms_content import MMSContent
 from Telstra_Messaging.models.message import Message

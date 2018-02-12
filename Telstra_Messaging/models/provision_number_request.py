@@ -56,7 +56,7 @@ class ProvisionNumberRequest(object):
     def active_days(self):
         """Gets the active_days of this ProvisionNumberRequest.  # noqa: E501
 
-          # noqa: E501
+        Number of active days  # noqa: E501
 
         :return: The active_days of this ProvisionNumberRequest.  # noqa: E501
         :rtype: int
@@ -67,7 +67,7 @@ class ProvisionNumberRequest(object):
     def active_days(self, active_days):
         """Sets the active_days of this ProvisionNumberRequest.
 
-          # noqa: E501
+        Number of active days  # noqa: E501
 
         :param active_days: The active_days of this ProvisionNumberRequest.  # noqa: E501
         :type: int
@@ -79,7 +79,7 @@ class ProvisionNumberRequest(object):
     def notify_url(self):
         """Gets the notify_url of this ProvisionNumberRequest.  # noqa: E501
 
-          # noqa: E501
+        Notify url  # noqa: E501
 
         :return: The notify_url of this ProvisionNumberRequest.  # noqa: E501
         :rtype: str
@@ -90,7 +90,7 @@ class ProvisionNumberRequest(object):
     def notify_url(self, notify_url):
         """Sets the notify_url of this ProvisionNumberRequest.
 
-          # noqa: E501
+        Notify url  # noqa: E501
 
         :param notify_url: The notify_url of this ProvisionNumberRequest.  # noqa: E501
         :type: str

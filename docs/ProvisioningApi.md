@@ -10,7 +10,7 @@ Method | HTTP request | Description
 
 
 # **create_subscription**
-> ProvisionNumberResponse create_subscription(authorization, body)
+> ProvisionNumberResponse create_subscription(body)
 
 Create Subscription
 
@@ -30,12 +30,11 @@ configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = Telstra_Messaging.ProvisioningApi(Telstra_Messaging.ApiClient(configuration))
-authorization = 'authorization_example' # str | An OAUTH bearer token that is entitled to use the 'SUBSCRIPTION' scope.
 body = Telstra_Messaging.ProvisionNumberRequest() # ProvisionNumberRequest | A JSON payload containing the required attributes
 
 try:
     # Create Subscription
-    api_response = api_instance.create_subscription(authorization, body)
+    api_response = api_instance.create_subscription(body)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling ProvisioningApi->create_subscription: %s\n" % e)
@@ -45,7 +44,6 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **authorization** | **str**| An OAUTH bearer token that is entitled to use the &#39;SUBSCRIPTION&#39; scope. | 
  **body** | [**ProvisionNumberRequest**](ProvisionNumberRequest.md)| A JSON payload containing the required attributes | 
 
 ### Return type
@@ -64,7 +62,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **delete_subscription**
-> delete_subscription(authorization)
+> delete_subscription(body)
 
 Delete Subscription
 
@@ -84,11 +82,11 @@ configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = Telstra_Messaging.ProvisioningApi(Telstra_Messaging.ApiClient(configuration))
-authorization = 'authorization_example' # str | An OAUTH bearer token that is entitled to use the 'SUBSCRIPTION' scope.
+body = Telstra_Messaging.DeleteNumberRequest() # DeleteNumberRequest | EmptyArr
 
 try:
     # Delete Subscription
-    api_instance.delete_subscription(authorization)
+    api_instance.delete_subscription(body)
 except ApiException as e:
     print("Exception when calling ProvisioningApi->delete_subscription: %s\n" % e)
 ```
@@ -97,7 +95,7 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **authorization** | **str**| An OAUTH bearer token that is entitled to use the &#39;SUBSCRIPTION&#39; scope. | 
+ **body** | [**DeleteNumberRequest**](DeleteNumberRequest.md)| EmptyArr | 
 
 ### Return type
 
@@ -115,7 +113,7 @@ void (empty response body)
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_subscription**
-> list[ProvisionNumberResponse] get_subscription(authorization)
+> GetSubscriptionResponse get_subscription()
 
 Get Subscription
 
@@ -135,25 +133,21 @@ configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = Telstra_Messaging.ProvisioningApi(Telstra_Messaging.ApiClient(configuration))
-authorization = 'authorization_example' # str | An OAUTH bearer token that is entitled to use the 'SUBSCRIPTION' scope.
 
 try:
     # Get Subscription
-    api_response = api_instance.get_subscription(authorization)
+    api_response = api_instance.get_subscription()
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling ProvisioningApi->get_subscription: %s\n" % e)
 ```
 
 ### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **authorization** | **str**| An OAUTH bearer token that is entitled to use the &#39;SUBSCRIPTION&#39; scope. | 
+This endpoint does not need any parameter.
 
 ### Return type
 
-[**list[ProvisionNumberResponse]**](ProvisionNumberResponse.md)
+[**GetSubscriptionResponse**](GetSubscriptionResponse.md)
 
 ### Authorization
 

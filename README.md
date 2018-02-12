@@ -1,8 +1,9 @@
 # Telstra_Messaging
  The Telstra SMS Messaging API allows your applications to send and receive SMS text messages from Australia's leading network operator.  It also allows your application to track the delivery status of both sent and received SMS messages. 
 
+
 - API version: 2.2.4
-- Package version: 1.0.1
+- Package version: 1.0.2
 
 ## Requirements.
 
@@ -13,9 +14,9 @@ Python 2.7 and 3.4+
 
 
 ```sh
-pip install git+https://github.com/Telstra/Messaging-SDK-python.git
+pip install git+https://github.com/Telstra/MessagingAPI-SDK-python.git
 ```
-(you may need to run `pip` with root permission: `sudo pip install git+https://github.com/Telstra/Messaging-SDK-python.git`)
+(you may need to run `pip` with root permission: `sudo pip install git+https://github.com/Telstra/MessagingAPI-SDK-python.git`)
 
 ```python
 import Telstra_Messaging 
@@ -44,18 +45,19 @@ import Telstra_Messaging
 from Telstra_Messaging.rest import ApiException
 from pprint import pprint
 
+# Configure OAuth2 access token for authorization: auth
+Telstra_Messaging.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 # create an instance of the API class
-api_instance = Telstra_Messaging.AuthenticationApi()
-client_id = 'client_id_example' # str | 
-client_secret = 'client_secret_example' # str | 
-grant_type = 'client_credentials' # str |  (default to client_credentials)
+api_instance = Telstra_Messaging.MessagingApi()
+messageid = 'messageid_example' # str | Unique identifier of a message - it is the value returned from a previous POST call to https://api.telstra.com/v2/messages/mms
 
 try:
-    # Generate authentication token
-    api_response = api_instance.auth_token(client_id, client_secret, grant_type)
+    # Get MMS Status
+    api_response = api_instance.get_mms_status(messageid)
     pprint(api_response)
 except ApiException as e:
-    print("Exception when calling AuthenticationApi->auth_token: %s\n" % e)
+    print("Exception when calling MessagingApi->get_mms_status: %s\n" % e)
+
 ```
 
 ## Documentation for API Endpoints
@@ -77,8 +79,10 @@ Class | Method | HTTP request | Description
 
 ## Documentation For Models
 
+ - [DeleteNumberRequest](docs/DeleteNumberRequest.md)
  - [ErrorError](docs/ErrorError.md)
  - [ErrorErrorError](docs/ErrorErrorError.md)
+ - [GetSubscriptionResponse](docs/GetSubscriptionResponse.md)
  - [InboundPollResponse](docs/InboundPollResponse.md)
  - [MMSContent](docs/MMSContent.md)
  - [Message](docs/Message.md)
@@ -94,14 +98,14 @@ Class | Method | HTTP request | Description
  - [Status](docs/Status.md)
 
 
-## Documentation For Authorization
+## Documentation For Authorisation
 
 
 ## auth
 
 - **Type**: OAuth
 - **Flow**: application
-- **Authorization URL**: 
+- **Authorisation URL**: 
 - **Scopes**: 
  - **NSMS**: NSMS
 

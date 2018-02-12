@@ -56,7 +56,8 @@ class Message(object):
         self.to = to
         self.delivery_status = delivery_status
         self.message_id = message_id
-        self.message_status_url = message_status_url
+        if message_status_url is not None:
+            self.message_status_url = message_status_url
 
     @property
     def to(self):
@@ -153,8 +154,6 @@ class Message(object):
         :param message_status_url: The message_status_url of this Message.  # noqa: E501
         :type: str
         """
-        if message_status_url is None:
-            raise ValueError("Invalid value for `message_status_url`, must not be `None`")  # noqa: E501
 
         self._message_status_url = message_status_url
 

@@ -1,12 +1,10 @@
-# Message
+# ErrorErrorErrorError
 
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**to** | **str** |  | 
-**delivery_status** | **str** |  | 
-**message_id** | **str** |  | 
-**message_status_url** | **str** |  | [optional] 
+**status** | **int** | The status code. | [optional] 
+**message** | **str** | Message describing the error. | [optional] 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

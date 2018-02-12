@@ -1,12 +1,11 @@
-# Message
+# GetSubscriptionResponse
 
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**to** | **str** |  | 
-**delivery_status** | **str** |  | 
-**message_id** | **str** |  | 
-**message_status_url** | **str** |  | [optional] 
+**active_days** | **str** | Number of active days | [optional] 
+**notify_url** | **str** | Notify url configured | [optional] 
+**destination_address** | **str** | The mobile phone number that was allocated | [optional] 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

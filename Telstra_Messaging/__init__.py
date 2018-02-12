@@ -24,8 +24,10 @@ from Telstra_Messaging.api.authentication_api import AuthenticationApi
 from Telstra_Messaging.api_client import ApiClient
 from Telstra_Messaging.configuration import Configuration
 # import models into sdk package
+from Telstra_Messaging.models.delete_number_request import DeleteNumberRequest
 from Telstra_Messaging.models.error_error import ErrorError
 from Telstra_Messaging.models.error_error_error import ErrorErrorError
+from Telstra_Messaging.models.get_subscription_response import GetSubscriptionResponse
 from Telstra_Messaging.models.inbound_poll_response import InboundPollResponse
 from Telstra_Messaging.models.mms_content import MMSContent
 from Telstra_Messaging.models.message import Message

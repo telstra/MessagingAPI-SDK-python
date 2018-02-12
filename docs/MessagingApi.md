@@ -12,7 +12,7 @@ Method | HTTP request | Description
 
 
 # **get_mms_status**
-> OutboundPollResponse get_mms_status(messageid)
+> list[OutboundPollResponse] get_mms_status(messageid)
 
 Get MMS Status
 
@@ -50,7 +50,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**OutboundPollResponse**](OutboundPollResponse.md)
+[**list[OutboundPollResponse]**](OutboundPollResponse.md)
 
 ### Authorization
 
@@ -64,7 +64,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_sms_status**
-> OutboundPollResponse get_sms_status(message_id)
+> list[OutboundPollResponse] get_sms_status(message_id)
 
 Get SMS Status
 
@@ -102,7 +102,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**OutboundPollResponse**](OutboundPollResponse.md)
+[**list[OutboundPollResponse]**](OutboundPollResponse.md)
 
 ### Authorization
 
@@ -116,7 +116,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **retrieve_sms_responses**
-> list[InboundPollResponse] retrieve_sms_responses()
+> InboundPollResponse retrieve_sms_responses()
 
 Retrieve SMS Responses
 
@@ -150,7 +150,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**list[InboundPollResponse]**](InboundPollResponse.md)
+[**InboundPollResponse**](InboundPollResponse.md)
 
 ### Authorization
 
@@ -164,7 +164,7 @@ This endpoint does not need any parameter.
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **send_mms**
-> object send_mms(body)
+> MessageSentResponse send_mms(body)
 
 Send MMS
 
@@ -202,7 +202,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**object**
+[**MessageSentResponse**](MessageSentResponse.md)
 
 ### Authorization
 

@@ -31,167 +31,144 @@ class InboundPollResponse(object):
                             and the value is json key in definition.
     """
     swagger_types = {
-        'to': 'str',
-        '_from': 'str',
-        'body': 'str',
-        'received_timestamp': 'str',
-        'more_messages': 'int',
-        'message_id': 'str'
+        'status': 'str',
+        'destination_address': 'str',
+        'sender_address': 'str',
+        'message': 'str',
+        'message_id': 'str',
+        'sent_timestamp': 'str'
     }
 
     attribute_map = {
-        'to': 'to',
-        '_from': 'from',
-        'body': 'body',
-        'received_timestamp': 'receivedTimestamp',
-        'more_messages': 'moreMessages',
-        'message_id': 'messageId'
+        'status': 'status',
+        'destination_address': 'destinationAddress',
+        'sender_address': 'senderAddress',
+        'message': 'message',
+        'message_id': 'messageId',
+        'sent_timestamp': 'sentTimestamp'
     }
 
-    def __init__(self, to=None, _from=None, body=None, received_timestamp=None, more_messages=None, message_id=None):  # noqa: E501
+    def __init__(self, status=None, destination_address=None, sender_address=None, message=None, message_id=None, sent_timestamp=None):  # noqa: E501
         """InboundPollResponse - a model defined in Swagger"""  # noqa: E501
 
-        self._to = None
-        self.__from = None
-        self._body = None
-        self._received_timestamp = None
-        self._more_messages = None
+        self._status = None
+        self._destination_address = None
+        self._sender_address = None
+        self._message = None
         self._message_id = None
+        self._sent_timestamp = None
         self.discriminator = None
 
-        if to is not None:
-            self.to = to
-        if _from is not None:
-            self._from = _from
-        if body is not None:
-            self.body = body
-        if received_timestamp is not None:
-            self.received_timestamp = received_timestamp
-        if more_messages is not None:
-            self.more_messages = more_messages
+        if status is not None:
+            self.status = status
+        if destination_address is not None:
+            self.destination_address = destination_address
+        if sender_address is not None:
+            self.sender_address = sender_address
+        if message is not None:
+            self.message = message
         if message_id is not None:
             self.message_id = message_id
+        if sent_timestamp is not None:
+            self.sent_timestamp = sent_timestamp
 
     @property
-    def to(self):
-        """Gets the to of this InboundPollResponse.  # noqa: E501
+    def status(self):
+        """Gets the status of this InboundPollResponse.  # noqa: E501
+
+        message status  # noqa: E501
+
+        :return: The status of this InboundPollResponse.  # noqa: E501
+        :rtype: str
+        """
+        return self._status
+
+    @status.setter
+    def status(self, status):
+        """Sets the status of this InboundPollResponse.
+
+        message status  # noqa: E501
+
+        :param status: The status of this InboundPollResponse.  # noqa: E501
+        :type: str
+        """
+
+        self._status = status
+
+    @property
+    def destination_address(self):
+        """Gets the destination_address of this InboundPollResponse.  # noqa: E501
 
         The phone number (recipient) that the message was sent to(in E.164 format).  # noqa: E501
 
-        :return: The to of this InboundPollResponse.  # noqa: E501
+        :return: The destination_address of this InboundPollResponse.  # noqa: E501
         :rtype: str
         """
-        return self._to
+        return self._destination_address
 
-    @to.setter
-    def to(self, to):
-        """Sets the to of this InboundPollResponse.
+    @destination_address.setter
+    def destination_address(self, destination_address):
+        """Sets the destination_address of this InboundPollResponse.
 
         The phone number (recipient) that the message was sent to(in E.164 format).  # noqa: E501
 
-        :param to: The to of this InboundPollResponse.  # noqa: E501
+        :param destination_address: The destination_address of this InboundPollResponse.  # noqa: E501
         :type: str
         """
 
-        self._to = to
+        self._destination_address = destination_address
 
     @property
-    def _from(self):
-        """Gets the _from of this InboundPollResponse.  # noqa: E501
+    def sender_address(self):
+        """Gets the sender_address of this InboundPollResponse.  # noqa: E501
 
         The phone number (sender) that the message was sent from (in E.164 format).  # noqa: E501
 
-        :return: The _from of this InboundPollResponse.  # noqa: E501
+        :return: The sender_address of this InboundPollResponse.  # noqa: E501
         :rtype: str
         """
-        return self.__from
+        return self._sender_address
 
-    @_from.setter
-    def _from(self, _from):
-        """Sets the _from of this InboundPollResponse.
+    @sender_address.setter
+    def sender_address(self, sender_address):
+        """Sets the sender_address of this InboundPollResponse.
 
         The phone number (sender) that the message was sent from (in E.164 format).  # noqa: E501
 
-        :param _from: The _from of this InboundPollResponse.  # noqa: E501
+        :param sender_address: The sender_address of this InboundPollResponse.  # noqa: E501
         :type: str
         """
 
-        self.__from = _from
+        self._sender_address = sender_address
 
     @property
-    def body(self):
-        """Gets the body of this InboundPollResponse.  # noqa: E501
+    def message(self):
+        """Gets the message of this InboundPollResponse.  # noqa: E501
 
-        Text body of the message that was sent  # noqa: E501
+        Text of the message that was sent  # noqa: E501
 
-        :return: The body of this InboundPollResponse.  # noqa: E501
+        :return: The message of this InboundPollResponse.  # noqa: E501
         :rtype: str
         """
-        return self._body
+        return self._message
 
-    @body.setter
-    def body(self, body):
-        """Sets the body of this InboundPollResponse.
+    @message.setter
+    def message(self, message):
+        """Sets the message of this InboundPollResponse.
 
-        Text body of the message that was sent  # noqa: E501
+        Text of the message that was sent  # noqa: E501
 
-        :param body: The body of this InboundPollResponse.  # noqa: E501
+        :param message: The message of this InboundPollResponse.  # noqa: E501
         :type: str
         """
 
-        self._body = body
-
-    @property
-    def received_timestamp(self):
-        """Gets the received_timestamp of this InboundPollResponse.  # noqa: E501
-
-        The date and time when the message was recieved by recipient.  # noqa: E501
-
-        :return: The received_timestamp of this InboundPollResponse.  # noqa: E501
-        :rtype: str
-        """
-        return self._received_timestamp
-
-    @received_timestamp.setter
-    def received_timestamp(self, received_timestamp):
-        """Sets the received_timestamp of this InboundPollResponse.
-
-        The date and time when the message was recieved by recipient.  # noqa: E501
-
-        :param received_timestamp: The received_timestamp of this InboundPollResponse.  # noqa: E501
-        :type: str
-        """
-
-        self._received_timestamp = received_timestamp
-
-    @property
-    def more_messages(self):
-        """Gets the more_messages of this InboundPollResponse.  # noqa: E501
-
-        Indicates if there are more messages that can be polled from the server. 0=No more messages available. Anything else indicates there are more messages on the server.  # noqa: E501
-
-        :return: The more_messages of this InboundPollResponse.  # noqa: E501
-        :rtype: int
-        """
-        return self._more_messages
-
-    @more_messages.setter
-    def more_messages(self, more_messages):
-        """Sets the more_messages of this InboundPollResponse.
-
-        Indicates if there are more messages that can be polled from the server. 0=No more messages available. Anything else indicates there are more messages on the server.  # noqa: E501
-
-        :param more_messages: The more_messages of this InboundPollResponse.  # noqa: E501
-        :type: int
-        """
-
-        self._more_messages = more_messages
+        self._message = message
 
     @property
     def message_id(self):
         """Gets the message_id of this InboundPollResponse.  # noqa: E501
 
-        Optional message ID of the SMS you sent. Use this ID to view the message status or get responses.  # noqa: E501
+        Message Id  # noqa: E501
 
         :return: The message_id of this InboundPollResponse.  # noqa: E501
         :rtype: str
@@ -202,13 +179,36 @@ class InboundPollResponse(object):
     def message_id(self, message_id):
         """Sets the message_id of this InboundPollResponse.
 
-        Optional message ID of the SMS you sent. Use this ID to view the message status or get responses.  # noqa: E501
+        Message Id  # noqa: E501
 
         :param message_id: The message_id of this InboundPollResponse.  # noqa: E501
         :type: str
         """
 
         self._message_id = message_id
+
+    @property
+    def sent_timestamp(self):
+        """Gets the sent_timestamp of this InboundPollResponse.  # noqa: E501
+
+        The date and time when the message was sent by recipient.  # noqa: E501
+
+        :return: The sent_timestamp of this InboundPollResponse.  # noqa: E501
+        :rtype: str
+        """
+        return self._sent_timestamp
+
+    @sent_timestamp.setter
+    def sent_timestamp(self, sent_timestamp):
+        """Sets the sent_timestamp of this InboundPollResponse.
+
+        The date and time when the message was sent by recipient.  # noqa: E501
+
+        :param sent_timestamp: The sent_timestamp of this InboundPollResponse.  # noqa: E501
+        :type: str
+        """
+
+        self._sent_timestamp = sent_timestamp
 
     def to_dict(self):
         """Returns the model properties as a dict"""

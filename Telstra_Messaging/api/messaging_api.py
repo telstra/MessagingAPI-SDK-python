@@ -44,7 +44,7 @@ class MessagingApi(object):
 
         :param async bool
         :param str messageid: Unique identifier of a message - it is the value returned from a previous POST call to https://api.telstra.com/v2/messages/mms (required)
-        :return: OutboundPollResponse
+        :return: list[OutboundPollResponse]
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -66,7 +66,7 @@ class MessagingApi(object):
 
         :param async bool
         :param str messageid: Unique identifier of a message - it is the value returned from a previous POST call to https://api.telstra.com/v2/messages/mms (required)
-        :return: OutboundPollResponse
+        :return: list[OutboundPollResponse]
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -124,7 +124,7 @@ class MessagingApi(object):
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='OutboundPollResponse',  # noqa: E501
+            response_type='list[OutboundPollResponse]',  # noqa: E501
             auth_settings=auth_settings,
             async=params.get('async'),
             _return_http_data_only=params.get('_return_http_data_only'),
@@ -143,7 +143,7 @@ class MessagingApi(object):
 
         :param async bool
         :param str message_id: Unique identifier of a message - it is the value returned from a previous POST call to https://api.telstra.com/v2/messages/sms (required)
-        :return: OutboundPollResponse
+        :return: list[OutboundPollResponse]
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -165,7 +165,7 @@ class MessagingApi(object):
 
         :param async bool
         :param str message_id: Unique identifier of a message - it is the value returned from a previous POST call to https://api.telstra.com/v2/messages/sms (required)
-        :return: OutboundPollResponse
+        :return: list[OutboundPollResponse]
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -223,7 +223,7 @@ class MessagingApi(object):
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='OutboundPollResponse',  # noqa: E501
+            response_type='list[OutboundPollResponse]',  # noqa: E501
             auth_settings=auth_settings,
             async=params.get('async'),
             _return_http_data_only=params.get('_return_http_data_only'),
@@ -241,7 +241,7 @@ class MessagingApi(object):
         >>> result = thread.get()
 
         :param async bool
-        :return: list[InboundPollResponse]
+        :return: InboundPollResponse
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -262,7 +262,7 @@ class MessagingApi(object):
         >>> result = thread.get()
 
         :param async bool
-        :return: list[InboundPollResponse]
+        :return: InboundPollResponse
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -314,7 +314,7 @@ class MessagingApi(object):
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='list[InboundPollResponse]',  # noqa: E501
+            response_type='InboundPollResponse',  # noqa: E501
             auth_settings=auth_settings,
             async=params.get('async'),
             _return_http_data_only=params.get('_return_http_data_only'),
@@ -333,7 +333,7 @@ class MessagingApi(object):
 
         :param async bool
         :param SendMmsRequest body: A JSON or XML payload containing the recipient's phone number and MMS message.The recipient number should be in the format '04xxxxxxxx' where x is a digit (required)
-        :return: object
+        :return: MessageSentResponse
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -355,7 +355,7 @@ class MessagingApi(object):
 
         :param async bool
         :param SendMmsRequest body: A JSON or XML payload containing the recipient's phone number and MMS message.The recipient number should be in the format '04xxxxxxxx' where x is a digit (required)
-        :return: object
+        :return: MessageSentResponse
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -413,7 +413,7 @@ class MessagingApi(object):
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='object',  # noqa: E501
+            response_type='MessageSentResponse',  # noqa: E501
             auth_settings=auth_settings,
             async=params.get('async'),
             _return_http_data_only=params.get('_return_http_data_only'),
