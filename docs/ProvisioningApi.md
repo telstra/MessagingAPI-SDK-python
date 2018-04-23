@@ -14,7 +14,7 @@ Method | HTTP request | Description
 
 Create Subscription
 
-Provision a mobile number
+Invoke the provisioning API to get a dedicated mobile number for an account or application.  <pre><code class=\"language-sh\">   #!/bin/bash   curl -X POST \\   https://tapi.telstra.com/v2/messages/provisioning/subscriptions \\   -H 'authorization: Bearer $ACCESS_TOKEN' \\   -H 'cache-control: no-cache' \\   -H 'content-type: application/json' \\   -d '{   \"activeDays\":30,   \"notifyURL\":\"http://example.com/callback\",   \"callbackData\":     {       \"anything\":\"some data\"     }   }' </code></pre>
 
 ### Example
 ```python
