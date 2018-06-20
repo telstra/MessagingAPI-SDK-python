@@ -10,11 +10,11 @@ Method | HTTP request | Description
 
 
 # **create_subscription**
-> ProvisionNumberResponse create_subscription(body)
+> ProvisionNumberResponse create_subscription(provision_number_request)
 
 Create Subscription
 
-Invoke the provisioning API to get a dedicated mobile number for an account or application.  <pre><code class=\"language-sh\">   #!/bin/bash   curl -X POST \\   https://tapi.telstra.com/v2/messages/provisioning/subscriptions \\   -H 'authorization: Bearer $ACCESS_TOKEN' \\   -H 'cache-control: no-cache' \\   -H 'content-type: application/json' \\   -d '{   \"activeDays\":30,   \"notifyURL\":\"http://example.com/callback\",   \"callbackData\":     {       \"anything\":\"some data\"     }   }' </code></pre>
+Invoke the provisioning API to get a dedicated mobile number for an account or application. 
 
 ### Example
 ```python
@@ -30,11 +30,11 @@ configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = Telstra_Messaging.ProvisioningApi(Telstra_Messaging.ApiClient(configuration))
-body = Telstra_Messaging.ProvisionNumberRequest() # ProvisionNumberRequest | A JSON payload containing the required attributes
+provision_number_request = Telstra_Messaging.ProvisionNumberRequest() # ProvisionNumberRequest | A JSON payload containing the required attributes
 
 try:
     # Create Subscription
-    api_response = api_instance.create_subscription(body)
+    api_response = api_instance.create_subscription(provision_number_request)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling ProvisioningApi->create_subscription: %s\n" % e)
@@ -44,7 +44,7 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | [**ProvisionNumberRequest**](ProvisionNumberRequest.md)| A JSON payload containing the required attributes | 
+ **provision_number_request** | [**ProvisionNumberRequest**](ProvisionNumberRequest.md)| A JSON payload containing the required attributes | 
 
 ### Return type
 
@@ -62,11 +62,11 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **delete_subscription**
-> delete_subscription(body)
+> delete_subscription(delete_number_request)
 
 Delete Subscription
 
-Delete a mobile number subscription from an account
+Delete a mobile number subscription from an account 
 
 ### Example
 ```python
@@ -82,11 +82,11 @@ configuration.access_token = 'YOUR_ACCESS_TOKEN'
 
 # create an instance of the API class
 api_instance = Telstra_Messaging.ProvisioningApi(Telstra_Messaging.ApiClient(configuration))
-body = Telstra_Messaging.DeleteNumberRequest() # DeleteNumberRequest | EmptyArr
+delete_number_request = Telstra_Messaging.DeleteNumberRequest() # DeleteNumberRequest | EmptyArr
 
 try:
     # Delete Subscription
-    api_instance.delete_subscription(body)
+    api_instance.delete_subscription(delete_number_request)
 except ApiException as e:
     print("Exception when calling ProvisioningApi->delete_subscription: %s\n" % e)
 ```
@@ -95,7 +95,7 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | [**DeleteNumberRequest**](DeleteNumberRequest.md)| EmptyArr | 
+ **delete_number_request** | [**DeleteNumberRequest**](DeleteNumberRequest.md)| EmptyArr | 
 
 ### Return type
 
@@ -108,7 +108,7 @@ void (empty response body)
 ### HTTP request headers
 
  - **Content-Type**: application/json
- - **Accept**: application/json
+ - **Accept**: Not defined
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
@@ -117,7 +117,7 @@ void (empty response body)
 
 Get Subscription
 
-Get mobile number subscription for an account
+Get mobile number subscription for an account 
 
 ### Example
 ```python
@@ -155,7 +155,7 @@ This endpoint does not need any parameter.
 
 ### HTTP request headers
 
- - **Content-Type**: application/json
+ - **Content-Type**: Not defined
  - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)

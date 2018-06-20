@@ -2,7 +2,7 @@
 
 
 - API version: 2.2.6
-- Package version: 1.0.4
+- Package version: 1.0.4.1
 
 ## Requirements.
 
@@ -43,11 +43,12 @@ import time
 import Telstra_Messaging
 from Telstra_Messaging.rest import ApiException
 from pprint import pprint
+
 # create an instance of the API class
-api_instance = Telstra_Messaging.AuthenticationApi()
+api_instance = Telstra_Messaging.AuthenticationApi(Telstra_Messaging.ApiClient(configuration))
 client_id = 'client_id_example' # str | 
 client_secret = 'client_secret_example' # str | 
-grant_type = 'client_credentials' # str |  (default to client_credentials)
+grant_type = 'client_credentials' # str |  (default to 'client_credentials')
 
 try:
     # Generate OAuth2 token
@@ -67,6 +68,7 @@ Class | Method | HTTP request | Description
 *AuthenticationApi* | [**auth_token**](docs/AuthenticationApi.md#auth_token) | **POST** /oauth/token | Generate OAuth2 token
 *MessagingApi* | [**get_mms_status**](docs/MessagingApi.md#get_mms_status) | **GET** /messages/mms/{messageid}/status | Get MMS Status
 *MessagingApi* | [**get_sms_status**](docs/MessagingApi.md#get_sms_status) | **GET** /messages/sms/{messageId}/status | Get SMS Status
+*MessagingApi* | [**retrieve_mms_responses**](docs/MessagingApi.md#retrieve_mms_responses) | **GET** /messages/mms | Retrieve MMS Responses
 *MessagingApi* | [**retrieve_sms_responses**](docs/MessagingApi.md#retrieve_sms_responses) | **GET** /messages/sms | Retrieve SMS Responses
 *MessagingApi* | [**send_mms**](docs/MessagingApi.md#send_mms) | **POST** /messages/mms | Send MMS
 *MessagingApi* | [**send_sms**](docs/MessagingApi.md#send_sms) | **POST** /messages/sms | Send SMS
