@@ -32,7 +32,7 @@ class MessageSentResponse(object):
     """
     openapi_types = {
         'messages': 'list[Message]',
-        'country': 'list[str]',
+        'country': 'list[object]',
         'message_type': 'str',
         'number_segments': 'int'
     }
@@ -91,7 +91,7 @@ class MessageSentResponse(object):
         An array of the countries to which the destination MSISDNs belong.  # noqa: E501
 
         :return: The country of this MessageSentResponse.  # noqa: E501
-        :rtype: list[str]
+        :rtype: list[object]
         """
         return self._country
 
@@ -102,7 +102,7 @@ class MessageSentResponse(object):
         An array of the countries to which the destination MSISDNs belong.  # noqa: E501
 
         :param country: The country of this MessageSentResponse.  # noqa: E501
-        :type: list[str]
+        :type: list[object]
         """
 
         self._country = country
