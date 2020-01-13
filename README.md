@@ -51,7 +51,7 @@ import Telstra_Messaging
 from Telstra_Messaging.rest import ApiException
 from pprint import pprint
 
-
+configuration = Telstra_Messaging.Configuration()
 # Defining host is optional and default to https://tapi.telstra.com/v2
 configuration.host = "https://tapi.telstra.com/v2"
 # Create an instance of the API class
