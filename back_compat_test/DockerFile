@@ -1,0 +1,14 @@
+FROM python:3.7-alpine
+
+# ARG HTTP_PROXY
+
+RUN mkdir -p /usr/src/telstradev
+WORKDIR /urs/src/telstradev
+COPY . .
+
+# ENV HTTP_PROXY $HTTP_PROXY
+# ENV HTTPS_PROXY $HTTP_PROXY
+
+RUN pip install six python-dateutil urllib3 certifi
+
+CMD ["python", "test.py"]

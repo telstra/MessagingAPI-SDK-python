@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+*.pyc
 
 # C extensions
 *.so
@@ -45,7 +46,9 @@ coverage.xml
 *,cover
 .hypothesis/
 venv/
+.venv/
 .python-version
+.pytest_cache
 
 # Translations
 *.mo

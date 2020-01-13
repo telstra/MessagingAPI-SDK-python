@@ -1,5 +1,6 @@
 # InboundPollResponse
 
+Poll for incoming messages returning the latest. Only works if no callback url was specified when provisioning a number. 
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
