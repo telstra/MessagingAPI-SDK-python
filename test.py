@@ -8,8 +8,8 @@ from Telstra_Messaging.rest import ApiException
 
 configuration = Telstra_Messaging.Configuration()
 api_instance = Telstra_Messaging.AuthenticationApi(Telstra_Messaging.ApiClient(configuration))
-client_id = os.environ.get['CLIENT_ID'] # str | 
-client_secret = os.environ.get['CLIENT_SECRET'] # str | 
+client_id = os.environ.get('CLIENT_ID') # str | 
+client_secret = os.environ.get('CLIENT_SECRET') # str | 
 grant_type = "client_credentials" # str |  (default to "client_credentials")
 
 try:
@@ -27,7 +27,7 @@ try:
 
     api_instance = Telstra_Messaging.MessagingApi(Telstra_Messaging.ApiClient(configuration))
 
-    send_sms_request = Telstra_Messaging.SendSMSRequest(os.environ.get['MOBILE_NUMBER'], "Test the SDK code", "SDK Test")
+    send_sms_request = Telstra_Messaging.SendSMSRequest(os.environ.get('PHONE_NO'), "Test the Python SDK code", os.environ.get('FROM_ALIAS'))
     
     api_response = api_instance.send_sms(send_sms_request)
     pprint(api_response)

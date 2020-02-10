@@ -6,13 +6,13 @@ Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**get_mms_status**](MessagingApi.md#get_mms_status) | **GET** /messages/mms/{messageid}/status | Get MMS Status
 [**get_sms_status**](MessagingApi.md#get_sms_status) | **GET** /messages/sms/{messageId}/status | Get SMS Status
-[**m_ms_health_check**](MessagingApi.md#m_ms_health_check) | **GET** /messages/mms/heathcheck | MMS Health Check
+[**mms_health_check**](MessagingApi.md#mms_health_check) | **GET** /messages/mms/healthcheck | MMS Health Check
 [**retrieve_mms_replies**](MessagingApi.md#retrieve_mms_replies) | **GET** /messages/mms | Retrieve MMS Replies
 [**retrieve_sms_replies**](MessagingApi.md#retrieve_sms_replies) | **GET** /messages/sms | Retrieve SMS Replies
-[**s_ms_health_check**](MessagingApi.md#s_ms_health_check) | **GET** /messages/sms/heathcheck | SMS Health Check
-[**s_ms_multi**](MessagingApi.md#s_ms_multi) | **POST** /messages/sms/multi | Send Multiple SMS
 [**send_mms**](MessagingApi.md#send_mms) | **POST** /messages/mms | Send MMS
 [**send_sms**](MessagingApi.md#send_sms) | **POST** /messages/sms | Send SMS
+[**sms_health_check**](MessagingApi.md#sms_health_check) | **GET** /messages/sms/healthcheck | SMS Health Check
+[**sms_multi**](MessagingApi.md#sms_multi) | **POST** /messages/sms/multi | Send Multiple SMS
 
 
 # **get_mms_status**
@@ -157,8 +157,8 @@ Name | Type | Description  | Notes
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **m_ms_health_check**
-> HealthCheckResponse m_ms_health_check()
+# **mms_health_check**
+> HealthCheckResponse mms_health_check()
 
 MMS Health Check
 
@@ -178,10 +178,10 @@ api_instance = Telstra_Messaging.MessagingApi()
 
 try:
     # MMS Health Check
-    api_response = api_instance.m_ms_health_check()
+    api_response = api_instance.mms_health_check()
     pprint(api_response)
 except ApiException as e:
-    print("Exception when calling MessagingApi->m_ms_health_check: %s\n" % e)
+    print("Exception when calling MessagingApi->mms_health_check: %s\n" % e)
 ```
 
 ### Parameters
@@ -345,119 +345,6 @@ This endpoint does not need any parameter.
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **s_ms_health_check**
-> HealthCheckResponse s_ms_health_check()
-
-SMS Health Check
-
-Determine whether the SMS service is up or down. 
-
-### Example
-
-```python
-from __future__ import print_function
-import time
-import Telstra_Messaging
-from Telstra_Messaging.rest import ApiException
-from pprint import pprint
-
-# Create an instance of the API class
-api_instance = Telstra_Messaging.MessagingApi()
-
-try:
-    # SMS Health Check
-    api_response = api_instance.s_ms_health_check()
-    pprint(api_response)
-except ApiException as e:
-    print("Exception when calling MessagingApi->s_ms_health_check: %s\n" % e)
-```
-
-### Parameters
-This endpoint does not need any parameter.
-
-### Return type
-
-[**HealthCheckResponse**](HealthCheckResponse.md)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: application/json
-
-### HTTP response details
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-**200** | Success |  -  |
-**500** | Technical error : Unable to route the message to a Target Endpoint : An error has occurred while processing your request, please refer to API Docs for summary on the issue  |  -  |
-**501** | The HTTP method being used has not yet been implemented for the requested resource  |  -  |
-**503** | The service requested is currently unavailable |  -  |
-**0** | An internal error occurred when processing the request |  -  |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **s_ms_multi**
-> MessageSentResponseSms s_ms_multi(payload)
-
-Send Multiple SMS
-
-Send multiple SMS in one API call. 
-
-### Example
-
-```python
-from __future__ import print_function
-import time
-import Telstra_Messaging
-from Telstra_Messaging.rest import ApiException
-from pprint import pprint
-
-# Create an instance of the API class
-api_instance = Telstra_Messaging.MessagingApi()
-payload = Telstra_Messaging.SendSmsMultiRequest() # SendSmsMultiRequest | A JSON payload containing the recipient's phone number and text message. This number can be in international format if preceeded by a '+' or in national format ('04xxxxxxxx') where x is a digit. 
-
-try:
-    # Send Multiple SMS
-    api_response = api_instance.s_ms_multi(payload)
-    pprint(api_response)
-except ApiException as e:
-    print("Exception when calling MessagingApi->s_ms_multi: %s\n" % e)
-```
-
-### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **payload** | [**SendSmsMultiRequest**](SendSmsMultiRequest.md)| A JSON payload containing the recipient&#39;s phone number and text message. This number can be in international format if preceeded by a &#39;+&#39; or in national format (&#39;04xxxxxxxx&#39;) where x is a digit.  | 
-
-### Return type
-
-[**MessageSentResponseSms**](MessageSentResponseSms.md)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: application/json
- - **Accept**: application/json
-
-### HTTP response details
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-**200** | Success |  -  |
-**400** | Invalid or missing request parameters * DR-NOTIFY-URL-MISSING : when receiptOff is missing or receiptOff&#x3D;false but notifyURL is missing  |  -  |
-**500** | Technical error : Unable to route the message to a Target Endpoint : An error has occurred while processing your request, please refer to API Docs for summary on the issue  |  -  |
-**501** | The HTTP method being used has not yet been implemented for the requested resource  |  -  |
-**503** | The service requested is currently unavailable |  -  |
-**0** | An internal error occurred when processing the request |  -  |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
 # **send_mms**
 > MessageSentResponseMms send_mms(body)
 
@@ -594,6 +481,125 @@ Name | Type | Description  | Notes
 **415** | API does not support the requested content type |  -  |
 **422** | The request is formed correctly, but due to some condition the request cannot be processed e.g. email is required and it is not provided in the request  |  -  |
 **500** | Technical error : Unable to route the message to a Target Endpoint :  An error has occurred while processing your request, please refer to API Docs for summary on the issue  |  -  |
+**501** | The HTTP method being used has not yet been implemented for the requested resource  |  -  |
+**503** | The service requested is currently unavailable |  -  |
+**0** | An internal error occurred when processing the request |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **sms_health_check**
+> HealthCheckResponse sms_health_check()
+
+SMS Health Check
+
+Determine whether the SMS service is up or down. 
+
+### Example
+
+```python
+from __future__ import print_function
+import time
+import Telstra_Messaging
+from Telstra_Messaging.rest import ApiException
+from pprint import pprint
+
+# Create an instance of the API class
+api_instance = Telstra_Messaging.MessagingApi()
+
+try:
+    # SMS Health Check
+    api_response = api_instance.sms_health_check()
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling MessagingApi->sms_health_check: %s\n" % e)
+```
+
+### Parameters
+This endpoint does not need any parameter.
+
+### Return type
+
+[**HealthCheckResponse**](HealthCheckResponse.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Success |  -  |
+**500** | Technical error : Unable to route the message to a Target Endpoint : An error has occurred while processing your request, please refer to API Docs for summary on the issue  |  -  |
+**501** | The HTTP method being used has not yet been implemented for the requested resource  |  -  |
+**503** | The service requested is currently unavailable |  -  |
+**0** | An internal error occurred when processing the request |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **sms_multi**
+> MessageSentResponseSms sms_multi(payload)
+
+Send Multiple SMS
+
+Send multiple SMS in one API call. 
+
+### Example
+
+* OAuth Authentication (auth):
+```python
+from __future__ import print_function
+import time
+import Telstra_Messaging
+from Telstra_Messaging.rest import ApiException
+from pprint import pprint
+configuration = Telstra_Messaging.Configuration()
+# Configure OAuth2 access token for authorization: auth
+configuration.access_token = 'YOUR_ACCESS_TOKEN'
+
+# Defining host is optional and default to https://tapi.telstra.com/v2
+configuration.host = "https://tapi.telstra.com/v2"
+# Create an instance of the API class
+api_instance = Telstra_Messaging.MessagingApi(Telstra_Messaging.ApiClient(configuration))
+payload = Telstra_Messaging.SendSmsMultiRequest() # SendSmsMultiRequest | A JSON payload containing the recipient's phone number and text message. This number can be in international format if preceeded by a '+' or in national format ('04xxxxxxxx') where x is a digit. 
+
+try:
+    # Send Multiple SMS
+    api_response = api_instance.sms_multi(payload)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling MessagingApi->sms_multi: %s\n" % e)
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **payload** | [**SendSmsMultiRequest**](SendSmsMultiRequest.md)| A JSON payload containing the recipient&#39;s phone number and text message. This number can be in international format if preceeded by a &#39;+&#39; or in national format (&#39;04xxxxxxxx&#39;) where x is a digit.  | 
+
+### Return type
+
+[**MessageSentResponseSms**](MessageSentResponseSms.md)
+
+### Authorization
+
+[auth](../README.md#auth)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Success |  -  |
+**400** | Invalid or missing request parameters * DR-NOTIFY-URL-MISSING : when &#x60;\&quot;receiptOff\&quot;&#x60; is missing or &#x60;\&quot;receiptOff\&quot;:\&quot;false\&quot;&#x60; but notifyURL is missing  |  -  |
+**500** | Technical error : Unable to route the message to a Target Endpoint : An error has occurred while processing your request, please refer to API Docs for summary on the issue  |  -  |
 **501** | The HTTP method being used has not yet been implemented for the requested resource  |  -  |
 **503** | The service requested is currently unavailable |  -  |
 **0** | An internal error occurred when processing the request |  -  |

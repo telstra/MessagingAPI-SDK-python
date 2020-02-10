@@ -1,0 +1,11 @@
+version: '3'
+services: 
+  telstradev:
+    environment: 
+      - CLIENT_ID
+      - CLIENT_SECRET
+      - PHONE_NO
+      - FROM_ALIAS
+    build:
+      context: .
+      dockerfile: DockerFile

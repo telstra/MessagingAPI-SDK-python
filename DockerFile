@@ -1,0 +1,11 @@
+FROM python:3.7-alpine
+
+RUN mkdir -p /telstradev
+WORKDIR /telstradev
+COPY . .
+
+RUN pip install six python-dateutil urllib3 certifi
+
+RUN python -m unittest discover test
+
+CMD ["python", "test.py"]
