@@ -15,12 +15,12 @@ from __future__ import absolute_import
 import unittest
 
 import Telstra_Messaging
-from Telstra_Messaging.models.provision_number_request import ProvisionNumberRequest  # noqa: E501
+from Telstra_Messaging.models.message_sent_response_sms import MessageSentResponseSms  # noqa: E501
 from Telstra_Messaging.rest import ApiException
 
 
-class TestProvisionNumberRequest(unittest.TestCase):
-    """ProvisionNumberRequest unit test stubs"""
+class TestMessageSentResponseSms(unittest.TestCase):
+    """MessageSentResponseSms unit test stubs"""
 
     def setUp(self):
         pass
@@ -28,10 +28,10 @@ class TestProvisionNumberRequest(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def testProvisionNumberRequest(self):
-        """Test ProvisionNumberRequest"""
+    def testMessageSentResponseSms(self):
+        """Test MessageSentResponseSms"""
         # FIXME: construct object with mandatory attributes with example values
-        # model = Telstra_Messaging.models.provision_number_request.ProvisionNumberRequest()  # noqa: E501
+        # model = Telstra_Messaging.models.message_sent_response_sms.MessageSentResponseSms()  # noqa: E501
         pass
 
 
