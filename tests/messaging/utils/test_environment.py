@@ -42,7 +42,7 @@ class TestReadEnvironment:
         assert "CLIENT_SECRET" in str(exc)
 
     @staticmethod
-    def test_client_id_secret_defined(monkeypatch):
+    def test_client_id_secret_defined():
         """
         GIVEN environment with CLIENT_ID and CLIENT_SECRET
         WHEN _read_environment is called
@@ -52,3 +52,15 @@ class TestReadEnvironment:
 
         assert returned_environment.client_id == os.getenv("CLIENT_ID")
         assert returned_environment.client_secret == os.getenv("CLIENT_SECRET")
+
+
+def test_get(monkeypatch):
+    """
+    GIVEN environment with CLIENT_ID and CLIENT_SECRET
+    WHEN get is called
+    THEN the CLIENT_ID and CLIENT_SECRET are returned.
+    """
+    returned_environment = environment.get()
+
+    assert returned_environment.client_id == os.getenv("CLIENT_ID")
+    assert returned_environment.client_secret == os.getenv("CLIENT_SECRET")
