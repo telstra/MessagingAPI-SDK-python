@@ -1,5 +1,6 @@
 """Tests for oauth."""
 
+from urllib import request
 from unittest import mock
 import time
 
@@ -104,24 +105,54 @@ def test_construct_token(
     assert token.expired == expected_expired
 
 
-def test_get_token_success(_valid_credentials):
+class TestGetToken:
+    """Tests for _get_token."""
+
+    # pylint: disable=protected-access
+
+    @staticmethod
+    def test_get_token_success(_valid_credentials):
+        """
+        GIVEN mocked environment that returns valid credentials
+        WHEN _get_token is called
+        THEN the token is returned.
+        """
+        token = oauth._get_token()
+
+        assert not token.expired
+
+    @staticmethod
+    def test_get_token():
+        """
+        GIVEN environment with invalid credentials
+        WHEN _get_token is called
+        THEN CredentialError is raised.
+        """
+        with pytest.raises(exceptions.CredentialError) as exc:
+            oauth._get_token()
+
+        assert "Unauthorized" in str(exc)
+
+
+def test_get_token_multiple_call(_valid_credentials, monkeypatch):
     """
     GIVEN mocked environment that returns valid credentials
-    WHEN get_token is called
-    THEN the token is returned.
+    WHEN get_token is called multiple times after some time passes
+    THEN urlopen is only called once the token is expired.
     """
-    token = oauth.get_token()
+    urlopen_spy = mock.MagicMock()
+    urlopen_spy.side_effect = request.urlopen
+    monkeypatch.setattr(request, "urlopen", urlopen_spy)
+    mock_time = mock.MagicMock()
+    monkeypatch.setattr(time, "time", mock_time)
 
-    assert not token.expired
+    mock_time.return_value = 1000000
+    oauth.get_token()
+    assert urlopen_spy.call_count == 1
 
+    oauth.get_token()
+    assert urlopen_spy.call_count == 1
 
-def test_get_token():
-    """
-    GIVEN environment with invalid credentials
-    WHEN get_token is called
-    THEN CredentialError is raised.
-    """
-    with pytest.raises(exceptions.CredentialError) as exc:
-        oauth.get_token()
-
-    assert "Unauthorized" in str(exc)
+    mock_time.return_value = 2000000
+    oauth.get_token()
+    assert urlopen_spy.call_count == 2

@@ -1,5 +1,6 @@
 """Handles OAuth interactions."""
 
+import typing
 import dataclasses
 from urllib import error
 from urllib import request
@@ -38,7 +39,20 @@ class TToken:
         return math.ceil(time.time()) >= self.retrieved_at + self.expires_in
 
 
-def get_token() -> TToken:
+def _reuse_token(func):
+    """Decorator to reuse tokens that are not expired."""
+    cache = {"old_token": None}
+
+    def _get_token() -> TToken:
+        """Decorator."""
+        if cache["old_token"] is None or cache["old_token"].expired:
+            cache["old_token"] = func()
+        return cache["old_token"]
+
+    return _get_token
+
+
+def _get_token() -> TToken:
     """
     Retrieve the OAuth tokens.
 
@@ -60,3 +74,6 @@ def get_token() -> TToken:
             return TToken(**json.loads(response.read().decode()))
     except error.HTTPError as exc:
         raise exceptions.CredentialError(f"Could not retrieve token: {exc}") from exc
+
+
+get_token = _reuse_token(_get_token)
