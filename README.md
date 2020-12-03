@@ -112,3 +112,13 @@ All URIs are relative to *https://tapi.telstra.com/v2*
 - **NSMS**: NSMS
 
 ## Author
+
+## Testing
+
+The `VALID_CLIENT_ID` and `VALID_CLIENT_SECRET` are required environment
+variables with a client id and secret for the messaging API that can be used
+to send messages.
+
+```bash
+VALID_CLIENT_ID="XXX" VALID_CLIENT_SECRET="YYY" pytest
+```
