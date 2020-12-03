@@ -2,5 +2,6 @@
     "restructuredtext.confPath": "",
     "python.linting.pylintEnabled": true,
     "python.linting.enabled": true,
-    "python.formatting.provider": "black"
+    "python.formatting.provider": "black",
+    "python.pythonPath": "/usr/local/bin/python3"
 }
