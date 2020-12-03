@@ -1,12 +1,14 @@
 """Handles OAuth interactions."""
 
 import dataclasses
+from urllib import error
 from urllib import request
 from urllib import parse
 import time
 import json
 import math
 
+from . import exceptions
 from .utils import environment
 
 
@@ -53,5 +55,8 @@ def get_token() -> TToken:
             "scope": "NSMS",
         }
     ).encode("ascii")
-    with request.urlopen(url, data) as response:
-        return TToken(**json.loads(response.read().decode()))
+    try:
+        with request.urlopen(url, data) as response:
+            return TToken(**json.loads(response.read().decode()))
+    except error.HTTPError as exc:
+        raise exceptions.CredentialError(f"Could not retrieve token: {exc}") from exc
