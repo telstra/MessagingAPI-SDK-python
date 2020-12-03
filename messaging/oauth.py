@@ -35,7 +35,7 @@ class TToken:
     @property
     def expired(self):
         """Whether the tokens are expired."""
-        return time.time() >= self.retrieved_at + self.expires_in
+        return math.ceil(time.time()) >= self.retrieved_at + self.expires_in
 
 
 def get_token() -> TToken:
