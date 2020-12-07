@@ -1,4 +1,4 @@
-# Telstra_Messaging
+# Telstra Messaging
 
 The SDK for the Telstra messaging API.
 
