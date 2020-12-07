@@ -86,7 +86,6 @@ def _get_token() -> TToken:
             "scope": "NSMS",
         }
     ).encode("ascii")
-    print(data)
     try:
         with request.urlopen(url, data) as response:
             return TToken(**json.loads(response.read().decode()))

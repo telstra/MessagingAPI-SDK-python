@@ -1,6 +1,4 @@
-"""Tests for creating subscriptions."""
-
-import pytest
+"""Tests for subscriptions."""
 
 from messaging import subscription
 

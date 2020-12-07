@@ -10,4 +10,8 @@ class CredentialError(BaseException):
 
 
 class SubscriptionError(BaseException):
-    """Raised when creating a subscription failed."""
+    """Raised when a subscription request failed."""
+
+
+class SmsError(BaseException):
+    """Raised when a sms request failed."""

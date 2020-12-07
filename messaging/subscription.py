@@ -50,4 +50,6 @@ def create(active_days: int = 30) -> TSubscription:
                 active_days=subscription_dict["activeDays"],
             )
     except error.HTTPError as exc:
-        raise exceptions.SubscriptionError(f"Could not retrieve token: {exc}") from exc
+        raise exceptions.SubscriptionError(
+            f"Could not create subscription: {exc}"
+        ) from exc
