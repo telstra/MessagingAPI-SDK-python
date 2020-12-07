@@ -123,7 +123,7 @@ class TestGetToken:
         assert not token.expired
 
     @staticmethod
-    def test_get_token():
+    def test_get_token_error():
         """
         GIVEN environment with invalid credentials
         WHEN _get_token is called
