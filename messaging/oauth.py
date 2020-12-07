@@ -15,7 +15,19 @@ from .utils import environment
 
 @dataclasses.dataclass
 class TToken:
-    """OAuth token."""
+    """
+    OAuth token.
+
+    Attrs:
+        access_token: The OAuth access token.
+        token_type: The type of the token.
+        expires_in: The number of seconds until the token expires.
+        retrieved_at: The time when the token was retrieved.
+
+        expired: Whether the token is expired.
+        authorization: The value of the Authorization header with the token.
+
+    """
 
     def __init__(self, access_token: str, token_type: str, expires_in: str):
         """Construct."""
@@ -37,6 +49,11 @@ class TToken:
     def expired(self):
         """Whether the tokens are expired."""
         return math.ceil(time.time()) >= self.retrieved_at + self.expires_in
+
+    @property
+    def authorization(self):
+        """Create the value of the Authorization header."""
+        return f"Bearer {self.access_token}"
 
 
 def _reuse_token(func):
@@ -69,6 +86,7 @@ def _get_token() -> TToken:
             "scope": "NSMS",
         }
     ).encode("ascii")
+    print(data)
     try:
         with request.urlopen(url, data) as response:
             return TToken(**json.loads(response.read().decode()))

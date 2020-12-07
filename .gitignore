@@ -64,3 +64,6 @@ target/
 .ipynb_checkpoints
 
 .DS_Store
+
+# Pytest
+.pytest_cache

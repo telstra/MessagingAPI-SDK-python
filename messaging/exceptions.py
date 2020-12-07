@@ -7,3 +7,7 @@ class BaseException(Exception):
 
 class CredentialError(BaseException):
     """Raised when required credentials are not provided."""
+
+
+class SubscriptionError(BaseException):
+    """Raised when creating a subscription failed."""

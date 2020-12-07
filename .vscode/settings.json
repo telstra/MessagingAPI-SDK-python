@@ -3,5 +3,5 @@
     "python.linting.pylintEnabled": true,
     "python.linting.enabled": true,
     "python.formatting.provider": "black",
-    "python.pythonPath": "/usr/local/bin/python3"
+    "python.pythonPath": "/Users/davidandersson/src/developer-experience/MessagingAPI-SDK-python/.venv/bin/python3.9"
 }

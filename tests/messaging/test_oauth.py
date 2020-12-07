@@ -103,6 +103,7 @@ def test_construct_token(
     mock_time.return_value = final_time
 
     assert token.expired == expected_expired
+    assert token.authorization == f"Bearer {access_token}"
 
 
 class TestGetToken:
