@@ -11,25 +11,29 @@ class TEnvironment:
     """Environment variable values."""
 
     # The OAuth client id
-    client_id: str
+    tls_client_key: str
     # The OAuth client secret
-    client_secret: str
+    tls_client_secret: str
 
 
 def _read_environment() -> TEnvironment:
     """Read environment variables."""
-    client_id = os.getenv("CLIENT_ID", default=None)
-    if not isinstance(client_id, str):
+    tls_client_key = os.getenv("TLS_CLIENT_KEY", default=None)
+    if not isinstance(tls_client_key, str):
         raise exceptions.CredentialError(
-            "The CLIENT_ID environment variable needs to be set."
+            "The TLS_CLIENT_KEY environment variable needs to be set, find it here: "
+            "https://dev.telstra.com/user/me/apps."
         )
-    client_secret = os.getenv("CLIENT_SECRET", default=None)
-    if not isinstance(client_secret, str):
+    tls_client_secret = os.getenv("TLS_CLIENT_SECRET", default=None)
+    if not isinstance(tls_client_secret, str):
         raise exceptions.CredentialError(
-            "The CLIENT_SECRET environment variable needs to be set."
+            "The TLS_CLIENT_SECRET environment variable needs to be set, find it "
+            "here: https://dev.telstra.com/user/me/apps."
         )
 
-    return TEnvironment(client_id=client_id, client_secret=client_secret)
+    return TEnvironment(
+        tls_client_key=tls_client_key, tls_client_secret=tls_client_secret
+    )
 
 
 _ENVIRONMENT = _read_environment()

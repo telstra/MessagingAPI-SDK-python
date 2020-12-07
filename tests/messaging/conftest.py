@@ -11,10 +11,10 @@ from messaging.utils import environment
 @pytest.fixture
 def _valid_credentials(monkeypatch):
     """Valid client id and secret."""
-    client_id = os.getenv("VALID_CLIENT_ID")
-    client_secret = os.getenv("VALID_CLIENT_SECRET")
+    tls_client_key = os.getenv("VALID_TLS_CLIENT_KEY")
+    tls_client_secret = os.getenv("VALID_TLS_CLIENT_SECRET")
     mock_environment = environment.TEnvironment(
-        client_id=client_id, client_secret=client_secret
+        tls_client_key=tls_client_key, tls_client_secret=tls_client_secret
     )
     mock_get = mock.MagicMock()
     mock_get.return_value = mock_environment
