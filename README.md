@@ -21,3 +21,7 @@ from messaging import sms
 
 sms.send(to="+61412345678", body="Hi")
 ```
+
+```bash
+TLS_CLIENT_KEY="XXXX" TLS_CLIENT_SECRET="YYYY" python app.py
+```
