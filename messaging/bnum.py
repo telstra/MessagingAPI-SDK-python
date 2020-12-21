@@ -55,7 +55,7 @@ def get() -> TPhoneNumbers:
     except exceptions.CredentialError as exc:
         raise exceptions.BnumError(f"Could retrieve phone numbers: {exc}") from exc
 
-    url = "https://tapi.telstra.com/v2/messages/freetrial/bnumm"
+    url = "https://tapi.telstra.com/v2/messages/freetrial/bnum"
     headers = {
         "Content-Type": "application/json",
         "Authorization": token.authorization,
@@ -63,7 +63,9 @@ def get() -> TPhoneNumbers:
     sms_request = request.Request(url, headers=headers, method="GET")
     try:
         with request.urlopen(sms_request) as response:
-            bnum_dict = json.loads(response.read().decode())
+            data = response.read().decode()
+            print(data)
+            bnum_dict = json.loads(data)
             return bnum_dict["bnum"]
     except error.HTTPError as exc:
         raise exceptions.BnumError(f"Could retrieve phone numbers: {exc}") from exc
