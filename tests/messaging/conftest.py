@@ -6,6 +6,7 @@ from unittest import mock
 import pytest
 
 from messaging.utils import environment
+from messaging import subscription, exceptions
 
 
 @pytest.fixture
@@ -19,3 +20,10 @@ def _valid_credentials(monkeypatch):
     mock_get = mock.MagicMock()
     mock_get.return_value = mock_environment
     monkeypatch.setattr(environment, "get", mock_get)
+
+    yield
+
+    try:
+        subscription.delete()
+    except exceptions.SubscriptionError:
+        pass

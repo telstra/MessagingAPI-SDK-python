@@ -56,15 +56,17 @@ class TToken:
         return f"Bearer {self.access_token}"
 
 
+_CACHE = {"old_token": None}
+
+
 def _reuse_token(func):
     """Decorator to reuse tokens that are not expired."""
-    cache = {"old_token": None}
 
     def _get_token() -> TToken:
         """Decorator."""
-        if cache["old_token"] is None or cache["old_token"].expired:
-            cache["old_token"] = func()
-        return cache["old_token"]
+        if _CACHE["old_token"] is None or _CACHE["old_token"].expired:
+            _CACHE["old_token"] = func()
+        return _CACHE["old_token"]
 
     return _get_token
 

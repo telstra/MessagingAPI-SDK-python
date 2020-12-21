@@ -1,7 +1,6 @@
 """Handle subscriptions."""
 
 import dataclasses
-import typing
 import json
 from urllib import request, error
 
@@ -26,6 +25,8 @@ class TSubscription:
 def create(active_days: int = 30) -> TSubscription:
     """
     Create a subscription.
+
+    Raises SubscriptionError if anything goes wrong.
 
     Args:
         active_days: The number of days the subscription will be active.
@@ -52,4 +53,59 @@ def create(active_days: int = 30) -> TSubscription:
     except error.HTTPError as exc:
         raise exceptions.SubscriptionError(
             f"Could not create subscription: {exc}"
+        ) from exc
+
+
+def get() -> TSubscription:
+    """
+    Retrieves current subscription.
+
+    Raises SubscriptionError if anything goes wrong.
+
+    """
+    token = oauth.get_token()
+    url = "https://tapi.telstra.com/v2/messages/provisioning/subscriptions"
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": token.authorization,
+        "Cache-Control": "no-cache",
+    }
+    subscription_request = request.Request(url, headers=headers, method="GET")
+    try:
+        with request.urlopen(subscription_request) as response:
+            subscription_dict = json.loads(response.read().decode())
+            return TSubscription(
+                destination_address=subscription_dict["destinationAddress"],
+                active_days=subscription_dict["activeDays"],
+            )
+    except error.HTTPError as exc:
+        raise exceptions.SubscriptionError(
+            f"Could not delete subscription: {exc}"
+        ) from exc
+
+
+def delete() -> None:
+    """
+    Delete current subscription.
+
+    Raises SubscriptionError if anything goes wrong.
+
+    """
+    token = oauth.get_token()
+    url = "https://tapi.telstra.com/v2/messages/provisioning/subscriptions"
+    data = json.dumps({"emptyArr": 0}).encode()
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": token.authorization,
+        "Cache-Control": "no-cache",
+    }
+    subscription_request = request.Request(
+        url, data=data, headers=headers, method="DELETE"
+    )
+    try:
+        with request.urlopen(subscription_request):
+            return
+    except error.HTTPError as exc:
+        raise exceptions.SubscriptionError(
+            f"Could not delete subscription: {exc}"
         ) from exc

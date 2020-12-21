@@ -146,6 +146,8 @@ def test_get_token_multiple_call(_valid_credentials, monkeypatch):
     monkeypatch.setattr(request, "urlopen", urlopen_spy)
     mock_time = mock.MagicMock()
     monkeypatch.setattr(time, "time", mock_time)
+    # Clear current token
+    oauth._CACHE["old_token"] = None  # pylint: disable=protected-access
 
     mock_time.return_value = 1000000
     oauth.get_token()

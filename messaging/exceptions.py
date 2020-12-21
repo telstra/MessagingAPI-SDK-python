@@ -15,3 +15,7 @@ class SubscriptionError(BaseException):
 
 class SmsError(BaseException):
     """Raised when a sms request failed."""
+
+
+class BnumError(BaseException):
+    """Raised when a bnum request failed."""

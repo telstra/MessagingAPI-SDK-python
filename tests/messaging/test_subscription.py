@@ -8,16 +8,23 @@ import pytest
 from messaging import subscription, exceptions
 
 
-def test_create(_valid_credentials):
+def test_create_get_delete(_valid_credentials):
     """
     GIVEN
-    WHEN create is called
-    THEN a subscription is provisioned.
+    WHEN create, get and delete is called
+    THEN a subscription is provisioned, returned and deleted.
     """
-    returned_subscription = subscription.create()
+    created_subscription = subscription.create()
 
-    assert returned_subscription.destination_address is not None
-    assert returned_subscription.active_days is not None
+    assert created_subscription.destination_address is not None
+    assert created_subscription.active_days is not None
+
+    retrieved_subscription = subscription.get()
+
+    assert retrieved_subscription.destination_address is not None
+    assert retrieved_subscription.active_days is not None
+
+    subscription.delete()
 
 
 def test_create_error(monkeypatch):

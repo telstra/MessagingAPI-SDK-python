@@ -1,52 +1,48 @@
-"""Tests for sms."""
+"""Tests for bun."""
 
 from unittest import mock
 from urllib import error, request
 
 import pytest
 
-from messaging import sms, subscription, exceptions, oauth
+from messaging import bnum, exceptions, oauth
 
 
-def test_send(_valid_credentials):
+def test_register(_valid_credentials):
     """
     GIVEN
-    WHEN send is called
-    THEN a sms is provisioned.
+    WHEN register is called
+    THEN phone numbers are registered.
     """
-    to = subscription.get().destination_address
-    body = "body 1"
+    phone_numbers = ["+61412345678"]
 
-    returned_sms = sms.send(to=to, body=body)
+    returned_phone_numbers = bnum.register(phone_numbers=phone_numbers)
 
-    assert returned_sms.to == to
-    assert returned_sms.delivery_status is not None
-    assert returned_sms.message_id is not None
-    assert returned_sms.message_status_url is not None
+    assert returned_phone_numbers == phone_numbers
 
 
-def test_send_error_oauth(monkeypatch):
+def test_register_error_oauth(monkeypatch):
     """
-    GIVEN oauth that raises an error
-    WHEN send is called
-    THEN SmsError is raised.
+    GIVEN oauth get_token that raises an error
+    WHEN register is called
+    THEN BnumError is raised.
     """
     mock_oauth = mock.MagicMock()
     message = "message 1"
     mock_oauth.side_effect = exceptions.CredentialError(message)
     monkeypatch.setattr(oauth, "get_token", mock_oauth)
 
-    with pytest.raises(exceptions.SmsError) as exc:
-        sms.send(to="to 1", body="body 1")
+    with pytest.raises(exceptions.BnumError) as exc:
+        bnum.register(phone_numbers=[])
 
     assert message in str(exc.value)
 
 
-def test_send_error_http(monkeypatch):
+def test_register_error_http(monkeypatch):
     """
     GIVEN urlopen that raises an error
-    WHEN send is called
-    THEN SmsError is raised.
+    WHEN register is called
+    THEN BnumError is raised.
     """
     mock_oauth = mock.MagicMock()
     mock_token = mock.MagicMock()
@@ -61,8 +57,8 @@ def test_send_error_http(monkeypatch):
     )
     monkeypatch.setattr(request, "urlopen", mock_urlopen)
 
-    with pytest.raises(exceptions.SmsError) as exc:
-        sms.send(to="to 1", body="body 1")
+    with pytest.raises(exceptions.BnumError) as exc:
+        bnum.register(phone_numbers=[])
 
     assert msg in str(exc.value)
     assert str(code) in str(exc.value)

@@ -35,7 +35,11 @@ def send(to: str, body: str) -> TSms:
         body: The body of the message.
 
     """
-    token = oauth.get_token()
+    try:
+        token = oauth.get_token()
+    except exceptions.CredentialError as exc:
+        raise exceptions.SmsError(f"Could not retrieve an OAuth token: {exc}") from exc
+
     url = "https://tapi.telstra.com/v2/messages/sms"
     data = json.dumps({"to": to, "body": body}).encode()
     headers = {
