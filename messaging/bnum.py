@@ -9,6 +9,7 @@ from . import oauth, exceptions
 
 
 TPhoneNumbers = typing.List[str]
+_URL = "https://tapi.telstra.com/v2/messages/freetrial/bnum"
 
 
 def register(phone_numbers: TPhoneNumbers) -> TPhoneNumbers:
@@ -27,13 +28,12 @@ def register(phone_numbers: TPhoneNumbers) -> TPhoneNumbers:
     except exceptions.CredentialError as exc:
         raise exceptions.BnumError(f"Could register phone numbers: {exc}") from exc
 
-    url = "https://tapi.telstra.com/v2/messages/freetrial/bnum"
     data = json.dumps({"bnum": phone_numbers}).encode()
     headers = {
         "Content-Type": "application/json",
         "Authorization": token.authorization,
     }
-    sms_request = request.Request(url, data=data, headers=headers, method="POST")
+    sms_request = request.Request(_URL, data=data, headers=headers, method="POST")
     try:
         with request.urlopen(sms_request) as response:
             bnum_dict = json.loads(response.read().decode())
@@ -55,12 +55,11 @@ def get() -> TPhoneNumbers:
     except exceptions.CredentialError as exc:
         raise exceptions.BnumError(f"Could retrieve phone numbers: {exc}") from exc
 
-    url = "https://tapi.telstra.com/v2/messages/freetrial/bnum"
     headers = {
         "Content-Type": "application/json",
         "Authorization": token.authorization,
     }
-    sms_request = request.Request(url, headers=headers, method="GET")
+    sms_request = request.Request(_URL, headers=headers, method="GET")
     try:
         with request.urlopen(sms_request) as response:
             data = response.read().decode()

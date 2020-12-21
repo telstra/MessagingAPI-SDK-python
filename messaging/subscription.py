@@ -6,6 +6,8 @@ from urllib import request, error
 
 from . import oauth, exceptions
 
+_URL = "https://tapi.telstra.com/v2/messages/provisioning/subscriptions"
+
 
 @dataclasses.dataclass
 class TSubscription:
@@ -33,7 +35,6 @@ def create(active_days: int = 30) -> TSubscription:
 
     """
     token = oauth.get_token()
-    url = "https://tapi.telstra.com/v2/messages/provisioning/subscriptions"
     data = json.dumps({"activeDays": active_days}).encode()
     headers = {
         "Content-Type": "application/json",
@@ -41,7 +42,7 @@ def create(active_days: int = 30) -> TSubscription:
         "Cache-Control": "no-cache",
     }
     subscription_request = request.Request(
-        url, data=data, headers=headers, method="POST"
+        _URL, data=data, headers=headers, method="POST"
     )
     try:
         with request.urlopen(subscription_request) as response:
@@ -64,13 +65,12 @@ def get() -> TSubscription:
 
     """
     token = oauth.get_token()
-    url = "https://tapi.telstra.com/v2/messages/provisioning/subscriptions"
     headers = {
         "Content-Type": "application/json",
         "Authorization": token.authorization,
         "Cache-Control": "no-cache",
     }
-    subscription_request = request.Request(url, headers=headers, method="GET")
+    subscription_request = request.Request(_URL, headers=headers, method="GET")
     try:
         with request.urlopen(subscription_request) as response:
             subscription_dict = json.loads(response.read().decode())
@@ -92,7 +92,6 @@ def delete() -> None:
 
     """
     token = oauth.get_token()
-    url = "https://tapi.telstra.com/v2/messages/provisioning/subscriptions"
     data = json.dumps({"emptyArr": 0}).encode()
     headers = {
         "Content-Type": "application/json",
@@ -100,7 +99,7 @@ def delete() -> None:
         "Cache-Control": "no-cache",
     }
     subscription_request = request.Request(
-        url, data=data, headers=headers, method="DELETE"
+        _URL, data=data, headers=headers, method="DELETE"
     )
     try:
         with request.urlopen(subscription_request):
