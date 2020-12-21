@@ -1,5 +1,6 @@
 """Used to send messages."""
 
+import typing
 import dataclasses
 import json
 from urllib import request, error
@@ -20,13 +21,13 @@ class TSms:
 
     """
 
-    to: str
+    to: typing.Union[str, typing.List[str]]
     delivery_status: str
     message_id: str
     message_status_url: str
 
 
-def send(to: str, body: str) -> TSms:
+def send(to: typing.Union[str, typing.List[str]], body: str) -> TSms:
     """
     Send an SMS.
 
