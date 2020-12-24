@@ -8,6 +8,71 @@ import pytest
 from messaging import bnum, exceptions, oauth
 
 
+@pytest.mark.parametrize(
+    "phone_numbers, expected_contents",
+    [
+        pytest.param(
+            None,
+            ["phone_numbers", "received", f'"{None}"', "list", "string"],
+            id="none",
+        ),
+        pytest.param(
+            True,
+            ["phone_numbers", "received", f'"{True}"', "list", "string"],
+            id="True",
+        ),
+        pytest.param(
+            [None],
+            ["phone_numbers", "received", f'"{[None]}"', "list", "string"],
+            id="list of single None",
+        ),
+        pytest.param(
+            [True],
+            ["phone_numbers", "received", f'"{[True]}"', "list", "string"],
+            id="list single True",
+        ),
+        pytest.param(
+            ["invalid"],
+            ["phone_numbers", "received", f'"{[True]}"', "list", "string"],
+            id="list single invaid string",
+        ),
+        pytest.param(
+            ["+61412345678", None],
+            [
+                "phone_numbers",
+                "received",
+                f'"{["+61412345678", None]}"',
+                "list",
+                "string",
+            ],
+            id="list of some valid and others not",
+        ),
+        pytest.param(
+            [None, "+61412345678"],
+            [
+                "phone_numbers",
+                "received",
+                f'"{[None, "+61412345678"]}"',
+                "list",
+                "string",
+            ],
+            id="list of some valid and others not different order",
+        ),
+    ],
+)
+def test_register_invalid_param(phone_numbers, expected_contents):
+    """
+    GIVEN invalid parameters
+    WHEN register is called with the parameters
+    THEN BnumError is raised with the expected contents.
+    """
+    with pytest.raises(exceptions.BnumError) as exc:
+        bnum.register(phone_numbers=phone_numbers)
+
+    for content in expected_contents:
+        assert content in str(exc)
+
+
 def test_register(_valid_credentials):
     """
     GIVEN

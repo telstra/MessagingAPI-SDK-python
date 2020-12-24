@@ -23,6 +23,12 @@ def register(phone_numbers: TPhoneNumbers) -> TPhoneNumbers:
         The phone numbers that have been registered.
 
     """
+    if not (isinstance(phone_numbers, list)):
+        raise exceptions.BnumError(
+            f'invalid value for "phone_numbers" argument, expecting list of strings, '
+            f'received "{phone_numbers}"'
+        )
+
     try:
         token = oauth.get_token()
     except exceptions.CredentialError as exc:
