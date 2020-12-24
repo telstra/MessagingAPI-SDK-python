@@ -1,11 +1,13 @@
 """Used to send messages."""
 
+from messaging.utils import phone_number
 import typing
 import dataclasses
 import json
 from urllib import request, error
 
 from . import oauth, exceptions
+from .utils import phone_number
 
 
 @dataclasses.dataclass
@@ -36,6 +38,32 @@ def send(to: typing.Union[str, typing.List[str]], body: str) -> TSms:
         body: The body of the message.
 
     """
+    # Validate input
+    if not isinstance(to, str) and not isinstance(to, list):
+        raise exceptions.SmsError(
+            f'the value of "to" is not valid, expecting a string or a list of string, '
+            f'received "{to}"'
+        )
+    if isinstance(to, str):
+        result = phone_number.check(value=to)
+        if not result.valid:
+            raise exceptions.SmsError(
+                f'the value of "to" is not valid, {result.reason}'
+            )
+    if isinstance(to, list):
+        result = next(
+            filter(lambda result: not result.valid, map(phone_number.check, to)),
+            None,
+        )
+        if result is not None:
+            raise exceptions.SmsError(
+                f'the value of "to" is not valid, {result.reason}'
+            )
+    if not isinstance(body, str):
+        raise exceptions.SmsError(
+            f'the value of "body" is not valid, expected a string, received "{body}"'
+        )
+
     try:
         token = oauth.get_token()
     except exceptions.CredentialError as exc:
