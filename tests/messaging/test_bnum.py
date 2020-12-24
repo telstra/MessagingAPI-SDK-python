@@ -23,40 +23,23 @@ from messaging import bnum, exceptions, oauth
         ),
         pytest.param(
             [None],
-            ["phone_numbers", "received", f'"{[None]}"', "list", "string"],
-            id="list of single None",
+            ["phone_numbers", "received", f'"{None}"'],
+            id="list of single invalid",
         ),
         pytest.param(
-            [True],
-            ["phone_numbers", "received", f'"{[True]}"', "list", "string"],
-            id="list single True",
-        ),
-        pytest.param(
-            ["invalid"],
-            ["phone_numbers", "received", f'"{[True]}"', "list", "string"],
-            id="list single invaid string",
-        ),
-        pytest.param(
-            ["+61412345678", None],
-            [
-                "phone_numbers",
-                "received",
-                f'"{["+61412345678", None]}"',
-                "list",
-                "string",
-            ],
-            id="list of some valid and others not",
+            [None, None],
+            ["phone_numbers", "received", f'"{None}"'],
+            id="list of multiple invalid",
         ),
         pytest.param(
             [None, "+61412345678"],
-            [
-                "phone_numbers",
-                "received",
-                f'"{[None, "+61412345678"]}"',
-                "list",
-                "string",
-            ],
-            id="list of some valid and others not different order",
+            ["phone_numbers", "received", f'"{None}"'],
+            id="list of first invalid",
+        ),
+        pytest.param(
+            ["+61412345678", None],
+            ["phone_numbers", "received", f'"{None}"'],
+            id="list of second invalid",
         ),
     ],
 )

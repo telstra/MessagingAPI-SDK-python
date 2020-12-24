@@ -6,6 +6,7 @@ import json
 from urllib import request, error
 
 from . import oauth, exceptions
+from .utils import phone_number
 
 
 TPhoneNumbers = typing.List[str]
@@ -27,6 +28,14 @@ def register(phone_numbers: TPhoneNumbers) -> TPhoneNumbers:
         raise exceptions.BnumError(
             f'invalid value for "phone_numbers" argument, expecting list of strings, '
             f'received "{phone_numbers}"'
+        )
+    result = next(
+        filter(lambda result: not result.valid, map(phone_number.check, phone_numbers)),
+        None,
+    )
+    if result is not None:
+        raise exceptions.BnumError(
+            f'invalid value for "phone_numbers" argument, {result.reason}'
         )
 
     try:
