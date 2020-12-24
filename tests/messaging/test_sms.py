@@ -1,5 +1,6 @@
 """Tests for sms."""
 
+import json
 from unittest import mock
 from urllib import error, request
 
@@ -44,6 +45,35 @@ VALID_SEND_KWARGS = {"to": "+61412345678", "body": "body 1"}
             ["body", "received", f'"{None}"', "expected", "string"],
             id="body not string",
         ),
+        pytest.param(
+            {**VALID_SEND_KWARGS, "from_": True},
+            ["from_", "received", f'"{True}"', "expected", "string"],
+            id="from_ not string",
+        ),
+        pytest.param(
+            {**VALID_SEND_KWARGS, "from_": "0123456789ab"},
+            [
+                "from_",
+                "received",
+                '"0123456789ab"',
+                "too many characters",
+                "expected",
+                "at most",
+                "11",
+                "characters",
+            ],
+            id="from_ too long",
+        ),
+        pytest.param(
+            {**VALID_SEND_KWARGS, "from_": "-"},
+            ["from_", "received", '"-"', "contains", "invalid", "characters"],
+            id="from_ not alpha numeric",
+        ),
+        pytest.param(
+            {**VALID_SEND_KWARGS, "from_": "0412345678"},
+            ["from_", "received", '"0412345678"', "phone number"],
+            id="from_ phone number",
+        ),
     ],
 )
 def test_send_invalid_param(kwargs, expected_contents):
@@ -81,6 +111,49 @@ def test_send(_valid_credentials):
     assert returned_sms.delivery_status is not None
     assert returned_sms.message_id is not None
     assert returned_sms.message_status_url is not None
+
+    sms.send(to=to, body=body, from_="a")
+
+
+def test_send_from(monkeypatch):
+    """
+    GIVEN value for from_
+    WHEN send is called with to as a string and then as a list
+    THEN a sms is sent with a from value.
+    """
+    to = "0412345678"
+    body = "body 1"
+    from_ = "a1"
+
+    mock_oauth = mock.MagicMock()
+    mock_token = mock.MagicMock()
+    mock_token.authorization = "authorization 1"
+    mock_oauth.return_value = mock_token
+    monkeypatch.setattr(oauth, "get_token", mock_oauth)
+
+    mock_urlopen = mock.MagicMock()
+    mock_response = mock.MagicMock()
+    mock_response.read.return_value = json.dumps(
+        {
+            "messages": [
+                {
+                    "to": to,
+                    "deliveryStatus": "status 1",
+                    "messageId": "id 1",
+                    "messageStatusURL": "url 1",
+                }
+            ]
+        }
+    ).encode()
+    mock_urlopen.return_value.__enter__.return_value = mock_response
+    monkeypatch.setattr(request, "urlopen", mock_urlopen)
+
+    sms.send(to=to, body=body, from_=from_)
+
+    request_data = mock_urlopen.call_args.args[0].data.decode()
+    assert to in request_data
+    assert body in request_data
+    assert from_ in request_data
 
 
 def test_send_error_oauth(monkeypatch):

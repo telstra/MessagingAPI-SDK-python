@@ -1,5 +1,6 @@
 """Used to send messages."""
 
+import re
 from messaging.utils import phone_number
 import typing
 import dataclasses
@@ -29,16 +30,27 @@ class TSms:
     message_status_url: str
 
 
-def send(to: typing.Union[str, typing.List[str]], body: str) -> TSms:
+_VALID_FROM = re.compile(r"^[a-zA-Z0-9]+$")
+
+
+def send(
+    to: typing.Union[str, typing.List[str]],
+    body: str,
+    from_: typing.Optional[str] = None,
+) -> TSms:
     """
     Send an SMS.
 
     Args:
         to: The destination mobile number.
         body: The body of the message.
+        from: alpha numeric sender identity
+
+    Returns:
+        The message that was sent.
 
     """
-    # Validate input
+    # Validate to
     if not isinstance(to, str) and not isinstance(to, list):
         raise exceptions.SmsError(
             f'the value of "to" is not valid, expecting a string or a list of string, '
@@ -59,10 +71,33 @@ def send(to: typing.Union[str, typing.List[str]], body: str) -> TSms:
             raise exceptions.SmsError(
                 f'the value of "to" is not valid, {result.reason}'
             )
+    # Validate body
     if not isinstance(body, str):
         raise exceptions.SmsError(
             f'the value of "body" is not valid, expected a string, received "{body}"'
         )
+    # Validate from_
+    if from_ is not None:
+        if not isinstance(from_, str):
+            raise exceptions.SmsError(
+                f'the value of "from_" is not valid, expected a string, received "{from_}"'
+            )
+        if len(from_) > 11:
+            raise exceptions.SmsError(
+                'the value of "from_" has too many characters, expected at most 11 '
+                f'characters, received "{from_}"'
+            )
+        if not _VALID_FROM.search(from_):
+            raise exceptions.SmsError(
+                'the value of "from_" contains invalid characters, expected alpha '
+                f'numeric characters, received "{from_}"'
+            )
+        result = phone_number.check(value=from_)
+        if result.valid:
+            raise exceptions.SmsError(
+                'the value of "from_" is a phone number, expected alpha '
+                f'numeric characters that are not phone numbers, received "{from_}"'
+            )
 
     try:
         token = oauth.get_token()
@@ -70,12 +105,15 @@ def send(to: typing.Union[str, typing.List[str]], body: str) -> TSms:
         raise exceptions.SmsError(f"Could not retrieve an OAuth token: {exc}") from exc
 
     url = "https://tapi.telstra.com/v2/messages/sms"
-    data = json.dumps({"to": to, "body": body}).encode()
+    data = {"to": to, "body": body}
+    if from_ is not None:
+        data["from"] = from_
+    data_str = json.dumps(data).encode()
     headers = {
         "Content-Type": "application/json",
         "Authorization": token.authorization,
     }
-    sms_request = request.Request(url, data=data, headers=headers, method="POST")
+    sms_request = request.Request(url, data=data_str, headers=headers, method="POST")
     try:
         with request.urlopen(sms_request) as response:
             sms_dict = json.loads(response.read().decode())
