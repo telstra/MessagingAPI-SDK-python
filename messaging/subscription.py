@@ -34,7 +34,13 @@ def create(active_days: int = 30) -> TSubscription:
         active_days: The number of days the subscription will be active.
 
     """
-    token = oauth.get_token()
+    try:
+        token = oauth.get_token()
+    except exceptions.CredentialError as exc:
+        raise exceptions.SubscriptionError(
+            f"Could not create subscription: {exc}"
+        ) from exc
+
     data = json.dumps({"activeDays": active_days}).encode()
     headers = {
         "Content-Type": "application/json",
@@ -64,7 +70,13 @@ def get() -> TSubscription:
     Raises SubscriptionError if anything goes wrong.
 
     """
-    token = oauth.get_token()
+    try:
+        token = oauth.get_token()
+    except exceptions.CredentialError as exc:
+        raise exceptions.SubscriptionError(
+            f"Could not retrieve subscription: {exc}"
+        ) from exc
+
     headers = {
         "Content-Type": "application/json",
         "Authorization": token.authorization,
@@ -91,7 +103,13 @@ def delete() -> None:
     Raises SubscriptionError if anything goes wrong.
 
     """
-    token = oauth.get_token()
+    try:
+        token = oauth.get_token()
+    except exceptions.CredentialError as exc:
+        raise exceptions.SubscriptionError(
+            f"Could not delete subscription: {exc}"
+        ) from exc
+
     data = json.dumps({"emptyArr": 0}).encode()
     headers = {
         "Content-Type": "application/json",

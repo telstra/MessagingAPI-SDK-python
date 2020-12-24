@@ -5,7 +5,7 @@ from urllib import error, request
 
 import pytest
 
-from messaging import subscription, exceptions
+from messaging import subscription, exceptions, oauth
 
 
 def test_create_get_delete(_valid_credentials):
@@ -27,12 +27,50 @@ def test_create_get_delete(_valid_credentials):
     subscription.delete()
 
 
-def test_create_error(monkeypatch):
+@pytest.mark.parametrize(
+    "func",
+    [
+        pytest.param(subscription.create, id="create"),
+        pytest.param(subscription.get, id="get"),
+        pytest.param(subscription.delete, id="delete"),
+    ],
+)
+def test_error_oauth(func, monkeypatch):
     """
-    GIVEN urlopen that raises an error
-    WHEN create is called
+    GIVEN subscription function and oauth that raises an error
+    WHEN function is called
     THEN SubscriptionError is raised.
     """
+    mock_oauth = mock.MagicMock()
+    message = "message 1"
+    mock_oauth.side_effect = exceptions.CredentialError(message)
+    monkeypatch.setattr(oauth, "get_token", mock_oauth)
+
+    with pytest.raises(exceptions.SubscriptionError) as exc:
+        func()
+
+    assert message in str(exc.value)
+
+
+@pytest.mark.parametrize(
+    "func",
+    [
+        pytest.param(subscription.create, id="create"),
+        pytest.param(subscription.get, id="get"),
+        pytest.param(subscription.delete, id="delete"),
+    ],
+)
+def test_error_http(func, monkeypatch):
+    """
+    GIVEN subscription function and urlopen that raises an error
+    WHEN function is called
+    THEN SubscriptionError is raised.
+    """
+    mock_oauth = mock.MagicMock()
+    mock_token = mock.MagicMock()
+    mock_token.authorization = "authorization 1"
+    mock_oauth.return_value = mock_token
+
     code = 401
     msg = "msg 1"
     mock_urlopen = mock.MagicMock()
@@ -42,7 +80,7 @@ def test_create_error(monkeypatch):
     monkeypatch.setattr(request, "urlopen", mock_urlopen)
 
     with pytest.raises(exceptions.SubscriptionError) as exc:
-        subscription.create()
+        func()
 
     assert msg in str(exc.value)
     assert str(code) in str(exc.value)
