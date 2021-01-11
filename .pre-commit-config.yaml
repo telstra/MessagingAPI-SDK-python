@@ -1,0 +1,65 @@
+repos:
+  - repo: local
+    hooks:
+      - id: no-print
+        name: No print
+        description: This hook prevents print function calls
+        entry: "print\\((?!.*allow-print)"
+        language: pygrep
+        types: [python]
+  - repo: https://github.com/ambv/black
+    rev: 20.8b1
+    hooks:
+      - id: black
+        language_version: python3.9
+  - repo: https://github.com/pre-commit/mirrors-isort
+    rev: v5.7.0
+    hooks:
+      - id: isort
+  - repo: https://github.com/chewse/pre-commit-mirrors-pydocstyle
+    rev: v2.1.1
+    hooks:
+      - id: pydocstyle
+        args: ["--add-select=D213,D404", "--ignore=D202,D212,D406,D407,D203"]
+        exclude: "test"
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v0.790
+    hooks:
+      - id: mypy
+  - repo: https://github.com/pre-commit/mirrors-pylint
+    rev: "v2.6.0"
+    hooks:
+      - id: pylint
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: "v2.2.1"
+    hooks:
+      - exclude: ".vscode|.ts$"
+        id: prettier
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.3.0
+    hooks:
+      - id: check-added-large-files
+        exclude: "sdk/package-lock.json"
+      - id: check-case-conflict
+      - id: check-docstring-first
+      - id: check-merge-conflict
+      - id: check-json
+      - id: check-yaml
+      - id: check-toml
+      - id: debug-statements
+      - id: name-tests-test
+        args: ["--django"]
+        exclude: "\/helpers.py$"
+      - id: trailing-whitespace
+  - repo: https://github.com/Lucas-C/pre-commit-hooks
+    rev: v1.1.9
+    hooks:
+      - id: forbid-crlf
+      - id: remove-crlf
+      - id: forbid-tabs
+      - id: remove-tabs
+  - repo: https://github.com/DavidAnson/markdownlint-cli2
+    rev: v0.0.13
+    hooks:
+      - id: markdownlint-cli2
+        language_version: system

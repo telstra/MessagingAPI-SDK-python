@@ -1,7 +1,7 @@
 """Helper for phone numbers."""
 
-import re
 import dataclasses
+import re
 import typing
 
 

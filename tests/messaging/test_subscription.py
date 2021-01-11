@@ -5,7 +5,7 @@ from urllib import error, request
 
 import pytest
 
-from messaging import subscription, exceptions, oauth
+from messaging import exceptions, oauth, subscription
 
 
 def test_create_get_delete(_valid_credentials):

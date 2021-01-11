@@ -5,7 +5,6 @@ import pytest
 from messaging import exceptions
 from messaging.utils import config
 
-
 GET_ERROR_TESTS = [
     pytest.param(
         "TLS_CLIENT_KEY",

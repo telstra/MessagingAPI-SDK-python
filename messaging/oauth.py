@@ -1,13 +1,10 @@
 """Handles OAuth interactions."""
 
-import typing
 import dataclasses
-from urllib import error
-from urllib import request
-from urllib import parse
-import time
 import json
 import math
+import time
+from urllib import error, parse, request
 
 from . import exceptions
 from .utils import config
@@ -60,15 +57,16 @@ _CACHE = {"old_token": None}
 
 
 def _reuse_token(func):
-    """Decorator to reuse tokens that are not expired."""
+    """Decorate to reuse tokens that are not expired."""
 
-    def _get_token() -> TToken:
+    def inner() -> TToken:
         """Decorator."""
         if _CACHE["old_token"] is None or _CACHE["old_token"].expired:
             _CACHE["old_token"] = func()
+        assert _CACHE["old_token"] is not None
         return _CACHE["old_token"]
 
-    return _get_token
+    return inner
 
 
 def _get_token() -> TToken:

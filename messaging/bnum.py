@@ -1,13 +1,11 @@
 """Used to work with BNUMs for the free trial."""
 
-import dataclasses
-import typing
 import json
-from urllib import request, error
+import typing
+from urllib import error, request
 
-from . import oauth, exceptions
+from . import exceptions, oauth
 from .utils import phone_number
-
 
 TPhoneNumbers = typing.List[str]
 _URL = "https://tapi.telstra.com/v2/messages/freetrial/bnum"
@@ -24,7 +22,7 @@ def register(phone_numbers: TPhoneNumbers) -> TPhoneNumbers:
         The phone numbers that have been registered.
 
     """
-    if not (isinstance(phone_numbers, list)):
+    if not isinstance(phone_numbers, list):
         raise exceptions.BnumError(
             f'invalid value for "phone_numbers" argument, expecting list of strings, '
             f'received "{phone_numbers}"'
@@ -78,7 +76,6 @@ def get() -> TPhoneNumbers:
     try:
         with request.urlopen(sms_request) as response:
             data = response.read().decode()
-            print(data)
             bnum_dict = json.loads(data)
             return bnum_dict["bnum"]
     except error.HTTPError as exc:

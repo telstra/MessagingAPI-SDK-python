@@ -57,7 +57,7 @@ class Config:
     @tls_client_key.setter
     def tls_client_key(self, tls_client_key: TTlsClientKey) -> None:
         """Set the tls_client_key."""
-        if not (isinstance(tls_client_key, TTlsClientKey)):
+        if not isinstance(tls_client_key, TTlsClientKey):
             raise exceptions.CredentialError(
                 "The provided client key is not valid, "
                 f"expecting a {TTlsClientKey}, "
@@ -88,7 +88,7 @@ class Config:
     @tls_client_secret.setter
     def tls_client_secret(self, tls_client_secret: TTlsClientSecret) -> None:
         """Set the tls_client_secret."""
-        if not (isinstance(tls_client_secret, TTlsClientSecret)):
+        if not isinstance(tls_client_secret, TTlsClientSecret):
             raise exceptions.CredentialError(
                 "The provided client secret is not valid, "
                 f"expecting a {TTlsClientSecret}, "

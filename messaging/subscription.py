@@ -2,9 +2,9 @@
 
 import dataclasses
 import json
-from urllib import request, error
+from urllib import error, request
 
-from . import oauth, exceptions
+from . import exceptions, oauth
 
 _URL = "https://tapi.telstra.com/v2/messages/provisioning/subscriptions"
 
@@ -65,7 +65,7 @@ def create(active_days: int = 30) -> TSubscription:
 
 def get() -> TSubscription:
     """
-    Retrieves current subscription.
+    Retrieve current subscription.
 
     Raises SubscriptionError if anything goes wrong.
 

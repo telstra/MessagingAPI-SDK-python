@@ -1,15 +1,18 @@
 """Tests for sms."""
 
 import json
+import typing
 from unittest import mock
 from urllib import error, request
 
 import pytest
 
-from messaging import sms, subscription, exceptions, oauth
+from messaging import exceptions, oauth, sms, subscription
 
-
-VALID_SEND_KWARGS = {"to": "+61412345678", "body": "body 1"}
+VALID_SEND_KWARGS: typing.Dict[str, typing.Any] = {
+    "to": "+61412345678",
+    "body": "body 1",
+}
 
 
 @pytest.mark.parametrize(

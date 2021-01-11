@@ -1,13 +1,14 @@
 """Used to send messages."""
 
-import re
-from messaging.utils import phone_number
-import typing
 import dataclasses
 import json
-from urllib import request, error
+import re
+import typing
+from urllib import error, request
 
-from . import oauth, exceptions
+from messaging.utils import phone_number
+
+from . import exceptions, oauth
 from .utils import phone_number
 
 
@@ -33,6 +34,56 @@ class TSms:
 _VALID_FROM = re.compile(r"^[a-zA-Z0-9]+$")
 
 
+def _send_validate_to(to: typing.Union[str, typing.List[str]]) -> None:
+    """Calidate the to parameter for send."""
+    if not isinstance(to, str) and not isinstance(to, list):
+        raise exceptions.SmsError(
+            f'the value of "to" is not valid, expecting a string or a list of string, '
+            f'received "{to}"'
+        )
+    if isinstance(to, str):
+        result = phone_number.check(value=to)
+        if not result.valid:
+            raise exceptions.SmsError(
+                f'the value of "to" is not valid, {result.reason}'
+            )
+    if isinstance(to, list):
+        first_invalid_result = next(
+            filter(lambda result: not result.valid, map(phone_number.check, to)),
+            None,
+        )
+        if first_invalid_result is not None:
+            raise exceptions.SmsError(
+                f'the value of "to" is not valid, {first_invalid_result.reason}'
+            )
+
+
+def _send_validate_from(from_: typing.Optional[str]) -> None:
+    """Calidate the from_ parameter for send."""
+    if from_ is not None:
+        if not isinstance(from_, str):
+            raise exceptions.SmsError(
+                'the value of "from_" is not valid, expected a string, received '
+                f'"{from_}"'
+            )
+        if len(from_) > 11:
+            raise exceptions.SmsError(
+                'the value of "from_" has too many characters, expected at most 11 '
+                f'characters, received "{from_}"'
+            )
+        if not _VALID_FROM.search(from_):
+            raise exceptions.SmsError(
+                'the value of "from_" contains invalid characters, expected alpha '
+                f'numeric characters, received "{from_}"'
+            )
+        result = phone_number.check(value=from_)
+        if result.valid:
+            raise exceptions.SmsError(
+                'the value of "from_" is a phone number, expected alpha '
+                f'numeric characters that are not phone numbers, received "{from_}"'
+            )
+
+
 def send(
     to: typing.Union[str, typing.List[str]],
     body: str,
@@ -51,53 +102,14 @@ def send(
 
     """
     # Validate to
-    if not isinstance(to, str) and not isinstance(to, list):
-        raise exceptions.SmsError(
-            f'the value of "to" is not valid, expecting a string or a list of string, '
-            f'received "{to}"'
-        )
-    if isinstance(to, str):
-        result = phone_number.check(value=to)
-        if not result.valid:
-            raise exceptions.SmsError(
-                f'the value of "to" is not valid, {result.reason}'
-            )
-    if isinstance(to, list):
-        result = next(
-            filter(lambda result: not result.valid, map(phone_number.check, to)),
-            None,
-        )
-        if result is not None:
-            raise exceptions.SmsError(
-                f'the value of "to" is not valid, {result.reason}'
-            )
+    _send_validate_to(to)
     # Validate body
     if not isinstance(body, str):
         raise exceptions.SmsError(
             f'the value of "body" is not valid, expected a string, received "{body}"'
         )
     # Validate from_
-    if from_ is not None:
-        if not isinstance(from_, str):
-            raise exceptions.SmsError(
-                f'the value of "from_" is not valid, expected a string, received "{from_}"'
-            )
-        if len(from_) > 11:
-            raise exceptions.SmsError(
-                'the value of "from_" has too many characters, expected at most 11 '
-                f'characters, received "{from_}"'
-            )
-        if not _VALID_FROM.search(from_):
-            raise exceptions.SmsError(
-                'the value of "from_" contains invalid characters, expected alpha '
-                f'numeric characters, received "{from_}"'
-            )
-        result = phone_number.check(value=from_)
-        if result.valid:
-            raise exceptions.SmsError(
-                'the value of "from_" is a phone number, expected alpha '
-                f'numeric characters that are not phone numbers, received "{from_}"'
-            )
+    _send_validate_from(from_)
 
     try:
         token = oauth.get_token()

@@ -1,21 +1,21 @@
 """The exceptions for the messaging API."""
 
 
-class BaseException(Exception):
+class SmsBaseException(Exception):
     """The base class for all other exceptions."""
 
 
-class CredentialError(BaseException):
+class CredentialError(SmsBaseException):
     """Raised when required credentials are not provided."""
 
 
-class SubscriptionError(BaseException):
+class SubscriptionError(SmsBaseException):
     """Raised when a subscription request failed."""
 
 
-class SmsError(BaseException):
+class SmsError(SmsBaseException):
     """Raised when a sms request failed."""
 
 
-class BnumError(BaseException):
+class BnumError(SmsBaseException):
     """Raised when a bnum request failed."""

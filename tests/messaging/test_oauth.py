@@ -1,13 +1,12 @@
 """Tests for oauth."""
 
-from urllib import request
-from unittest import mock
 import time
+from unittest import mock
+from urllib import request
 
 import pytest
 
-from messaging import oauth, exceptions
-
+from messaging import exceptions, oauth
 
 TOKEN_TESTS = [
     pytest.param(1000000, "0", 1000000, True, id="instat expire no time change"),
