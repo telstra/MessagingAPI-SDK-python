@@ -5,7 +5,7 @@ from unittest import mock
 
 import pytest
 
-from messaging.utils import environment
+from messaging.utils import config
 from messaging import subscription, exceptions
 
 
@@ -14,12 +14,12 @@ def _valid_credentials(monkeypatch):
     """Valid client id and secret."""
     tls_client_key = os.getenv("VALID_TLS_CLIENT_KEY")
     tls_client_secret = os.getenv("VALID_TLS_CLIENT_SECRET")
-    mock_environment = environment.TEnvironment(
+    mock_config = config.Config(
         tls_client_key=tls_client_key, tls_client_secret=tls_client_secret
     )
     mock_get = mock.MagicMock()
-    mock_get.return_value = mock_environment
-    monkeypatch.setattr(environment, "get", mock_get)
+    mock_get.return_value = mock_config
+    monkeypatch.setattr(config, "get", mock_get)
 
     yield
 

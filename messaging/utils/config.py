@@ -19,6 +19,18 @@ class Config:
 
     """
 
+    def __init__(
+        self,
+        *,
+        tls_client_key: typing.Optional[TTlsClientKey] = None,
+        tls_client_secret: typing.Optional[TTlsClientSecret] = None,
+    ) -> None:
+        """Construct."""
+        if tls_client_key is not None:
+            self.tls_client_key = tls_client_key
+        if tls_client_secret is not None:
+            self.tls_client_secret = tls_client_secret
+
     _tls_client_key: typing.Optional[TTlsClientKey] = None
     _tls_client_secret: typing.Optional[TTlsClientSecret] = None
 

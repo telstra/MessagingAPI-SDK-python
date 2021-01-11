@@ -95,7 +95,7 @@ def test_get_config_set(config_name, config_value):
     """
     GIVEN configuration name and value
     WHEN the config is set is set and then retrieved
-    THEN value from the environment is returned.
+    THEN value is returned.
     """
     config_instance = config.Config()
     setattr(config_instance, config_name, config_value)
@@ -105,19 +105,34 @@ def test_get_config_set(config_name, config_value):
     assert returned_value == config_value
 
 
+@pytest.mark.parametrize("config_name, config_value", GET_CONFIG_SET_TESTS_TESTS)
+@pytest.mark.config
+def test_init_config_set(config_name, config_value):
+    """
+    GIVEN configuration name and value
+    WHEN the config is constructed with the value and then retrieved
+    THEN value is returned.
+    """
+    config_instance = config.Config(**{config_name: config_value})
+
+    returned_value = getattr(config_instance, config_name)
+
+    assert returned_value == config_value
+
+
 SET_ERROR_TESTS = [
     pytest.param(
         "tls_client_key",
-        None,
+        True,
         exceptions.CredentialError,
-        [str(None), "str"],
+        [str(True), "str"],
         id="tls_client_key",
     ),
     pytest.param(
         "tls_client_secret",
-        None,
+        True,
         exceptions.CredentialError,
-        [str(None), "str"],
+        [str(True), "str"],
         id="tls_client_secret",
     ),
 ]
@@ -135,6 +150,25 @@ def test_set_error(config_name, config_value, expected_exception, expected_conte
     """
     with pytest.raises(expected_exception) as exc_info:
         setattr(config.Config(), config_name, config_value)
+
+    for content in expected_contents:
+        assert content in str(exc_info.value)
+
+
+@pytest.mark.parametrize(
+    "config_name, config_value, expected_exception, expected_contents", SET_ERROR_TESTS
+)
+@pytest.mark.config
+def test_constructed_error(
+    config_name, config_value, expected_exception, expected_contents
+):
+    """
+    GIVEN configuration name and value and expected exception and contents
+    WHEN the configuration is constructed
+    THEN the expected exception is raised with the expected contents.
+    """
+    with pytest.raises(expected_exception) as exc_info:
+        config.Config(**{config_name: config_value})
 
     for content in expected_contents:
         assert content in str(exc_info.value)
