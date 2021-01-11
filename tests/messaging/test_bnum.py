@@ -119,7 +119,9 @@ def test_get(_valid_credentials):
     WHEN get is called
     THEN phone numbers are returned.
     """
-    bnum.get()
+    returned_phone_numbers = bnum.get()
+
+    assert isinstance(returned_phone_numbers, list)
 
 
 def test_get_error_oauth(monkeypatch):

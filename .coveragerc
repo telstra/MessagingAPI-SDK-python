@@ -1,6 +1,7 @@
 [run]
 omit =
     **/conftest.py
+    **bnum.py
 branch = True
 
 [report]
