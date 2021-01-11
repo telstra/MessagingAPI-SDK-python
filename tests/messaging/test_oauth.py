@@ -7,7 +7,6 @@ import time
 import pytest
 
 from messaging import oauth, exceptions
-from messaging.utils import environment
 
 
 TOKEN_TESTS = [
