@@ -88,6 +88,8 @@ def send(
     to: typing.Union[str, typing.List[str]],
     body: str,
     from_: typing.Optional[str] = None,
+    validity: typing.Optional[int] = None,
+    scheduled_delivery: typing.Optional[int] = None,
 ) -> TSms:
     """
     Send an SMS.
@@ -95,7 +97,11 @@ def send(
     Args:
         to: The destination mobile number.
         body: The body of the message.
-        from: alpha numeric sender identity
+        from: Alpha numeric sender identity.
+        validity: How long the platform should attempt to deliver the message for
+            (in minutes).
+        scheduled_delivery: How long the platform should wait before attempting to send
+            the message (in minutes).
 
     Returns:
         The message that was sent.
@@ -110,6 +116,22 @@ def send(
         )
     # Validate from_
     _send_validate_from(from_)
+    # Validate validity
+    if validity is not None:
+        if not isinstance(validity, int) or isinstance(validity, bool):
+            raise exceptions.SmsError(
+                'the value of "validity" is not valid, expected an integer, received '
+                f'"{validity}"'
+            )
+    # Validate scheduled_delivery
+    if scheduled_delivery is not None:
+        if not isinstance(scheduled_delivery, int) or isinstance(
+            scheduled_delivery, bool
+        ):
+            raise exceptions.SmsError(
+                'the value of "scheduled_delivery" is not valid, expected an integer, '
+                f'received "{scheduled_delivery}"'
+            )
 
     try:
         token = oauth.get_token()
@@ -117,9 +139,16 @@ def send(
         raise exceptions.SmsError(f"Could not retrieve an OAuth token: {exc}") from exc
 
     url = "https://tapi.telstra.com/v2/messages/sms"
-    data = {"to": to, "body": body}
+    data: typing.Dict[str, typing.Union[str, typing.List[str], int]] = {
+        "to": to,
+        "body": body,
+    }
     if from_ is not None:
         data["from"] = from_
+    if validity is not None:
+        data["validity"] = validity
+    if scheduled_delivery is not None:
+        data["scheduledDelivery"] = scheduled_delivery
     data_str = json.dumps(data).encode()
     headers = {
         "Content-Type": "application/json",

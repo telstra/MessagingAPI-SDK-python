@@ -77,21 +77,43 @@ VALID_SEND_KWARGS: typing.Dict[str, typing.Any] = {
             ["from_", "received", '"0412345678"', "phone number"],
             id="from_ phone number",
         ),
+        pytest.param(
+            {**VALID_SEND_KWARGS, "validity": "1"},
+            ["validity", "received", '"1"', "integer"],
+            id="validity string",
+        ),
+        pytest.param(
+            {**VALID_SEND_KWARGS, "validity": True},
+            ["validity", "received", f'"{True}"', "integer"],
+            id="validity boolean",
+        ),
+        pytest.param(
+            {**VALID_SEND_KWARGS, "scheduled_delivery": "1"},
+            ["scheduled_delivery", "received", '"1"', "integer"],
+            id="scheduled_delivery string",
+        ),
+        pytest.param(
+            {**VALID_SEND_KWARGS, "scheduled_delivery": True},
+            ["scheduled_delivery", "received", f'"{True}"', "integer"],
+            id="scheduled_delivery boolean",
+        ),
     ],
 )
+@pytest.mark.sms
 def test_send_invalid_param(kwargs, expected_contents):
     """
     GIVEN invalid parameters
     WHEN send is called with the parameters
     THEN SmsError is raised with the expected contents.
     """
-    with pytest.raises(exceptions.SmsError) as exc:
+    with pytest.raises(exceptions.SmsError) as exc_info:
         sms.send(**kwargs)
 
     for content in expected_contents:
-        assert content in str(exc)
+        assert content in str(exc_info.value)
 
 
+@pytest.mark.sms
 def test_send(_valid_credentials):
     """
     GIVEN
@@ -118,15 +140,23 @@ def test_send(_valid_credentials):
     sms.send(to=to, body=body, from_="a")
 
 
-def test_send_from(monkeypatch):
+SEND_PARAM_TESTS = [
+    pytest.param("from_", "a1", "from", id="from_"),
+    pytest.param("validity", 1, "validity", id="validity"),
+    pytest.param("scheduled_delivery", 1, "scheduledDelivery", id="scheduled_delivery"),
+]
+
+
+@pytest.mark.parametrize("name, value, expected_name", SEND_PARAM_TESTS)
+@pytest.mark.sms
+def test_send_param(name, value, expected_name, monkeypatch):
     """
-    GIVEN value for from_
-    WHEN send is called with to as a string and then as a list
-    THEN a sms is sent with a from value.
+    GIVEN parameter name and value
+    WHEN send is called with the parameter
+    THEN a sms is sent with the expected parameter name.
     """
     to = "0412345678"
     body = "body 1"
-    from_ = "a1"
 
     mock_oauth = mock.MagicMock()
     mock_token = mock.MagicMock()
@@ -151,14 +181,16 @@ def test_send_from(monkeypatch):
     mock_urlopen.return_value.__enter__.return_value = mock_response
     monkeypatch.setattr(request, "urlopen", mock_urlopen)
 
-    sms.send(to=to, body=body, from_=from_)
+    sms.send(to=to, body=body, **{name: value})
 
     request_data = mock_urlopen.call_args.args[0].data.decode()
     assert to in request_data
     assert body in request_data
-    assert from_ in request_data
+    assert f'"{expected_name}"' in request_data
+    assert str(value) in request_data
 
 
+@pytest.mark.sms
 def test_send_error_oauth(monkeypatch):
     """
     GIVEN oauth that raises an error
@@ -176,6 +208,7 @@ def test_send_error_oauth(monkeypatch):
     assert message in str(exc.value)
 
 
+@pytest.mark.sms
 def test_send_error_http(monkeypatch):
     """
     GIVEN urlopen that raises an error
