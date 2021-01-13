@@ -158,11 +158,11 @@ def test_send_param(name, value, expected_name, monkeypatch):
     to = "0412345678"
     body = "body 1"
 
-    mock_oauth = mock.MagicMock()
+    mock_get_token = mock.MagicMock()
     mock_token = mock.MagicMock()
     mock_token.authorization = "authorization 1"
-    mock_oauth.return_value = mock_token
-    monkeypatch.setattr(oauth, "get_token", mock_oauth)
+    mock_get_token.return_value = mock_token
+    monkeypatch.setattr(oauth, "get_token", mock_get_token)
 
     mock_urlopen = mock.MagicMock()
     mock_response = mock.MagicMock()
@@ -197,10 +197,10 @@ def test_send_error_oauth(monkeypatch):
     WHEN send is called
     THEN SmsError is raised.
     """
-    mock_oauth = mock.MagicMock()
+    mock_get_token = mock.MagicMock()
     message = "message 1"
-    mock_oauth.side_effect = exceptions.CredentialError(message)
-    monkeypatch.setattr(oauth, "get_token", mock_oauth)
+    mock_get_token.side_effect = exceptions.CredentialError(message)
+    monkeypatch.setattr(oauth, "get_token", mock_get_token)
 
     with pytest.raises(exceptions.SmsError) as exc:
         sms.send(to="0412345678", body="body 1")
@@ -215,10 +215,11 @@ def test_send_error_http(monkeypatch):
     WHEN send is called
     THEN SmsError is raised.
     """
-    mock_oauth = mock.MagicMock()
+    mock_get_token = mock.MagicMock()
     mock_token = mock.MagicMock()
     mock_token.authorization = "authorization 1"
-    mock_oauth.return_value = mock_token
+    mock_get_token.return_value = mock_token
+    monkeypatch.setattr(oauth, "get_token", mock_get_token)
 
     code = 401
     msg = "msg 1"

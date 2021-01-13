@@ -8,6 +8,7 @@ import pytest
 from messaging import exceptions, oauth, subscription
 
 
+@pytest.mark.subscription
 def test_create_get_delete(_valid_credentials):
     """
     GIVEN
@@ -35,16 +36,17 @@ def test_create_get_delete(_valid_credentials):
         pytest.param(subscription.delete, id="delete"),
     ],
 )
+@pytest.mark.subscription
 def test_error_oauth(func, monkeypatch):
     """
     GIVEN subscription function and oauth that raises an error
     WHEN function is called
     THEN SubscriptionError is raised.
     """
-    mock_oauth = mock.MagicMock()
+    mock_get_token = mock.MagicMock()
     message = "message 1"
-    mock_oauth.side_effect = exceptions.CredentialError(message)
-    monkeypatch.setattr(oauth, "get_token", mock_oauth)
+    mock_get_token.side_effect = exceptions.CredentialError(message)
+    monkeypatch.setattr(oauth, "get_token", mock_get_token)
 
     with pytest.raises(exceptions.SubscriptionError) as exc:
         func()
@@ -60,16 +62,18 @@ def test_error_oauth(func, monkeypatch):
         pytest.param(subscription.delete, id="delete"),
     ],
 )
+@pytest.mark.subscription
 def test_error_http(func, monkeypatch):
     """
     GIVEN subscription function and urlopen that raises an error
     WHEN function is called
     THEN SubscriptionError is raised.
     """
-    mock_oauth = mock.MagicMock()
+    mock_get_token = mock.MagicMock()
     mock_token = mock.MagicMock()
     mock_token.authorization = "authorization 1"
-    mock_oauth.return_value = mock_token
+    mock_get_token.return_value = mock_token
+    monkeypatch.setattr(oauth, "get_token", mock_get_token)
 
     code = 401
     msg = "msg 1"
