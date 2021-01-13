@@ -43,7 +43,8 @@ CONFIG.tls_client_secret = '<client secret>'
 
 ## Subscription
 
-For more information, please see here:
+A subscription gives you a dedicated mobile number tied to an application. For
+more information, please see here:
 <https://dev.telstra.com/content/messaging-api#tag/Provisioning>.
 
 ### Create Subscription
@@ -107,7 +108,23 @@ following arguments:
 
 It returns an object with the following properties:
 
-- `to`: The destination.
+- `to`: The destination mobile number.
 - `delivery_status`: Whether the delivery has been completed.
-- `message_id`: Unique identifier.
+- `message_id`: Unique identifier for the message.
 - `message_status_url`: URL to retrieve the current delivery status.
+
+### Retrieve Replies
+
+For more information, please see here:
+<https://dev.telstra.com/content/messaging-api#operation/retrieveSmsReplies>.
+
+The function `tls.messaging.sms.get_next_unread_reply` can be used to retrieve
+the next unread reply for your phone number subscription. It takes no
+arguments. It returns an object with the following properties:
+
+- `destination_address`: Where the message is delivered to.
+- `sender_address`: Who the message is from.
+- `status`: Whether the delivery has been completed.
+- `message`: The body of the message.
+- `message_id`: Unique identifier for the message.
+- `sent_timestamp`: When the message was sent.

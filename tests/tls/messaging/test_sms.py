@@ -1,5 +1,6 @@
 """Tests for sms."""
 
+import functools
 import json
 import typing
 from unittest import mock
@@ -116,7 +117,7 @@ def test_send_invalid_param(kwargs, expected_contents):
 @pytest.mark.sms
 def test_send(_valid_credentials):
     """
-    GIVEN
+    GIVEN valid credentials and a destination and body
     WHEN send is called with to as a string and then as a list
     THEN a sms is sent.
     """
@@ -190,11 +191,20 @@ def test_send_param(name, value, expected_name, monkeypatch):
     assert str(value) in request_data
 
 
+@pytest.mark.parametrize(
+    "func",
+    [
+        pytest.param(
+            functools.partial(sms.send, to="0412345678", body="body 1"), id="send"
+        ),
+        pytest.param(sms.get_next_unread_reply, id="get_next_unread_reply"),
+    ],
+)
 @pytest.mark.sms
-def test_send_error_oauth(monkeypatch):
+def test_send_error_oauth(func, monkeypatch):
     """
-    GIVEN oauth that raises an error
-    WHEN send is called
+    GIVEN function and oauth that raises an error
+    WHEN function is called
     THEN SmsError is raised.
     """
     mock_get_token = mock.MagicMock()
@@ -203,16 +213,25 @@ def test_send_error_oauth(monkeypatch):
     monkeypatch.setattr(oauth, "get_token", mock_get_token)
 
     with pytest.raises(exceptions.SmsError) as exc:
-        sms.send(to="0412345678", body="body 1")
+        func()
 
     assert message in str(exc.value)
 
 
+@pytest.mark.parametrize(
+    "func",
+    [
+        pytest.param(
+            functools.partial(sms.send, to="0412345678", body="body 1"), id="send"
+        ),
+        pytest.param(sms.get_next_unread_reply, id="get_next_unread_reply"),
+    ],
+)
 @pytest.mark.sms
-def test_send_error_http(monkeypatch):
+def test_send_error_http(func, monkeypatch):
     """
-    GIVEN urlopen that raises an error
-    WHEN send is called
+    GIVEN function, get_token that returns a token and urlopen that raises an error
+    WHEN function is called
     THEN SmsError is raised.
     """
     mock_get_token = mock.MagicMock()
@@ -230,7 +249,28 @@ def test_send_error_http(monkeypatch):
     monkeypatch.setattr(request, "urlopen", mock_urlopen)
 
     with pytest.raises(exceptions.SmsError) as exc:
-        sms.send(to="0412345678", body="body 1")
+        func()
 
     assert msg in str(exc.value)
     assert str(code) in str(exc.value)
+
+
+@pytest.mark.sms
+def test_get_next_unread_reply(_valid_credentials):
+    """
+    GIVEN a message has been received
+    WHEN get_next_unread_reply is called
+    THEN a reply is returned.
+    """
+    to = subscription.get().destination_address
+    body = "body 1"
+
+    sms.send(to=to, body=body)
+    returned_reply = sms.get_next_unread_reply()
+
+    assert returned_reply.destination_address is not None
+    assert returned_reply.sender_address is not None
+    assert returned_reply.status is not None
+    assert returned_reply.message is not None
+    assert returned_reply.message_id is not None
+    assert returned_reply.sent_timestamp is not None
