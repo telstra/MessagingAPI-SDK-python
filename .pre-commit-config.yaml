@@ -26,6 +26,14 @@ repos:
     rev: v0.790
     hooks:
       - id: mypy
+        name: mypy (messaging)
+        files: ^tls/messaging/
+      - id: mypy
+        name: mypy (tests)
+        files: ^tests/
+      - id: mypy
+        name: mypy (production-test)
+        files: ^production-test/
   - repo: https://github.com/pre-commit/mirrors-pylint
     rev: "v2.6.0"
     hooks:
