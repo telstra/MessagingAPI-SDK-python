@@ -40,3 +40,13 @@ jobs:
           VALID_TLS_CLIENT_SECRET: ${{ secrets.VALID_TLS_CLIENT_SECRET }}
         run: |
           poetry run pytest
+
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - uses: pre-commit/action@v2.0.0
