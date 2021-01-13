@@ -6,7 +6,7 @@ import re
 import typing
 from urllib import error, request
 
-from messaging.utils import phone_number
+from telstra.messaging.utils import phone_number
 
 from . import exceptions, oauth
 from .utils import phone_number

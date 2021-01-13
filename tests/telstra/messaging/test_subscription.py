@@ -5,7 +5,7 @@ from urllib import error, request
 
 import pytest
 
-from messaging import exceptions, oauth, subscription
+from telstra.messaging import exceptions, oauth, subscription
 
 
 @pytest.mark.subscription

@@ -1,8 +1,15 @@
 [tool.poetry]
-name = "messaging"
+name = "telstra.messaging"
 version = "0.1.0"
-description = ""
+readme = "README.md"
+description = "SDK for the Telstra Messaging API"
+license = "Apache-2.0"
 authors = ["David Andersson <david-andersson@users.noreply.github.com >"]
+include = ["telstra"]
+exclude = ["tests"]
+packages = [
+    { include = "telstra" },
+]
 
 [tool.poetry.dependencies]
 python = "^3.8"

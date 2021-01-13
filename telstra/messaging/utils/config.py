@@ -48,7 +48,7 @@ class Config:
                     f"Then it can be provided as the '{tls_client_key_env_name}' "
                     "environment variable or "
                     "using the following code: \n"
-                    "from messaging.utils import CONFIG\n"
+                    "from telstra.messaging.utils import CONFIG\n"
                     "CONFIG.tls_client_key = '<client key>'"
                 )
             self._tls_client_key = tls_client_key
@@ -79,7 +79,7 @@ class Config:
                     f"Then it can be provided as the '{tls_client_secret_env_name}'' "
                     "environment variable or "
                     "using the following code: \n"
-                    "from messaging.utils import CONFIG\n"
+                    "from telstra.messaging.utils import CONFIG\n"
                     "CONFIG.tls_client_secret = '<client secret>'"
                 )
             self._tls_client_secret = tls_client_secret
