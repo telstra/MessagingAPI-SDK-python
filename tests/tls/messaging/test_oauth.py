@@ -6,7 +6,7 @@ from urllib import request
 
 import pytest
 
-from telstra.messaging import exceptions, oauth
+from tls.messaging import exceptions, oauth
 
 TOKEN_TESTS = [
     pytest.param(1000000, "0", 1000000, True, id="instat expire no time change"),

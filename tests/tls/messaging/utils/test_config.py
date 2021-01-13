@@ -2,8 +2,8 @@
 
 import pytest
 
-from telstra.messaging import exceptions
-from telstra.messaging.utils import config
+from tls.messaging import exceptions
+from tls.messaging.utils import config
 
 GET_ERROR_TESTS = [
     pytest.param(

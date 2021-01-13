@@ -1,14 +1,14 @@
 [tool.poetry]
-name = "telstra.messaging"
+name = "tls.messaging"
 version = "0.1.0"
 readme = "README.md"
 description = "SDK for the Telstra Messaging API"
 license = "Apache-2.0"
 authors = ["David Andersson <david-andersson@users.noreply.github.com >"]
-include = ["telstra"]
+include = ["tls"]
 exclude = ["tests"]
 packages = [
-    { include = "telstra" },
+    { include = "tls" },
 ]
 
 [tool.poetry.dependencies]

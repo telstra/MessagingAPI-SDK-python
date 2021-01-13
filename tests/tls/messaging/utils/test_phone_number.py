@@ -2,7 +2,7 @@
 
 import pytest
 
-from telstra.messaging.utils import phone_number
+from tls.messaging.utils import phone_number
 
 
 @pytest.mark.parametrize(

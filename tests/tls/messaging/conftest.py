@@ -5,8 +5,8 @@ from unittest import mock
 
 import pytest
 
-from telstra.messaging import exceptions, subscription
-from telstra.messaging.utils import config
+from tls.messaging import exceptions, subscription
+from tls.messaging.utils import config
 
 
 @pytest.fixture

@@ -17,7 +17,7 @@ are the `Client key` and `Client secret` you can find here:
 To send your first SMS:
 
 ```python
-from telstra.messaging import sms
+from tls.messaging import sms
 
 sms.send(to="+61412345678", body="Hi")
 ```

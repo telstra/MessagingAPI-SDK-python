@@ -5,7 +5,7 @@ from urllib import error, request
 
 import pytest
 
-from telstra.messaging import bnum, exceptions, oauth
+from tls.messaging import bnum, exceptions, oauth
 
 
 @pytest.mark.parametrize(
