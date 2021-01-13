@@ -50,3 +50,54 @@ jobs:
         with:
           python-version: 3.9
       - uses: pre-commit/action@v2.0.0
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: Install poetry
+        run: pip install poetry
+      - uses: actions/cache@v2.1.3
+        id: cache-poetry
+        with:
+          path: ~/.virtualenvs
+          key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock', 'poetry.toml') }}
+      - name: Configure poetry for ci
+        run: |
+          poetry config virtualenvs.in-project false --local
+          poetry config virtualenvs.path ~/.virtualenvs --local
+      - name: Install dependencies
+        if: steps.cache-poetry.outputs.cache-hit != 'true'
+        run: |
+          poetry install
+      - name: Build packages
+        run: poetry build
+      - name: Upload artifacts for release
+        uses: actions/upload-artifact@v2.2.1
+        with:
+          name: wheel
+          path: dist/
+
+  release-test-pypi:
+    runs-on: ubuntu-latest
+    needs:
+      - test
+      - build
+      - pre-commit
+    steps:
+      - name: Retrieve packages
+        # if: needs.release-required.outputs.result == 'true'
+        uses: actions/download-artifact@v2.0.7
+        with:
+          name: wheel
+          path: dist/
+      - name: Publish distribution 📦 to Test PyPI
+        # if: needs.release-required.outputs.result == 'true'
+        uses: pypa/gh-action-pypi-publish@v1.4.1
+        with:
+          password: ${{ secrets.test_pypi_password_messaging }}
+          repository_url: https://test.pypi.org/legacy/
