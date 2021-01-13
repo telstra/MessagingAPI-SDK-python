@@ -95,14 +95,12 @@ jobs:
           python-version: 3.9
       - name: Install poetry and package
         run: |
-          pip install poetry
-          # pip install poetry tls.messaging
+          pip install poetry tls.messaging
       - name: Check if release is required
         id: check
         run: |
-          # RELEASED_VERSION=$(python -c "from importlib.metadata import version;print(version('tls.messaging'))")
-          # echo released version: $RELEASED_VERSION
-          RELEASED_VERSION=0.0.0
+          RELEASED_VERSION=$(python -c "from importlib.metadata import version;print(version('tls.messaging'))")
+          echo released version: $RELEASED_VERSION
           PROJECT_VERSION=$(poetry version -s)
           echo project version: $PROJECT_VERSION
           [[ "$RELEASED_VERSION" == "$PROJECT_VERSION"  ]] && RESULT=false || RESULT=true
