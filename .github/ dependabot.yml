@@ -1,0 +1,19 @@
+version: 2
+updates:
+  # Maintain Python dependencies.
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  # Maintain Python production test dependencies.
+  - package-ecosystem: "pip"
+    directory: "production-test/"
+    schedule:
+      interval: "weekly"
+
+  # Maintain dependencies for GitHub Actions.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
