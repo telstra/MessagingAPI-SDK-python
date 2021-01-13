@@ -69,3 +69,6 @@ target/
 # Pytest
 .pytest_cache
 __pycache__
+
+# VSCode
+.vscode
