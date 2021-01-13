@@ -5,7 +5,7 @@ The SDK for the Telstra messaging API.
 ## Installing
 
 ```bash
-pip install messaging
+pip install tls.messaging
 ```
 
 ## Getting Started
@@ -21,6 +21,8 @@ from tls.messaging import sms
 
 sms.send(to="+61412345678", body="Hi")
 ```
+
+To set the required environment variables if your application is in `app.py`:
 
 ```bash
 TLS_CLIENT_KEY="XXXX" TLS_CLIENT_SECRET="YYYY" python app.py
