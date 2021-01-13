@@ -93,8 +93,10 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.9
-      # - name: Install poetry and package
-      #   run: pip install poetry open-alchemy.package-database
+      - name: Install poetry and package
+        run: |
+          pip install poetry
+          # pip install poetry open-alchemy.package-database
       - name: Check if release is required
         id: check
         run: |
@@ -114,6 +116,7 @@ jobs:
       - test
       - build
       - pre-commit
+      - release-required
     steps:
       - name: Retrieve packages
         if: needs.release-required.outputs.result == 'true'
