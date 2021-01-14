@@ -148,6 +148,33 @@ from tls.messaging import sms
 sms.send(to="+61412345678", body="Hi")
 ```
 
+### Get SMS Status
+
+For more information, please see here:
+<https://dev.telstra.com/content/messaging-api#operation/getSmsStatus>.
+
+The function `tls.messaging.sms.get_status` can be used to retrieve
+the status of a SMS. It takes the following arguments:
+
+- `message_id`:Unique identifier for the message.
+
+It returns an object with the following properties:
+
+- `to`: Where the message is delivered to.
+- `delivery_status`: Whether the delivery has been completed.
+- `received_timestamp`: When the message was received.
+- `sent_timestamp`: When the message was sent.
+
+For example:
+
+```python
+from tls.messaging import sms
+
+sent_sms = sms.send(to="+61412345678", body="Hi")
+status = sms.get_status(sent_sms.message_id)
+print(status)
+```
+
 ### Retrieve Replies
 
 For more information, please see here:

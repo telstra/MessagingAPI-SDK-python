@@ -4,7 +4,7 @@ import dataclasses
 import json
 import re
 import typing
-from urllib import error, request
+from urllib import error, parse, request
 
 from tls.messaging.utils import phone_number
 
@@ -190,15 +190,15 @@ class TReply:
     sender_address: str
     status: str
     message: str
-    message_id: str
-    sent_timestamp: str
+    message_id: types.TMessageId
+    sent_timestamp: types.TSentTimestamp
 
 
 def get_next_unread_reply() -> TReply:
     """
     Get the next unread reply that have been received.
 
-    Raises SmsError is anything goes wrong whilst retrieving replies.
+    Raises SmsError is anything goes wrong whilst retrieving the reply.
 
     Returns:
         The next unread reply.
@@ -224,3 +224,57 @@ def get_next_unread_reply() -> TReply:
             )
     except error.HTTPError as exc:
         raise exceptions.SmsError(f"Could not send SMS: {exc}") from exc
+
+
+@dataclasses.dataclass
+class TStatus:
+    """
+    The status of a message.
+
+    Attrs:
+        to: Where the message is delivered to.
+        delivery_status: Whether the delivery has been completed.
+        received_timestamp: When the message was received.
+        sent_timestamp: When the message was sent.
+
+    """
+
+    to: types.TTo
+    sent_timestamp: types.TSentTimestamp
+    received_timestamp: str
+    delivery_status: str
+
+
+def get_status(message_id: types.TMessageId) -> TStatus:
+    """
+    Retrieve the status of a message.
+
+    Raises SmsError is anything goes wrong whilst retrieving the status.
+
+    Args:
+        message_id: Unique identifier for the message.
+
+    Returns:
+        The status of the message.
+
+    """
+    try:
+        token = oauth.get_token()
+    except exceptions.CredentialError as exc:
+        raise exceptions.SmsError(f"Could not retrieve an OAuth token: {exc}") from exc
+
+    headers = {"Authorization": token.authorization, "Content-Type": "application/json"}
+    status_request = request.Request(
+        f"{_URL}/{parse.quote(message_id)}/status", headers=headers, method="GET"
+    )
+    try:
+        with request.urlopen(status_request) as response:
+            status_dict = json.loads(response.read().decode())
+            return TStatus(
+                to=status_dict[0]["to"],
+                sent_timestamp=status_dict[0]["sentTimestamp"],
+                received_timestamp=status_dict[0]["receivedTimestamp"],
+                delivery_status=status_dict[0]["deliveryStatus"],
+            )
+    except error.HTTPError as exc:
+        raise exceptions.SmsError(f"Could not retrieve the status: {exc}") from exc

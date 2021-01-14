@@ -3,3 +3,4 @@
 TTo = str
 TMessageId = str
 TBody = str
+TSentTimestamp = str

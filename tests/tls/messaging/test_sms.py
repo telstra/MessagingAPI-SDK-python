@@ -198,6 +198,7 @@ def test_send_param(name, value, expected_name, monkeypatch):
             functools.partial(sms.send, to="0412345678", body="body 1"), id="send"
         ),
         pytest.param(sms.get_next_unread_reply, id="get_next_unread_reply"),
+        pytest.param(functools.partial(sms.get_status, "id 1"), id="get_status"),
     ],
 )
 @pytest.mark.sms
@@ -225,6 +226,7 @@ def test_send_error_oauth(func, monkeypatch):
             functools.partial(sms.send, to="0412345678", body="body 1"), id="send"
         ),
         pytest.param(sms.get_next_unread_reply, id="get_next_unread_reply"),
+        pytest.param(functools.partial(sms.get_status, "id 1"), id="get_status"),
     ],
 )
 @pytest.mark.sms
@@ -274,3 +276,31 @@ def test_get_next_unread_reply(_valid_credentials):
     assert returned_reply.message is not None
     assert returned_reply.message_id is not None
     assert returned_reply.sent_timestamp is not None
+
+
+@pytest.mark.sms
+def test_get_status(_valid_credentials):
+    """
+    GIVEN a message has been sent
+    WHEN get_status is called with the message id
+    THEN the status of the message is returned.
+    """
+    to = subscription.get().destination_address
+    body = "body 1"
+
+    sent_message = sms.send(to=to, body=body)
+    # Retry a few times because sometimes it takes a short time to be able to get the
+    # status
+    for _ in range(5):
+        try:
+            returned_status = sms.get_status(sent_message.message_id)
+            break
+        except exceptions.SmsError:
+            pass
+    else:
+        raise AssertionError("could not get the status after 5 attempts")
+
+    assert returned_status.to == to
+    assert returned_status.sent_timestamp is not None
+    assert returned_status.received_timestamp is not None
+    assert returned_status.delivery_status is not None
