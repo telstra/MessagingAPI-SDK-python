@@ -144,17 +144,39 @@ def test_send_invalid_param(kwargs, expected_contents):
         assert content in str(exc_info.value)
 
 
+@pytest.mark.parametrize(
+    "kwargs",
+    [
+        pytest.param({}, id="empty"),
+        pytest.param(
+            {
+                "from_": "a1",
+                "validity": 60,
+                "scheduled_delivery": 5,
+                "notify_url": "https://example.com",
+                "priority": True,
+                "user_msg_ref": "ref 1",
+            },
+            id=(
+                "from_, validity, scheduled_delivery, notify_url, priority, "
+                "user_msg_ref"
+            ),
+        ),
+        pytest.param({"reply_request": True}, id="reply_request"),
+        pytest.param({"receipt_off": True}, id="receipt_off"),
+    ],
+)
 @pytest.mark.sms
-def test_send(_valid_credentials):
+def test_send(kwargs, _valid_credentials):
     """
-    GIVEN valid credentials and a destination and body
-    WHEN send is called with to as a string and then as a list
+    GIVEN valid credentials and a destination and body and kwargs
+    WHEN send is called with to as a string and then as a list and kwargs
     THEN a sms is sent.
     """
     to = subscription.get().destination_address
     body = "body 1"
 
-    returned_sms = sms.send(to=to, body=body)
+    returned_sms = sms.send(to=to, body=body, **kwargs)
 
     assert returned_sms.to == to
     assert returned_sms.delivery_status is not None
