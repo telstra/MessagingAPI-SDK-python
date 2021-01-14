@@ -26,6 +26,11 @@ from tls.messaging import exceptions, oauth, subscription
             ["notify_url", "received", f'"{True}"', "string"],
             id="notify_url not string",
         ),
+        pytest.param(
+            {"notify_url": "example.com"},
+            ["notify_url", "received", '"example.com"', "https"],
+            id="notify_url not https",
+        ),
     ],
 )
 @pytest.mark.subscription
@@ -42,14 +47,24 @@ def test_create_invalid_param(kwargs, expected_contents):
         assert content in str(exc_info.value)
 
 
+@pytest.mark.parametrize(
+    "kwargs",
+    [
+        pytest.param({}, id="empty"),
+        pytest.param(
+            {"active_days": 1, "notify_url": "https://example.com"},
+            id="active_days, notify_url",
+        ),
+    ],
+)
 @pytest.mark.subscription
-def test_create_get_delete(_valid_credentials):
+def test_create_get_delete(kwargs, _valid_credentials):
     """
-    GIVEN
-    WHEN create, get and delete is called
+    GIVEN valid credentials and kwargs
+    WHEN create is called with the kwargs, get and delete is called
     THEN a subscription is provisioned, returned and deleted.
     """
-    created_subscription = subscription.create()
+    created_subscription = subscription.create(**kwargs)
 
     assert created_subscription.destination_address is not None
     assert created_subscription.active_days is not None

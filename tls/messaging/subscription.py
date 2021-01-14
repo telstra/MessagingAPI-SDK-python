@@ -6,6 +6,7 @@ import typing
 from urllib import error, request
 
 from . import exceptions, oauth, types
+from .utils import notify_url as notify_url_util
 
 _URL = "https://tapi.telstra.com/v2/messages/provisioning/subscriptions"
 
@@ -46,11 +47,7 @@ def create(
             f'received "{active_days}"'
         )
     # Validate notify_url
-    if notify_url is not None and not isinstance(notify_url, str):
-        raise exceptions.SubscriptionError(
-            'the value of "notify_url" is not valid, expected an string, '
-            f'received "{notify_url}"'
-        )
+    notify_url_util.validate(value=notify_url, exception=exceptions.SubscriptionError)
 
     try:
         token = oauth.get_token()

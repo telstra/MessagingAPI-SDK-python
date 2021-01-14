@@ -6,6 +6,7 @@ import re
 import typing
 from urllib import error, parse, request
 
+from tls.messaging.utils import notify_url as notify_url_util
 from tls.messaging.utils import phone_number
 
 from . import exceptions, oauth, types
@@ -86,21 +87,6 @@ def _send_validate_from(from_: typing.Optional[types.TFrom]) -> None:
             )
 
 
-def _send_validate_notify_url(notify_url: typing.Optional[types.TNotifyUrl]) -> None:
-    """Validate the notify_url parameter for send."""
-    if notify_url is not None:
-        if not isinstance(notify_url, str):
-            raise exceptions.SmsError(
-                'the value of "notify_url" is not valid, expected a string, received '
-                f'"{notify_url}"'
-            )
-        if not notify_url.lower().startswith("https"):
-            raise exceptions.SmsError(
-                'the value of "notify_url" is not valid, it must start with https, '
-                f'received "{notify_url}"'
-            )
-
-
 def _validate_send_args(  # pylint: disable=too-many-arguments
     to: typing.Union[types.TTo, typing.List[types.TTo]],
     body: types.TBody,
@@ -140,7 +126,7 @@ def _validate_send_args(  # pylint: disable=too-many-arguments
             f'received "{scheduled_delivery}"'
         )
     # Validate notify_url
-    _send_validate_notify_url(notify_url)
+    notify_url_util.validate(value=notify_url, exception=exceptions.SmsError)
     # Validate priority
     if priority is not None and not isinstance(priority, bool):
         raise exceptions.SmsError(
