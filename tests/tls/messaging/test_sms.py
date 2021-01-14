@@ -118,6 +118,16 @@ VALID_SEND_KWARGS: typing.Dict[str, typing.Any] = {
             ["reply_request", "received", f'"{1}"', "boolean"],
             id="reply_request integer",
         ),
+        pytest.param(
+            {**VALID_SEND_KWARGS, "receipt_off": 1},
+            ["receipt_off", "received", f'"{1}"', "boolean"],
+            id="receipt_off integer",
+        ),
+        pytest.param(
+            {**VALID_SEND_KWARGS, "user_msg_ref": True},
+            ["user_msg_ref", "received", f'"{True}"', "string"],
+            id="user_msg_ref boolean",
+        ),
     ],
 )
 @pytest.mark.sms
@@ -176,6 +186,8 @@ SEND_PARAM_TESTS = [
     ),
     pytest.param("priority", True, "priority", "true", id="priority"),
     pytest.param("reply_request", True, "replyRequest", "true", id="reply_request"),
+    pytest.param("receipt_off", True, "receiptOff", "true", id="receipt_off"),
+    pytest.param("user_msg_ref", "ref 1", "userMsgRef", "ref 1", id="user_msg_ref"),
 ]
 
 

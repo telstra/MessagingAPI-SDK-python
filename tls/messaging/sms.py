@@ -110,6 +110,8 @@ def _validate_send_args(  # pylint: disable=too-many-arguments
     notify_url: typing.Optional[types.TNotifyUrl],
     priority: typing.Optional[bool],
     reply_request: typing.Optional[bool],
+    receipt_off: typing.Optional[bool],
+    user_msg_ref: typing.Optional[str],
 ) -> None:
     """Validate the arguments for send."""
     # Validate to
@@ -122,37 +124,47 @@ def _validate_send_args(  # pylint: disable=too-many-arguments
     # Validate from_
     _send_validate_from(from_)
     # Validate validity
-    if validity is not None:
-        if not isinstance(validity, int) or isinstance(validity, bool):
-            raise exceptions.SmsError(
-                'the value of "validity" is not valid, expected an integer, received '
-                f'"{validity}"'
-            )
+    if validity is not None and (
+        not isinstance(validity, int) or isinstance(validity, bool)
+    ):
+        raise exceptions.SmsError(
+            'the value of "validity" is not valid, expected an integer, received '
+            f'"{validity}"'
+        )
     # Validate scheduled_delivery
-    if scheduled_delivery is not None:
-        if not isinstance(scheduled_delivery, int) or isinstance(
-            scheduled_delivery, bool
-        ):
-            raise exceptions.SmsError(
-                'the value of "scheduled_delivery" is not valid, expected an integer, '
-                f'received "{scheduled_delivery}"'
-            )
+    if scheduled_delivery is not None and (
+        not isinstance(scheduled_delivery, int) or isinstance(scheduled_delivery, bool)
+    ):
+        raise exceptions.SmsError(
+            'the value of "scheduled_delivery" is not valid, expected an integer, '
+            f'received "{scheduled_delivery}"'
+        )
     # Validate notify_url
     _send_validate_notify_url(notify_url)
     # Validate priority
-    if priority is not None:
-        if not isinstance(priority, bool):
-            raise exceptions.SmsError(
-                'the value of "priority" is not valid, expected an boolean, '
-                f'received "{priority}"'
-            )
+    if priority is not None and not isinstance(priority, bool):
+        raise exceptions.SmsError(
+            'the value of "priority" is not valid, expected an boolean, '
+            f'received "{priority}"'
+        )
     # Validate reply_request
-    if reply_request is not None:
-        if not isinstance(reply_request, bool):
-            raise exceptions.SmsError(
-                'the value of "reply_request" is not valid, expected an boolean, '
-                f'received "{reply_request}"'
-            )
+    if reply_request is not None and not isinstance(reply_request, bool):
+        raise exceptions.SmsError(
+            'the value of "reply_request" is not valid, expected an boolean, '
+            f'received "{reply_request}"'
+        )
+    # Validate receipt_off
+    if receipt_off is not None and not isinstance(receipt_off, bool):
+        raise exceptions.SmsError(
+            'the value of "receipt_off" is not valid, expected an boolean, '
+            f'received "{receipt_off}"'
+        )
+    # Validate user_msg_ref
+    if user_msg_ref is not None and not isinstance(user_msg_ref, str):
+        raise exceptions.SmsError(
+            'the value of "user_msg_ref" is not valid, expected an string, '
+            f'received "{user_msg_ref}"'
+        )
 
 
 def send(  # pylint: disable=too-many-arguments,too-many-locals
@@ -162,8 +174,10 @@ def send(  # pylint: disable=too-many-arguments,too-many-locals
     validity: typing.Optional[int] = None,
     scheduled_delivery: typing.Optional[int] = None,
     notify_url: typing.Optional[types.TNotifyUrl] = None,
-    priority: typing.Optional[bool] = None,
     reply_request: typing.Optional[bool] = None,
+    priority: typing.Optional[bool] = None,
+    receipt_off: typing.Optional[bool] = None,
+    user_msg_ref: typing.Optional[str] = None,
 ) -> TSms:
     """
     Send an SMS.
@@ -183,6 +197,8 @@ def send(  # pylint: disable=too-many-arguments,too-many-locals
         priority: Message will be placed ahead of all messages with a normal priority.
         reply_request: If set to true, the reply message functionality will be
             implemented.
+        receipt_off: Whether Delivery Receipt will be sent back or not.
+        user_msg_ref: Optional field used by some clients for custom reporting.
 
     Returns:
         The message that was sent.
@@ -197,6 +213,8 @@ def send(  # pylint: disable=too-many-arguments,too-many-locals
         notify_url=notify_url,
         priority=priority,
         reply_request=reply_request,
+        receipt_off=receipt_off,
+        user_msg_ref=user_msg_ref,
     )
 
     try:
@@ -220,6 +238,10 @@ def send(  # pylint: disable=too-many-arguments,too-many-locals
         data["priority"] = priority
     if reply_request is not None:
         data["replyRequest"] = reply_request
+    if receipt_off is not None:
+        data["receiptOff"] = receipt_off
+    if user_msg_ref is not None:
+        data["userMsgRef"] = user_msg_ref
     data_str = json.dumps(data).encode()
     headers = {
         "Content-Type": "application/json",
