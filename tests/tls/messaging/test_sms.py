@@ -98,6 +98,16 @@ VALID_SEND_KWARGS: typing.Dict[str, typing.Any] = {
             ["scheduled_delivery", "received", f'"{True}"', "integer"],
             id="scheduled_delivery boolean",
         ),
+        pytest.param(
+            {**VALID_SEND_KWARGS, "notify_url": True},
+            ["notify_url", "received", f'"{True}"', "string"],
+            id="notify_url boolean",
+        ),
+        pytest.param(
+            {**VALID_SEND_KWARGS, "notify_url": "example.com"},
+            ["notify_url", "received", '"example.com"', "https"],
+            id="notify_url not https",
+        ),
     ],
 )
 @pytest.mark.sms
@@ -145,6 +155,7 @@ SEND_PARAM_TESTS = [
     pytest.param("from_", "a1", "from", id="from_"),
     pytest.param("validity", 1, "validity", id="validity"),
     pytest.param("scheduled_delivery", 1, "scheduledDelivery", id="scheduled_delivery"),
+    pytest.param("notify_url", "https://example.com", "notifyURL", id="notify_url"),
 ]
 
 

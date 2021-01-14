@@ -37,7 +37,7 @@ _VALID_FROM = re.compile(r"^[a-zA-Z0-9]+$")
 
 
 def _send_validate_to(to: typing.Union[types.TTo, typing.List[types.TTo]]) -> None:
-    """Calidate the to parameter for send."""
+    """Validate the to parameter for send."""
     if not isinstance(to, str) and not isinstance(to, list):
         raise exceptions.SmsError(
             f'the value of "to" is not valid, expecting a string or a list of string, '
@@ -60,8 +60,8 @@ def _send_validate_to(to: typing.Union[types.TTo, typing.List[types.TTo]]) -> No
             )
 
 
-def _send_validate_from(from_: typing.Optional[str]) -> None:
-    """Calidate the from_ parameter for send."""
+def _send_validate_from(from_: typing.Optional[types.TFrom]) -> None:
+    """Validate the from_ parameter for send."""
     if from_ is not None:
         if not isinstance(from_, str):
             raise exceptions.SmsError(
@@ -86,12 +86,28 @@ def _send_validate_from(from_: typing.Optional[str]) -> None:
             )
 
 
+def _send_validate_notify_url(notify_url: typing.Optional[types.TNotifyUrl]) -> None:
+    """Validate the notify_url parameter for send."""
+    if notify_url is not None:
+        if not isinstance(notify_url, str):
+            raise exceptions.SmsError(
+                'the value of "notify_url" is not valid, expected a string, received '
+                f'"{notify_url}"'
+            )
+        if not notify_url.lower().startswith("https"):
+            raise exceptions.SmsError(
+                'the value of "notify_url" is not valid, it must start with https, '
+                f'received "{notify_url}"'
+            )
+
+
 def send(
     to: typing.Union[types.TTo, typing.List[types.TTo]],
     body: types.TBody,
-    from_: typing.Optional[str] = None,
+    from_: typing.Optional[types.TFrom] = None,
     validity: typing.Optional[int] = None,
     scheduled_delivery: typing.Optional[int] = None,
+    notify_url: typing.Optional[types.TNotifyUrl] = None,
 ) -> TSms:
     """
     Send an SMS.
@@ -106,6 +122,8 @@ def send(
             (in minutes).
         scheduled_delivery: How long the platform should wait before attempting to send
             the message (in minutes).
+        notify_url: Contains a URL that will be called once your message has been
+            processed.
 
     Returns:
         The message that was sent.
@@ -136,6 +154,8 @@ def send(
                 'the value of "scheduled_delivery" is not valid, expected an integer, '
                 f'received "{scheduled_delivery}"'
             )
+    # Validate notify_url
+    _send_validate_notify_url(notify_url)
 
     try:
         token = oauth.get_token()
@@ -152,6 +172,8 @@ def send(
         data["validity"] = validity
     if scheduled_delivery is not None:
         data["scheduledDelivery"] = scheduled_delivery
+    if notify_url is not None:
+        data["notifyURL"] = notify_url
     data_str = json.dumps(data).encode()
     headers = {
         "Content-Type": "application/json",

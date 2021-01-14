@@ -132,6 +132,8 @@ following arguments:
   message for (in minutes).
 - `scheduled_delivery` (optional): How long the platform should wait before
   attempting to send the message (in minutes).
+- `notify_url` (optional): Contains a URL that will be called once your message
+  has been processed.
 
 It returns an object with the following properties:
 
