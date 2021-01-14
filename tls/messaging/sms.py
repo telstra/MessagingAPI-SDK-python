@@ -222,10 +222,7 @@ def send(  # pylint: disable=too-many-arguments,too-many-locals
     except exceptions.CredentialError as exc:
         raise exceptions.SmsError(f"Could not retrieve an OAuth token: {exc}") from exc
 
-    data: typing.Dict[str, typing.Union[str, typing.List[str], int]] = {
-        "to": to,
-        "body": body,
-    }
+    data: typing.Dict[str, typing.Any] = {"to": to, "body": body}
     if from_ is not None:
         data["from"] = from_
     if validity is not None:

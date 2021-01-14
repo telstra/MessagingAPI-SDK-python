@@ -8,6 +8,40 @@ import pytest
 from tls.messaging import exceptions, oauth, subscription
 
 
+@pytest.mark.parametrize(
+    "kwargs, expected_contents",
+    [
+        pytest.param(
+            {"active_days": "1"},
+            ["active_days", "received", '"1"', "integer"],
+            id="active_days string",
+        ),
+        pytest.param(
+            {"active_days": True},
+            ["active_days", "received", f'"{True}"', "integer"],
+            id="active_days boolean",
+        ),
+        pytest.param(
+            {"notify_url": True},
+            ["notify_url", "received", f'"{True}"', "string"],
+            id="notify_url not string",
+        ),
+    ],
+)
+@pytest.mark.subscription
+def test_create_invalid_param(kwargs, expected_contents):
+    """
+    GIVEN invalid parameters
+    WHEN create is called with the parameters
+    THEN SubscriptionError is raised with the expected contents.
+    """
+    with pytest.raises(exceptions.SubscriptionError) as exc_info:
+        subscription.create(**kwargs)
+
+    for content in expected_contents:
+        assert content in str(exc_info.value)
+
+
 @pytest.mark.subscription
 def test_create_get_delete(_valid_credentials):
     """
