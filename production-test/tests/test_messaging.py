@@ -13,6 +13,23 @@ def test_send_sms():
     sms.send(to=subscription_value.destination_address, body="Test")
 
 
+def test_send_sms_optional_args():
+    """
+    GIVEN credentials in the environment
+    WHEN send is called with all optional arguments
+    THEN no errors are raised.
+    """
+    subscription_value = subscription.get()
+    sms.send(
+        to=subscription_value.destination_address,
+        body="Test",
+        from_="TEST",
+        validity=60,
+        scheduled_delivery=5,
+        notify_url="https://example.com",
+    )
+
+
 def test_get_reply():
     """
     GIVEN credentials in the environment
