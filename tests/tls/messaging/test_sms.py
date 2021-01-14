@@ -291,7 +291,7 @@ def test_get_status(_valid_credentials):
     sent_message = sms.send(to=to, body=body)
     # Retry a few times because sometimes it takes a short time to be able to get the
     # status
-    for _ in range(5):
+    for _ in range(5):  # pragma: no cover
         try:
             returned_status = sms.get_status(sent_message.message_id)
             break
