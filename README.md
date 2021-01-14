@@ -2,6 +2,8 @@
 
 The SDK for the Telstra messaging API.
 
+> :warning: **This SDK is experimental, everything is subject to change**
+
 ## Installing
 
 ```bash
