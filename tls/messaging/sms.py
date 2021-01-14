@@ -105,13 +105,13 @@ def _validate_send_args(  # pylint: disable=too-many-arguments
     to: typing.Union[types.TTo, typing.List[types.TTo]],
     body: types.TBody,
     from_: typing.Optional[types.TFrom],
-    validity: typing.Optional[int],
-    scheduled_delivery: typing.Optional[int],
+    validity: typing.Optional[types.TValidity],
+    scheduled_delivery: typing.Optional[types.TScheduledDelivery],
     notify_url: typing.Optional[types.TNotifyUrl],
-    priority: typing.Optional[bool],
-    reply_request: typing.Optional[bool],
-    receipt_off: typing.Optional[bool],
-    user_msg_ref: typing.Optional[str],
+    priority: typing.Optional[types.TPriority],
+    reply_request: typing.Optional[types.TReplyRequest],
+    receipt_off: typing.Optional[types.TReceiptOff],
+    user_msg_ref: typing.Optional[types.TUsrMsgRef],
 ) -> None:
     """Validate the arguments for send."""
     # Validate to
@@ -171,13 +171,13 @@ def send(  # pylint: disable=too-many-arguments,too-many-locals
     to: typing.Union[types.TTo, typing.List[types.TTo]],
     body: types.TBody,
     from_: typing.Optional[types.TFrom] = None,
-    validity: typing.Optional[int] = None,
-    scheduled_delivery: typing.Optional[int] = None,
+    validity: typing.Optional[types.TValidity] = None,
+    scheduled_delivery: typing.Optional[types.TScheduledDelivery] = None,
     notify_url: typing.Optional[types.TNotifyUrl] = None,
-    reply_request: typing.Optional[bool] = None,
-    priority: typing.Optional[bool] = None,
-    receipt_off: typing.Optional[bool] = None,
-    user_msg_ref: typing.Optional[str] = None,
+    reply_request: typing.Optional[types.TReplyRequest] = None,
+    priority: typing.Optional[types.TPriority] = None,
+    receipt_off: typing.Optional[types.TReceiptOff] = None,
+    user_msg_ref: typing.Optional[types.TUsrMsgRef] = None,
 ) -> TSms:
     """
     Send an SMS.

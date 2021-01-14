@@ -1,33 +1,40 @@
 """Tests for the messaging API."""
 
+import pytest
+
 from tls.messaging import exceptions, sms, subscription
 
 
-def test_send_sms():
+@pytest.mark.parametrize(
+    "kwargs",
+    [
+        pytest.param({}, id="empty"),
+        pytest.param(
+            {
+                "from_": "a1",
+                "validity": 60,
+                "scheduled_delivery": 5,
+                "notify_url": "https://example.com",
+                "priority": True,
+                "user_msg_ref": "ref 1",
+            },
+            id=(
+                "from_, validity, scheduled_delivery, notify_url, priority, "
+                "user_msg_ref"
+            ),
+        ),
+        pytest.param({"reply_request": True}, id="reply_request"),
+        pytest.param({"receipt_off": True}, id="receipt_off"),
+    ],
+)
+def test_send_sms(kwargs):
     """
-    GIVEN credentials in the environment
-    WHEN send is called
+    GIVEN credentials in the environment and kwargs
+    WHEN send is called with the kwargs
     THEN no errors are raised.
     """
     subscription_value = subscription.get()
-    sms.send(to=subscription_value.destination_address, body="Test")
-
-
-def test_send_sms_optional_args():
-    """
-    GIVEN credentials in the environment
-    WHEN send is called with all optional arguments
-    THEN no errors are raised.
-    """
-    subscription_value = subscription.get()
-    sms.send(
-        to=subscription_value.destination_address,
-        body="Test",
-        from_="TEST",
-        validity=60,
-        scheduled_delivery=5,
-        notify_url="https://example.com",
-    )
+    sms.send(to=subscription_value.destination_address, body="Test", **kwargs)
 
 
 def test_get_reply():
