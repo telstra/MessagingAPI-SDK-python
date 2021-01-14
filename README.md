@@ -134,6 +134,13 @@ following arguments:
   attempting to send the message (in minutes).
 - `notify_url` (optional): Contains a URL that will be called once your message
   has been processed.
+- `priority` (optional): Message will be placed ahead of all messages with a
+  normal priority.
+- `reply_request` (optional): If set to true, the reply message functionality
+  will be implemented.
+- `receipt_off` (optional): Whether Delivery Receipt will be sent back or not.
+- `user_msg_ref` (optional): Optional field used by some clients for custom
+  reporting.
 
 It returns an object with the following properties:
 
