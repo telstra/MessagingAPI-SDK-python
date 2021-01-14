@@ -22,7 +22,7 @@ class TSms:
     Attrs:
         to: The destination mobile number.
         delivery_status: Whether the delivery has been completed.
-        message_id: Unique identifier.
+        message_id: Unique identifier for the message.
         message_status_url: URL to retrieve the current delivery status.
 
     """

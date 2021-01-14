@@ -41,6 +41,9 @@ CONFIG.tls_client_key = '<client key>'
 CONFIG.tls_client_secret = '<client secret>'
 ```
 
+This should be done before any interactions requiring authentication, such as
+sending a SMS.
+
 ## Subscription
 
 A subscription gives you a dedicated mobile number tied to an application. For
@@ -62,6 +65,15 @@ It returns an object with the following properties:
 - `destination_address`: The phone number that a message can be sent to.
 - `active_days`: The number of days left on the subscription.
 
+For example:
+
+```python
+from tls.messaging import subscription
+
+created_subscription = subscription.create()
+print(created_subscription)
+```
+
 ### Get Subscription
 
 For more information, please see here:
@@ -74,6 +86,15 @@ properties:
 - `destination_address`: The phone number that a message can be sent to.
 - `active_days`: The number of days left on the subscription.
 
+For example:
+
+```python
+from tls.messaging import subscription
+
+retrieved_subscription = subscription.get()
+print(retrieved_subscription)
+```
+
 ### Delete Subscription
 
 For more information, please see here:
@@ -81,6 +102,12 @@ For more information, please see here:
 
 The function `tls.messaging.subscription.delete` can be used to delete the current
 subscription. It takes no arguments.
+
+```python
+from tls.messaging import subscription
+
+subscription.delete()
+```
 
 ## SMS
 
@@ -113,6 +140,14 @@ It returns an object with the following properties:
 - `message_id`: Unique identifier for the message.
 - `message_status_url`: URL to retrieve the current delivery status.
 
+For example:
+
+```python
+from tls.messaging import sms
+
+sms.send(to="+61412345678", body="Hi")
+```
+
 ### Retrieve Replies
 
 For more information, please see here:
@@ -128,3 +163,12 @@ arguments. It returns an object with the following properties:
 - `message`: The body of the message.
 - `message_id`: Unique identifier for the message.
 - `sent_timestamp`: When the message was sent.
+
+For example:
+
+```python
+from tls.messaging import sms
+
+reply = sms.get_next_unread_reply()
+print(reply)
+```
