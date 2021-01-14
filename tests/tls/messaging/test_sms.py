@@ -108,6 +108,16 @@ VALID_SEND_KWARGS: typing.Dict[str, typing.Any] = {
             ["notify_url", "received", '"example.com"', "https"],
             id="notify_url not https",
         ),
+        pytest.param(
+            {**VALID_SEND_KWARGS, "priority": 1},
+            ["priority", "received", f'"{1}"', "boolean"],
+            id="priority integer",
+        ),
+        pytest.param(
+            {**VALID_SEND_KWARGS, "reply_request": 1},
+            ["reply_request", "received", f'"{1}"', "boolean"],
+            id="reply_request integer",
+        ),
     ],
 )
 @pytest.mark.sms
@@ -152,20 +162,30 @@ def test_send(_valid_credentials):
 
 
 SEND_PARAM_TESTS = [
-    pytest.param("from_", "a1", "from", id="from_"),
-    pytest.param("validity", 1, "validity", id="validity"),
-    pytest.param("scheduled_delivery", 1, "scheduledDelivery", id="scheduled_delivery"),
-    pytest.param("notify_url", "https://example.com", "notifyURL", id="notify_url"),
+    pytest.param("from_", "a1", "from", "a1", id="from_"),
+    pytest.param("validity", 1, "validity", str(1), id="validity"),
+    pytest.param(
+        "scheduled_delivery", 1, "scheduledDelivery", str(1), id="scheduled_delivery"
+    ),
+    pytest.param(
+        "notify_url",
+        "https://example.com",
+        "notifyURL",
+        "https://example.com",
+        id="notify_url",
+    ),
+    pytest.param("priority", True, "priority", "true", id="priority"),
+    pytest.param("reply_request", True, "replyRequest", "true", id="reply_request"),
 ]
 
 
-@pytest.mark.parametrize("name, value, expected_name", SEND_PARAM_TESTS)
+@pytest.mark.parametrize("name, value, expected_name, expected_value", SEND_PARAM_TESTS)
 @pytest.mark.sms
-def test_send_param(name, value, expected_name, monkeypatch):
+def test_send_param(name, value, expected_name, expected_value, monkeypatch):
     """
     GIVEN parameter name and value
     WHEN send is called with the parameter
-    THEN a sms is sent with the expected parameter name.
+    THEN a sms is sent with the expected parameter name and value.
     """
     to = "0412345678"
     body = "body 1"
@@ -199,7 +219,7 @@ def test_send_param(name, value, expected_name, monkeypatch):
     assert to in request_data
     assert body in request_data
     assert f'"{expected_name}"' in request_data
-    assert str(value) in request_data
+    assert expected_value in request_data
 
 
 @pytest.mark.parametrize(

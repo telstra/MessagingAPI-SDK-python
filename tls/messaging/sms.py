@@ -101,34 +101,17 @@ def _send_validate_notify_url(notify_url: typing.Optional[types.TNotifyUrl]) -> 
             )
 
 
-def send(
+def _validate_send_args(  # pylint: disable=too-many-arguments
     to: typing.Union[types.TTo, typing.List[types.TTo]],
     body: types.TBody,
-    from_: typing.Optional[types.TFrom] = None,
-    validity: typing.Optional[int] = None,
-    scheduled_delivery: typing.Optional[int] = None,
-    notify_url: typing.Optional[types.TNotifyUrl] = None,
-) -> TSms:
-    """
-    Send an SMS.
-
-    Raises SmsError is anything goes wrong whilst sending a message.
-
-    Args:
-        to: The destination mobile number.
-        body: The body of the message.
-        from: Alpha numeric sender identity.
-        validity: How long the platform should attempt to deliver the message for
-            (in minutes).
-        scheduled_delivery: How long the platform should wait before attempting to send
-            the message (in minutes).
-        notify_url: Contains a URL that will be called once your message has been
-            processed.
-
-    Returns:
-        The message that was sent.
-
-    """
+    from_: typing.Optional[types.TFrom],
+    validity: typing.Optional[int],
+    scheduled_delivery: typing.Optional[int],
+    notify_url: typing.Optional[types.TNotifyUrl],
+    priority: typing.Optional[bool],
+    reply_request: typing.Optional[bool],
+) -> None:
+    """Validate the arguments for send."""
     # Validate to
     _send_validate_to(to)
     # Validate body
@@ -156,6 +139,65 @@ def send(
             )
     # Validate notify_url
     _send_validate_notify_url(notify_url)
+    # Validate priority
+    if priority is not None:
+        if not isinstance(priority, bool):
+            raise exceptions.SmsError(
+                'the value of "priority" is not valid, expected an boolean, '
+                f'received "{priority}"'
+            )
+    # Validate reply_request
+    if reply_request is not None:
+        if not isinstance(reply_request, bool):
+            raise exceptions.SmsError(
+                'the value of "reply_request" is not valid, expected an boolean, '
+                f'received "{reply_request}"'
+            )
+
+
+def send(  # pylint: disable=too-many-arguments,too-many-locals
+    to: typing.Union[types.TTo, typing.List[types.TTo]],
+    body: types.TBody,
+    from_: typing.Optional[types.TFrom] = None,
+    validity: typing.Optional[int] = None,
+    scheduled_delivery: typing.Optional[int] = None,
+    notify_url: typing.Optional[types.TNotifyUrl] = None,
+    priority: typing.Optional[bool] = None,
+    reply_request: typing.Optional[bool] = None,
+) -> TSms:
+    """
+    Send an SMS.
+
+    Raises SmsError is anything goes wrong whilst sending a message.
+
+    Args:
+        to: The destination mobile number.
+        body: The body of the message.
+        from: Alpha numeric sender identity.
+        validity: How long the platform should attempt to deliver the message for
+            (in minutes).
+        scheduled_delivery: How long the platform should wait before attempting to send
+            the message (in minutes).
+        notify_url: Contains a URL that will be called once your message has been
+            processed.
+        priority: Message will be placed ahead of all messages with a normal priority.
+        reply_request: If set to true, the reply message functionality will be
+            implemented.
+
+    Returns:
+        The message that was sent.
+
+    """
+    _validate_send_args(
+        to=to,
+        body=body,
+        from_=from_,
+        validity=validity,
+        scheduled_delivery=scheduled_delivery,
+        notify_url=notify_url,
+        priority=priority,
+        reply_request=reply_request,
+    )
 
     try:
         token = oauth.get_token()
@@ -174,6 +216,10 @@ def send(
         data["scheduledDelivery"] = scheduled_delivery
     if notify_url is not None:
         data["notifyURL"] = notify_url
+    if priority is not None:
+        data["priority"] = priority
+    if reply_request is not None:
+        data["replyRequest"] = reply_request
     data_str = json.dumps(data).encode()
     headers = {
         "Content-Type": "application/json",
