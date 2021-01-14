@@ -60,7 +60,11 @@ For more information, please see here:
 The function `tls.messaging.subscription.create` can be used to create a
 subscription. It takes the following arguments:
 
-- `active_days` (optional): The number of days the subscription will be active.
+- `active_days` (optional): The number of days the subscription will be active,
+  defaults to 30.
+- `notify_url` (optional): A notification URL that will be POSTed to whenever a
+  new message (i.e. a reply to a message sent) arrives at this destination
+  address.
 
 It returns an object with the following properties:
 

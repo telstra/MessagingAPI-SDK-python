@@ -1,5 +1,6 @@
 """Tests for subscriptions."""
 
+import json
 from unittest import mock
 from urllib import error, request
 
@@ -45,6 +46,49 @@ def test_create_invalid_param(kwargs, expected_contents):
 
     for content in expected_contents:
         assert content in str(exc_info.value)
+
+
+CREATE_PARAM_TESTS = [
+    pytest.param("active_days", 30, "activeDays", str(30), id="active_days"),
+    pytest.param(
+        "notify_url",
+        "https://example.com",
+        "notifyURL",
+        "https://example.com",
+        id="active_days",
+    ),
+]
+
+
+@pytest.mark.parametrize(
+    "name, value, expected_name, expected_value", CREATE_PARAM_TESTS
+)
+@pytest.mark.subscription
+def test_create_param(name, value, expected_name, expected_value, monkeypatch):
+    """
+    GIVEN parameter name and value
+    WHEN create is called with the parameter
+    THEN a subscription is created with the expected parameter name and value.
+    """
+    mock_get_token = mock.MagicMock()
+    mock_token = mock.MagicMock()
+    mock_token.authorization = "authorization 1"
+    mock_get_token.return_value = mock_token
+    monkeypatch.setattr(oauth, "get_token", mock_get_token)
+
+    mock_urlopen = mock.MagicMock()
+    mock_response = mock.MagicMock()
+    mock_response.read.return_value = json.dumps(
+        {"destinationAddress": "address 1", "activeDays": 30}
+    ).encode()
+    mock_urlopen.return_value.__enter__.return_value = mock_response
+    monkeypatch.setattr(request, "urlopen", mock_urlopen)
+
+    subscription.create(**{name: value})
+
+    request_data = mock_urlopen.call_args.args[0].data.decode()
+    assert f'"{expected_name}"' in request_data
+    assert expected_value in request_data
 
 
 @pytest.mark.parametrize(
