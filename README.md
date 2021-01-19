@@ -46,6 +46,61 @@ CONFIG.tls_client_secret = '<client secret>'
 This should be done before any interactions requiring authentication, such as
 sending a SMS.
 
+## Free Trial
+
+Telstra offers a free trial for the messaging API to help you evaluate whether
+it meets your needs. There are some restrictions that apply compared to the
+full API, including a maximum number of SMS that can be sent and requiring the
+registration of a limited number of destinations before SMS can be sent to that
+destination. For more information, please see here:
+<https://dev.telstra.com/content/messaging-api#tag/Free-Trial>.
+
+### Registering Destinations
+
+> :information_source: **Only required for the free trial**
+
+Register destinations for the free trial. For more information, please see
+here:
+<https://dev.telstra.com/content/messaging-api#operation/freeTrialBnumRegister>.
+
+The function `tls.messaging.bnum.register` can be used to register
+destinations. It takes the following arguments:
+
+- `phone_numbers`: A list of destinations, expected to be phone numbers of the
+  form `+614XXXXXXXX` or `04XXXXXXXX`.
+
+It returns the list of phone numbers that have been registered.
+
+For example:
+
+```python
+from tls.messaging import bnum
+
+phone_numbers = bnum.register(phone_numbers=["+61412345678"])
+print(phone_numbers)
+```
+
+### Retrieve Destinations
+
+> :information_source: **Only required for the free trial**
+
+Retrieve destinations for the free trial. For more information, please see
+here:
+<https://dev.telstra.com/content/messaging-api#operation/freeTrialBnumList>.
+
+The function `tls.messaging.bnum.get` can be used to register
+destinations. It takes no arguments. It returns the list of phone numbers that
+have been registered.
+
+For example:
+
+```python
+from tls.messaging import bnum
+
+phone_numbers = bnum.get()
+print(phone_numbers)
+```
+
 ## Subscription
 
 A subscription gives you a dedicated mobile number tied to an application. For
@@ -54,7 +109,7 @@ more information, please see here:
 
 ### Create Subscription
 
-For more information, please see here:
+Create a new subscription. For more information, please see here:
 <https://dev.telstra.com/content/messaging-api#operation/createSubscription>.
 
 The function `tls.messaging.subscription.create` can be used to create a
@@ -82,7 +137,7 @@ print(created_subscription)
 
 ### Get Subscription
 
-For more information, please see here:
+Retrieve the current subscription. For more information, please see here:
 <https://dev.telstra.com/content/messaging-api#operation/getSubscription>.
 
 The function `tls.messaging.subscription.get` can be used to get the current
@@ -103,7 +158,7 @@ print(retrieved_subscription)
 
 ### Delete Subscription
 
-For more information, please see here:
+Delete the current subscription. For more information, please see here:
 <https://dev.telstra.com/content/messaging-api#operation/deleteSubscription>.
 
 The function `tls.messaging.subscription.delete` can be used to delete the current
@@ -122,7 +177,7 @@ For more information, please see here:
 
 ### Send SMS
 
-For more information, please see here:
+Send a SMS to a mobile number. For more information, please see here:
 <https://dev.telstra.com/content/messaging-api#operation/sendSms>.
 
 The function `tls.messaging.sms.send` can be used to send SMS. It takes the
@@ -165,7 +220,7 @@ sms.send(to="+61412345678", body="Hi")
 
 ### Get SMS Status
 
-For more information, please see here:
+Find out whether a SMS has been sent. For more information, please see here:
 <https://dev.telstra.com/content/messaging-api#operation/getSmsStatus>.
 
 The function `tls.messaging.sms.get_status` can be used to retrieve
@@ -192,7 +247,8 @@ print(status)
 
 ### Retrieve Replies
 
-For more information, please see here:
+Retrieve SMS sent to the mobile number associated with the subscription. For
+more information, please see here:
 <https://dev.telstra.com/content/messaging-api#operation/retrieveSmsReplies>.
 
 The function `tls.messaging.sms.get_next_unread_reply` can be used to retrieve
