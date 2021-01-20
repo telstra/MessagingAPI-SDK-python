@@ -215,7 +215,9 @@ SEND_PARAM_TESTS = [
 
 @pytest.mark.parametrize("name, value, expected_name, expected_value", SEND_PARAM_TESTS)
 @pytest.mark.sms
-def test_send_param(name, value, expected_name, expected_value, monkeypatch):
+def test_send_param(
+    name, value, expected_name, expected_value, monkeypatch, _mocked_get_token
+):
     """
     GIVEN parameter name and value
     WHEN send is called with the parameter
@@ -223,12 +225,6 @@ def test_send_param(name, value, expected_name, expected_value, monkeypatch):
     """
     to = "0412345678"
     body = "body 1"
-
-    mock_get_token = mock.MagicMock()
-    mock_token = mock.MagicMock()
-    mock_token.authorization = "authorization 1"
-    mock_get_token.return_value = mock_token
-    monkeypatch.setattr(oauth, "get_token", mock_get_token)
 
     mock_urlopen = mock.MagicMock()
     mock_response = mock.MagicMock()
@@ -295,18 +291,12 @@ def test_send_error_oauth(func, monkeypatch):
     ],
 )
 @pytest.mark.sms
-def test_send_error_http(func, monkeypatch):
+def test_send_error_http(func, monkeypatch, _mocked_get_token):
     """
     GIVEN function, get_token that returns a token and urlopen that raises an error
     WHEN function is called
     THEN SmsError is raised.
     """
-    mock_get_token = mock.MagicMock()
-    mock_token = mock.MagicMock()
-    mock_token.authorization = "authorization 1"
-    mock_get_token.return_value = mock_token
-    monkeypatch.setattr(oauth, "get_token", mock_get_token)
-
     code = 401
     msg = "msg 1"
     mock_urlopen = mock.MagicMock()
@@ -341,6 +331,26 @@ def test_get_next_unread_reply(_valid_credentials):
     assert returned_reply.message is not None
     assert returned_reply.message_id is not None
     assert returned_reply.sent_timestamp is not None
+
+
+@pytest.mark.sms
+def test_get_next_unread_reply_empty(
+    monkeypatch, _valid_credentials, _mocked_get_token
+):
+    """
+    GIVEN a message has not been received
+    WHEN get_next_unread_reply is called
+    THEN a None is returned.
+    """
+    mock_response = mock.MagicMock()
+    mock_response.read.return_value = json.dumps({}).encode()
+    mock_urlopen = mock.MagicMock()
+    mock_urlopen.return_value.__enter__.return_value = mock_response
+    monkeypatch.setattr(request, "urlopen", mock_urlopen)
+
+    returned_reply = sms.get_next_unread_reply()
+
+    assert returned_reply is None
 
 
 @pytest.mark.sms

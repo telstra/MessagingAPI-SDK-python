@@ -1,11 +1,12 @@
 """Messaging API fixtures."""
+# pylint: disable=unused-argument,redefined-outer-name
 
 import os
 from unittest import mock
 
 import pytest
 
-from tls.messaging import exceptions, subscription
+from tls.messaging import exceptions, oauth, subscription
 from tls.messaging.utils import config
 
 
@@ -27,3 +28,20 @@ def _valid_credentials(monkeypatch):
         subscription.delete()
     except exceptions.SubscriptionError:
         pass
+
+
+@pytest.fixture
+def mocked_get_token(monkeypatch):
+    """Mock oauth.get_token."""
+    mock_get_token = mock.MagicMock()
+    mock_token = mock.MagicMock()
+    mock_token.authorization = "authorization 1"
+    mock_get_token.return_value = mock_token
+    monkeypatch.setattr(oauth, "get_token", mock_get_token)
+
+    yield mock_token
+
+
+@pytest.fixture
+def _mocked_get_token(mocked_get_token):
+    """Wrapper for mocked_get_token to avoid unused argument linting errors."""

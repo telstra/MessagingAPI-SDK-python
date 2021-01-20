@@ -267,14 +267,14 @@ class TReply:
     sent_timestamp: types.TSentTimestamp
 
 
-def get_next_unread_reply() -> TReply:
+def get_next_unread_reply() -> typing.Optional[TReply]:
     """
     Get the next unread reply that have been received.
 
     Raises SmsError is anything goes wrong whilst retrieving the reply.
 
     Returns:
-        The next unread reply.
+        The next unread reply or None if there are no more replies.
 
     """
     try:
@@ -287,14 +287,17 @@ def get_next_unread_reply() -> TReply:
     try:
         with request.urlopen(reply_request) as response:
             reply_dict = json.loads(response.read().decode())
-            return TReply(
-                status=reply_dict["status"],
-                destination_address=reply_dict["destinationAddress"],
-                sender_address=reply_dict["senderAddress"],
-                message_id=reply_dict["messageId"],
-                message=reply_dict["message"],
-                sent_timestamp=reply_dict["sentTimestamp"],
-            )
+            try:
+                return TReply(
+                    status=reply_dict["status"],
+                    destination_address=reply_dict["destinationAddress"],
+                    sender_address=reply_dict["senderAddress"],
+                    message_id=reply_dict["messageId"],
+                    message=reply_dict["message"],
+                    sent_timestamp=reply_dict["sentTimestamp"],
+                )
+            except KeyError:
+                return None
     except error.HTTPError as exc:
         raise exceptions.SmsError(f"Could not send SMS: {exc}") from exc
 

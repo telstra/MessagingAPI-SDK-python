@@ -43,6 +43,7 @@ from tls.messaging import bnum, exceptions, oauth
         ),
     ],
 )
+@pytest.mark.bnum
 def test_register_invalid_param(phone_numbers, expected_contents):
     """
     GIVEN invalid parameters
@@ -56,6 +57,7 @@ def test_register_invalid_param(phone_numbers, expected_contents):
         assert content in str(exc)
 
 
+@pytest.mark.bnum
 def test_register(_valid_credentials):
     """
     GIVEN
@@ -69,6 +71,7 @@ def test_register(_valid_credentials):
     assert returned_phone_numbers == phone_numbers
 
 
+@pytest.mark.bnum
 def test_register_error_oauth(monkeypatch):
     """
     GIVEN oauth get_token that raises an error
@@ -86,17 +89,13 @@ def test_register_error_oauth(monkeypatch):
     assert message in str(exc.value)
 
 
-def test_register_error_http(monkeypatch):
+@pytest.mark.bnum
+def test_register_error_http(monkeypatch, _mocked_get_token):
     """
     GIVEN urlopen that raises an error
     WHEN register is called
     THEN BnumError is raised.
     """
-    mock_oauth = mock.MagicMock()
-    mock_token = mock.MagicMock()
-    mock_token.authorization = "authorization 1"
-    mock_oauth.return_value = mock_token
-
     code = 401
     msg = "msg 1"
     mock_urlopen = mock.MagicMock()
@@ -113,6 +112,7 @@ def test_register_error_http(monkeypatch):
 
 
 @pytest.mark.xfail
+@pytest.mark.bnum
 def test_get(_valid_credentials):
     """
     GIVEN
@@ -124,6 +124,7 @@ def test_get(_valid_credentials):
     assert isinstance(returned_phone_numbers, list)
 
 
+@pytest.mark.bnum
 def test_get_error_oauth(monkeypatch):
     """
     GIVEN oauth get_token that raises an error
@@ -141,17 +142,13 @@ def test_get_error_oauth(monkeypatch):
     assert message in str(exc.value)
 
 
-def test_get_error_http(monkeypatch):
+@pytest.mark.bnum
+def test_get_error_http(monkeypatch, _mocked_get_token):
     """
     GIVEN urlopen that raises an error
     WHEN get is called
     THEN BnumError is raised.
     """
-    mock_oauth = mock.MagicMock()
-    mock_token = mock.MagicMock()
-    mock_token.authorization = "authorization 1"
-    mock_oauth.return_value = mock_token
-
     code = 401
     msg = "msg 1"
     mock_urlopen = mock.MagicMock()

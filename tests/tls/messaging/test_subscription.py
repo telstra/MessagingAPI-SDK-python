@@ -64,18 +64,14 @@ CREATE_PARAM_TESTS = [
     "name, value, expected_name, expected_value", CREATE_PARAM_TESTS
 )
 @pytest.mark.subscription
-def test_create_param(name, value, expected_name, expected_value, monkeypatch):
+def test_create_param(
+    name, value, expected_name, expected_value, monkeypatch, _mocked_get_token
+):
     """
     GIVEN parameter name and value
     WHEN create is called with the parameter
     THEN a subscription is created with the expected parameter name and value.
     """
-    mock_get_token = mock.MagicMock()
-    mock_token = mock.MagicMock()
-    mock_token.authorization = "authorization 1"
-    mock_get_token.return_value = mock_token
-    monkeypatch.setattr(oauth, "get_token", mock_get_token)
-
     mock_urlopen = mock.MagicMock()
     mock_response = mock.MagicMock()
     mock_response.read.return_value = json.dumps(
@@ -156,18 +152,12 @@ def test_error_oauth(func, monkeypatch):
     ],
 )
 @pytest.mark.subscription
-def test_error_http(func, monkeypatch):
+def test_error_http(func, monkeypatch, _mocked_get_token):
     """
     GIVEN subscription function and urlopen that raises an error
     WHEN function is called
     THEN SubscriptionError is raised.
     """
-    mock_get_token = mock.MagicMock()
-    mock_token = mock.MagicMock()
-    mock_token.authorization = "authorization 1"
-    mock_get_token.return_value = mock_token
-    monkeypatch.setattr(oauth, "get_token", mock_get_token)
-
     code = 401
     msg = "msg 1"
     mock_urlopen = mock.MagicMock()
