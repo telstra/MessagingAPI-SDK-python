@@ -253,7 +253,8 @@ more information, please see here:
 
 The function `tls.messaging.sms.get_next_unread_reply` can be used to retrieve
 the next unread reply for your phone number subscription. It takes no
-arguments. It returns an object with the following properties:
+arguments. It returns `None` if there are no more replies or an object with the
+following properties:
 
 - `destination_address`: Where the message is delivered to.
 - `sender_address`: Who the message is from.
