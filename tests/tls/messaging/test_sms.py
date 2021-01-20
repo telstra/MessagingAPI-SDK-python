@@ -4,7 +4,7 @@ import functools
 import json
 import typing
 from unittest import mock
-from urllib import error, request
+from urllib import request
 
 import pytest
 
@@ -286,25 +286,17 @@ def test_send_error_oauth(func, mocked_oauth_get_token_error):
     ],
 )
 @pytest.mark.sms
-def test_send_error_http(func, monkeypatch, _mocked_oauth_get_token):
+def test_error_http(func, _mocked_oauth_get_token, mocked_request_urlopen_error):
     """
     GIVEN function, get_token that returns a token and urlopen that raises an error
     WHEN function is called
     THEN SmsError is raised.
     """
-    code = 401
-    msg = "msg 1"
-    mock_urlopen = mock.MagicMock()
-    mock_urlopen.side_effect = error.HTTPError(
-        url="url 1", code=code, msg=msg, hdrs={}, fp=mock.MagicMock()
-    )
-    monkeypatch.setattr(request, "urlopen", mock_urlopen)
-
     with pytest.raises(exceptions.SmsError) as exc:
         func()
 
-    assert msg in str(exc.value)
-    assert str(code) in str(exc.value)
+    assert mocked_request_urlopen_error.message in str(exc.value)
+    assert str(mocked_request_urlopen_error.code) in str(exc.value)
 
 
 @pytest.mark.sms

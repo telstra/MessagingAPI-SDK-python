@@ -2,7 +2,7 @@
 
 import json
 from unittest import mock
-from urllib import error, request
+from urllib import request
 
 import pytest
 
@@ -147,22 +147,14 @@ def test_error_oauth(func, mocked_oauth_get_token_error):
     ],
 )
 @pytest.mark.subscription
-def test_error_http(func, monkeypatch, _mocked_oauth_get_token):
+def test_error_http(func, mocked_request_urlopen_error, _mocked_oauth_get_token):
     """
     GIVEN subscription function and urlopen that raises an error
     WHEN function is called
     THEN SubscriptionError is raised.
     """
-    code = 401
-    msg = "msg 1"
-    mock_urlopen = mock.MagicMock()
-    mock_urlopen.side_effect = error.HTTPError(
-        url="url 1", code=code, msg=msg, hdrs={}, fp=mock.MagicMock()
-    )
-    monkeypatch.setattr(request, "urlopen", mock_urlopen)
-
     with pytest.raises(exceptions.SubscriptionError) as exc:
         func()
 
-    assert msg in str(exc.value)
-    assert str(code) in str(exc.value)
+    assert mocked_request_urlopen_error.message in str(exc.value)
+    assert str(mocked_request_urlopen_error.code) in str(exc.value)

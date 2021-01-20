@@ -2,7 +2,9 @@
 # pylint: disable=unused-argument,redefined-outer-name
 
 import os
+import typing
 from unittest import mock
+from urllib import error, request
 
 import pytest
 
@@ -56,3 +58,24 @@ def mocked_oauth_get_token_error(monkeypatch):
     monkeypatch.setattr(oauth, "get_token", mock_get_token)
 
     yield message
+
+
+class UrlopenError(typing.NamedTuple):
+    """Information for the mocked urlopen error."""
+
+    code: int
+    message: str
+
+
+@pytest.fixture
+def mocked_request_urlopen_error(monkeypatch):
+    """Mock request.urlopen to raise an error."""
+    code = 401
+    message = "msg 1"
+    mock_urlopen = mock.MagicMock()
+    mock_urlopen.side_effect = error.HTTPError(
+        url="url 1", code=code, msg=message, hdrs={}, fp=mock.MagicMock()
+    )
+    monkeypatch.setattr(request, "urlopen", mock_urlopen)
+
+    yield UrlopenError(code=code, message=message)

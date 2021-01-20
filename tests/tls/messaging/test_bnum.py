@@ -1,8 +1,6 @@
 """Tests for bun."""
 
 import functools
-from unittest import mock
-from urllib import error, request
 
 import pytest
 
@@ -100,25 +98,17 @@ def test_error_oauth(func, mocked_oauth_get_token_error):
     ],
 )
 @pytest.mark.bnum
-def test_error_http(monkeypatch, _mocked_oauth_get_token, func):
+def test_error_http(mocked_request_urlopen_error, _mocked_oauth_get_token, func):
     """
     GIVEN urlopen that raises an error and function
     WHEN the function is called is called
     THEN BnumError is raised.
     """
-    code = 401
-    msg = "msg 1"
-    mock_urlopen = mock.MagicMock()
-    mock_urlopen.side_effect = error.HTTPError(
-        url="url 1", code=code, msg=msg, hdrs={}, fp=mock.MagicMock()
-    )
-    monkeypatch.setattr(request, "urlopen", mock_urlopen)
-
     with pytest.raises(exceptions.BnumError) as exc:
         func()
 
-    assert msg in str(exc.value)
-    assert str(code) in str(exc.value)
+    assert mocked_request_urlopen_error.message in str(exc.value)
+    assert str(mocked_request_urlopen_error.code) in str(exc.value)
 
 
 @pytest.mark.xfail
