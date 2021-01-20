@@ -6,7 +6,7 @@ from urllib import error, request
 
 import pytest
 
-from tls.messaging import exceptions, oauth, subscription
+from tls.messaging import exceptions, subscription
 
 
 @pytest.mark.parametrize(
@@ -126,21 +126,16 @@ def test_create_get_delete(kwargs, _valid_credentials):
     ],
 )
 @pytest.mark.subscription
-def test_error_oauth(func, monkeypatch):
+def test_error_oauth(func, mocked_get_token_error):
     """
     GIVEN subscription function and oauth that raises an error
     WHEN function is called
     THEN SubscriptionError is raised.
     """
-    mock_get_token = mock.MagicMock()
-    message = "message 1"
-    mock_get_token.side_effect = exceptions.CredentialError(message)
-    monkeypatch.setattr(oauth, "get_token", mock_get_token)
-
     with pytest.raises(exceptions.SubscriptionError) as exc:
         func()
 
-    assert message in str(exc.value)
+    assert mocked_get_token_error in str(exc.value)
 
 
 @pytest.mark.parametrize(

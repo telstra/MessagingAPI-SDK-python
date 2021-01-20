@@ -8,7 +8,7 @@ from urllib import error, request
 
 import pytest
 
-from tls.messaging import exceptions, oauth, sms, subscription
+from tls.messaging import exceptions, sms, subscription
 
 VALID_SEND_KWARGS: typing.Dict[str, typing.Any] = {
     "to": "+61412345678",
@@ -263,21 +263,16 @@ def test_send_param(
     ],
 )
 @pytest.mark.sms
-def test_send_error_oauth(func, monkeypatch):
+def test_send_error_oauth(func, mocked_get_token_error):
     """
     GIVEN function and oauth that raises an error
     WHEN function is called
     THEN SmsError is raised.
     """
-    mock_get_token = mock.MagicMock()
-    message = "message 1"
-    mock_get_token.side_effect = exceptions.CredentialError(message)
-    monkeypatch.setattr(oauth, "get_token", mock_get_token)
-
     with pytest.raises(exceptions.SmsError) as exc:
         func()
 
-    assert message in str(exc.value)
+    assert mocked_get_token_error in str(exc.value)
 
 
 @pytest.mark.parametrize(

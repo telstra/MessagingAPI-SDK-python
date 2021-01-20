@@ -45,3 +45,14 @@ def mocked_get_token(monkeypatch):
 @pytest.fixture
 def _mocked_get_token(mocked_get_token):
     """Wrapper for mocked_get_token to avoid unused argument linting errors."""
+
+
+@pytest.fixture
+def mocked_get_token_error(monkeypatch):
+    """Mock oauth.get_token to raise an error."""
+    mock_get_token = mock.MagicMock()
+    message = "message 1"
+    mock_get_token.side_effect = exceptions.CredentialError(message)
+    monkeypatch.setattr(oauth, "get_token", mock_get_token)
+
+    yield message
