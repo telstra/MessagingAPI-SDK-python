@@ -88,7 +88,7 @@ Retrieve destinations for the free trial. For more information, please see
 here:
 <https://dev.telstra.com/content/messaging-api#operation/freeTrialBnumList>.
 
-The function `tls.messaging.bnum.get` can be used to register
+The function `tls.messaging.bnum.get` can be used to retrieve registered
 destinations. It takes no arguments. It returns the list of phone numbers that
 have been registered.
 
