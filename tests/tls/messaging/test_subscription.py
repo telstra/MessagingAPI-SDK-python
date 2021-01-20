@@ -65,7 +65,7 @@ CREATE_PARAM_TESTS = [
 )
 @pytest.mark.subscription
 def test_create_param(
-    name, value, expected_name, expected_value, monkeypatch, _mocked_get_token
+    name, value, expected_name, expected_value, monkeypatch, _mocked_oauth_get_token
 ):
     """
     GIVEN parameter name and value
@@ -126,7 +126,7 @@ def test_create_get_delete(kwargs, _valid_credentials):
     ],
 )
 @pytest.mark.subscription
-def test_error_oauth(func, mocked_get_token_error):
+def test_error_oauth(func, mocked_oauth_get_token_error):
     """
     GIVEN subscription function and oauth that raises an error
     WHEN function is called
@@ -135,7 +135,7 @@ def test_error_oauth(func, mocked_get_token_error):
     with pytest.raises(exceptions.SubscriptionError) as exc:
         func()
 
-    assert mocked_get_token_error in str(exc.value)
+    assert mocked_oauth_get_token_error in str(exc.value)
 
 
 @pytest.mark.parametrize(
@@ -147,7 +147,7 @@ def test_error_oauth(func, mocked_get_token_error):
     ],
 )
 @pytest.mark.subscription
-def test_error_http(func, monkeypatch, _mocked_get_token):
+def test_error_http(func, monkeypatch, _mocked_oauth_get_token):
     """
     GIVEN subscription function and urlopen that raises an error
     WHEN function is called

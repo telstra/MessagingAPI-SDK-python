@@ -31,7 +31,7 @@ def _valid_credentials(monkeypatch):
 
 
 @pytest.fixture
-def mocked_get_token(monkeypatch):
+def mocked_auth_get_token(monkeypatch):
     """Mock oauth.get_token."""
     mock_get_token = mock.MagicMock()
     mock_token = mock.MagicMock()
@@ -43,12 +43,12 @@ def mocked_get_token(monkeypatch):
 
 
 @pytest.fixture
-def _mocked_get_token(mocked_get_token):
+def _mocked_oauth_get_token(mocked_auth_get_token):
     """Wrapper for mocked_get_token to avoid unused argument linting errors."""
 
 
 @pytest.fixture
-def mocked_get_token_error(monkeypatch):
+def mocked_oauth_get_token_error(monkeypatch):
     """Mock oauth.get_token to raise an error."""
     mock_get_token = mock.MagicMock()
     message = "message 1"

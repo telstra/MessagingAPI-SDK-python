@@ -216,7 +216,7 @@ SEND_PARAM_TESTS = [
 @pytest.mark.parametrize("name, value, expected_name, expected_value", SEND_PARAM_TESTS)
 @pytest.mark.sms
 def test_send_param(
-    name, value, expected_name, expected_value, monkeypatch, _mocked_get_token
+    name, value, expected_name, expected_value, monkeypatch, _mocked_oauth_get_token
 ):
     """
     GIVEN parameter name and value
@@ -263,7 +263,7 @@ def test_send_param(
     ],
 )
 @pytest.mark.sms
-def test_send_error_oauth(func, mocked_get_token_error):
+def test_send_error_oauth(func, mocked_oauth_get_token_error):
     """
     GIVEN function and oauth that raises an error
     WHEN function is called
@@ -272,7 +272,7 @@ def test_send_error_oauth(func, mocked_get_token_error):
     with pytest.raises(exceptions.SmsError) as exc:
         func()
 
-    assert mocked_get_token_error in str(exc.value)
+    assert mocked_oauth_get_token_error in str(exc.value)
 
 
 @pytest.mark.parametrize(
@@ -286,7 +286,7 @@ def test_send_error_oauth(func, mocked_get_token_error):
     ],
 )
 @pytest.mark.sms
-def test_send_error_http(func, monkeypatch, _mocked_get_token):
+def test_send_error_http(func, monkeypatch, _mocked_oauth_get_token):
     """
     GIVEN function, get_token that returns a token and urlopen that raises an error
     WHEN function is called
@@ -330,7 +330,7 @@ def test_get_next_unread_reply(_valid_credentials):
 
 @pytest.mark.sms
 def test_get_next_unread_reply_empty(
-    monkeypatch, _valid_credentials, _mocked_get_token
+    monkeypatch, _valid_credentials, _mocked_oauth_get_token
 ):
     """
     GIVEN a message has not been received

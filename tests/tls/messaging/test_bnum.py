@@ -80,7 +80,7 @@ def test_register(_valid_credentials):
     ],
 )
 @pytest.mark.bnum
-def test_error_oauth(func, mocked_get_token_error):
+def test_error_oauth(func, mocked_oauth_get_token_error):
     """
     GIVEN oauth get_token that raises an error and a function
     WHEN the function is called
@@ -89,7 +89,7 @@ def test_error_oauth(func, mocked_get_token_error):
     with pytest.raises(exceptions.BnumError) as exc:
         func()
 
-    assert mocked_get_token_error in str(exc.value)
+    assert mocked_oauth_get_token_error in str(exc.value)
 
 
 @pytest.mark.parametrize(
@@ -100,7 +100,7 @@ def test_error_oauth(func, mocked_get_token_error):
     ],
 )
 @pytest.mark.bnum
-def test_error_http(monkeypatch, _mocked_get_token, func):
+def test_error_http(monkeypatch, _mocked_oauth_get_token, func):
     """
     GIVEN urlopen that raises an error and function
     WHEN the function is called is called
