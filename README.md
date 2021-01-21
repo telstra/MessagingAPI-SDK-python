@@ -1,6 +1,9 @@
 # Telstra Messaging
 
-The SDK for the Telstra messaging API.
+The SDK for the Telstra messaging API which enables you to send and receive SMS
+for Australian mobile numbers. For more information about this product, please
+see here:
+<https://dev.telstra.com/content/messaging-api>.
 
 > :warning: **This SDK is experimental, everything is subject to change**
 
@@ -103,13 +106,15 @@ print(phone_numbers)
 
 ## Subscription
 
-A subscription gives you a dedicated mobile number tied to an application. For
-more information, please see here:
+A subscription gives you a dedicated mobile number tied to an application which
+enables you to receive replies from your customers. For more information,
+please see here:
 <https://dev.telstra.com/content/messaging-api#tag/Provisioning>.
 
 ### Create Subscription
 
-Create a new subscription. For more information, please see here:
+Create a new subscription for a dedicated mobile number. For more information,
+please see here:
 <https://dev.telstra.com/content/messaging-api#operation/createSubscription>.
 
 The function `tls.messaging.subscription.create` can be used to create a
@@ -172,7 +177,7 @@ subscription.delete()
 
 ## SMS
 
-For more information, please see here:
+Send and receive SMS. For more information, please see here:
 <https://dev.telstra.com/content/messaging-api#tag/Messaging>.
 
 ### Send SMS
