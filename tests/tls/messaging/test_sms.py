@@ -2,6 +2,7 @@
 
 import functools
 import json
+import platform
 import typing
 from unittest import mock
 from urllib import request
@@ -245,7 +246,11 @@ def test_send_param(
 
     sms.send(to=to, body=body, **{name: value})
 
-    request_data = mock_urlopen.call_args.args[0].data.decode()
+    if platform.python_version_tuple()[1] >= 8:
+        request_data = mock_urlopen.call_args.args[0].data.decode()
+    else:
+        print(mock_urlopen.call_args)  # allow-print
+        request_data = mock_urlopen.call_args[0][0].data.decode()
     assert to in request_data
     assert body in request_data
     assert f'"{expected_name}"' in request_data
