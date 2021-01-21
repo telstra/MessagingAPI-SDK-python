@@ -83,7 +83,7 @@ def test_create_param(
 
     subscription.create(**{name: value})
 
-    if platform.python_version_tuple()[1] >= 8:
+    if int(platform.python_version_tuple()[1]) >= 8:
         request_data = mock_urlopen.call_args.args[0].data.decode()
     else:
         print(mock_urlopen.call_args)  # allow-print

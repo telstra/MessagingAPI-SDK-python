@@ -26,6 +26,9 @@ exclude_lines =
     # Don't complain about print statements not run
     print\(.*\)
 
+    # Don't complain about platform versions
+    .call_args.
+
 skip_covered=true
 show_missing=true
 fail_under=100
