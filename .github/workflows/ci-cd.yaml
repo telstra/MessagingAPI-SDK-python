@@ -39,7 +39,7 @@ jobs:
           VALID_TLS_CLIENT_KEY: ${{ secrets.VALID_TLS_CLIENT_KEY }}
           VALID_TLS_CLIENT_SECRET: ${{ secrets.VALID_TLS_CLIENT_SECRET }}
         run: |
-          poetry run pytest || poetry install --no-root && poetry run pytest
+          poetry run pytest || (poetry install --no-root && poetry run pytest)
 
   pre-commit:
     runs-on: ubuntu-latest
