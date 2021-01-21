@@ -33,7 +33,7 @@ jobs:
       - name: Install dependencies
         if: steps.cache-poetry.outputs.cache-hit != 'true'
         run: |
-          poetry install --no-root
+          poetry update && poetry install --no-root
       - name: run tests
         env:
           VALID_TLS_CLIENT_KEY: ${{ secrets.VALID_TLS_CLIENT_KEY }}
