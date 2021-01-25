@@ -72,6 +72,8 @@ destinations. It takes the following arguments:
 - `phone_numbers`: A list of destinations, expected to be phone numbers of the
   form `+614XXXXXXXX` or `04XXXXXXXX`.
 
+Raises `tls.messaging.exceptions.BnumError` if anything goes wrong.
+
 It returns the list of phone numbers that have been registered.
 
 For example:
@@ -92,7 +94,11 @@ here:
 <https://dev.telstra.com/content/messaging-api#operation/freeTrialBnumList>.
 
 The function `tls.messaging.bnum.get` can be used to retrieve registered
-destinations. It takes no arguments. It returns the list of phone numbers that
+destinations. It takes no arguments.
+
+Raises `tls.messaging.exceptions.BnumError` if anything goes wrong.
+
+It returns the list of phone numbers that
 have been registered.
 
 For example:
@@ -126,6 +132,8 @@ subscription. It takes the following arguments:
   new message (i.e. a reply to a message sent) arrives at this destination
   address.
 
+Raises `tls.messaging.exceptions.SubscriptionError` if anything goes wrong.
+
 It returns an object with the following properties:
 
 - `destination_address`: The phone number that a message can be sent to.
@@ -146,7 +154,11 @@ Retrieve the current subscription. For more information, please see here:
 <https://dev.telstra.com/content/messaging-api#operation/getSubscription>.
 
 The function `tls.messaging.subscription.get` can be used to get the current
-subscription. It takes no arguments. It returns an object with the following
+subscription. It takes no arguments.
+
+Raises `tls.messaging.exceptions.SubscriptionError` if anything goes wrong.
+
+It returns an object with the following
 properties:
 
 - `destination_address`: The phone number that a message can be sent to.
@@ -168,6 +180,10 @@ Delete the current subscription. For more information, please see here:
 
 The function `tls.messaging.subscription.delete` can be used to delete the current
 subscription. It takes no arguments.
+
+Raises `tls.messaging.exceptions.SubscriptionError` if anything goes wrong.
+
+It returns nothing.
 
 ```python
 from tls.messaging import subscription
@@ -208,6 +224,8 @@ following arguments:
 - `user_msg_ref` (optional): Optional field used by some clients for custom
   reporting.
 
+Raises `tls.messaging.exceptions.SmsError` if anything goes wrong.
+
 It returns an object with the following properties:
 
 - `to`: The destination mobile number.
@@ -232,6 +250,8 @@ The function `tls.messaging.sms.get_status` can be used to retrieve
 the status of a SMS. It takes the following arguments:
 
 - `message_id`:Unique identifier for the message.
+
+Raises `tls.messaging.exceptions.SmsError` if anything goes wrong.
 
 It returns an object with the following properties:
 
@@ -258,7 +278,11 @@ more information, please see here:
 
 The function `tls.messaging.sms.get_next_unread_reply` can be used to retrieve
 the next unread reply for your phone number subscription. It takes no
-arguments. It returns `None` if there are no more replies or an object with the
+arguments.
+
+Raises `tls.messaging.exceptions.SmsError` if anything goes wrong.
+
+It returns `None` if there are no more replies or an object with the
 following properties:
 
 - `destination_address`: Where the message is delivered to.
@@ -275,4 +299,12 @@ from tls.messaging import sms
 
 reply = sms.get_next_unread_reply()
 print(reply)
+```
+
+## Exceptions
+
+All exceptions that can be raised derive from `MessagingBaseException`:
+
+```python
+from tls.messaging.exceptions import MessagingBaseException
 ```

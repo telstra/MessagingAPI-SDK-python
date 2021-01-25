@@ -8,7 +8,7 @@ from .. import exceptions, types
 def validate(
     *,
     value: typing.Optional[types.TNotifyUrl],
-    exception: typing.Type[exceptions.SmsBaseException],
+    exception: typing.Type[exceptions.MessagingBaseException],
 ) -> None:
     """Validate the notify_url parameter for send."""
     if value is not None:
