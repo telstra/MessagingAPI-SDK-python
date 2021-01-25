@@ -250,7 +250,7 @@ status = sms.get_status(sent_sms.message_id)
 print(status)
 ```
 
-### Retrieve Replies
+### Retrieve Reply
 
 Retrieve SMS sent to the mobile number associated with the subscription. For
 more information, please see here:

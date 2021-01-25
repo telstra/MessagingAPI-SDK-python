@@ -249,7 +249,6 @@ def test_send_param(
     if int(platform.python_version_tuple()[1]) >= 8:
         request_data = mock_urlopen.call_args.args[0].data.decode()
     else:
-        print(mock_urlopen.call_args)  # allow-print
         request_data = mock_urlopen.call_args[0][0].data.decode()
     assert to in request_data
     assert body in request_data
