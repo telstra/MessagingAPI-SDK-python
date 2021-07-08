@@ -6,8 +6,8 @@ import re
 import typing
 from urllib import error, parse, request
 
-from tls.messaging.utils import notify_url as notify_url_util
-from tls.messaging.utils import phone_number
+from telstra.messaging.utils import notify_url as notify_url_util
+from telstra.messaging.utils import phone_number
 
 from . import exceptions, oauth, types
 from .utils import phone_number

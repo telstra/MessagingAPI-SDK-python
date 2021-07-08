@@ -10,19 +10,19 @@ see here:
 ## Installing
 
 ```bash
-pip install tls.messaging
+pip install telstra.messaging
 ```
 
 ## Getting Started
 
-Set the `TLS_CLIENT_KEY` and `TLS_CLIENT_SECRET` environment variables. These
-are the `Client key` and `Client secret` you can find here:
+Set the `TELSTRA_CLIENT_ID` and `TELSTRA_CLIENT_SECRET` environment variables. These
+are the `Client id` and `Client secret` you can find here:
 <https://dev.telstra.com/user/me/apps>.
 
 To send your first SMS:
 
 ```python
-from tls.messaging import sms
+from telstra.messaging import sms
 
 sms.send(to="+61412345678", body="Hi")
 ```
@@ -30,20 +30,20 @@ sms.send(to="+61412345678", body="Hi")
 To set the required environment variables if your application is in `app.py`:
 
 ```bash
-TLS_CLIENT_KEY="<client key>" TLS_CLIENT_SECRET="<client secret>" python app.py
+TELSTRA_CLIENT_ID"<client id>" TELSTRA_CLIENT_SECRET="<client secret>" python app.py
 ```
 
 ## Authentication
 
-On top of the authentication through the `TLS_CLIENT_KEY` and
-`TLS_CLIENT_SECRET` environment variables, authentication through code is also
+On top of the authentication through the `TELSTRA_CLIENT_ID` and
+`TELSTRA_CLIENT_SECRET` environment variables, authentication through code is also
 supported. For example:
 
 ```python
-from tls.messaging.utils.config import CONFIG
+from telstra.messaging.utils.config import CONFIG
 
-CONFIG.tls_client_key = '<client key>'
-CONFIG.tls_client_secret = '<client secret>'
+CONFIG.telstra_client_id = '<client id>'
+CONFIG.telstra_client_secret = '<client secret>'
 ```
 
 This should be done before any interactions requiring authentication, such as
@@ -66,20 +66,20 @@ Register destinations for the free trial. For more information, please see
 here:
 <https://dev.telstra.com/content/messaging-api#operation/freeTrialBnumRegister>.
 
-The function `tls.messaging.bnum.register` can be used to register
+The function `telstra.messaging.bnum.register` can be used to register
 destinations. It takes the following arguments:
 
 - `phone_numbers`: A list of destinations, expected to be phone numbers of the
   form `+614XXXXXXXX` or `04XXXXXXXX`.
 
-Raises `tls.messaging.exceptions.BnumError` if anything goes wrong.
+Raises `telstra.messaging.exceptions.BnumError` if anything goes wrong.
 
 It returns the list of phone numbers that have been registered.
 
 For example:
 
 ```python
-from tls.messaging import bnum
+from telstra.messaging import bnum
 
 phone_numbers = bnum.register(phone_numbers=["+61412345678"])
 print(phone_numbers)
@@ -93,10 +93,10 @@ Retrieve destinations for the free trial. For more information, please see
 here:
 <https://dev.telstra.com/content/messaging-api#operation/freeTrialBnumList>.
 
-The function `tls.messaging.bnum.get` can be used to retrieve registered
+The function `telstra.messaging.bnum.get` can be used to retrieve registered
 destinations. It takes no arguments.
 
-Raises `tls.messaging.exceptions.BnumError` if anything goes wrong.
+Raises `telstra.messaging.exceptions.BnumError` if anything goes wrong.
 
 It returns the list of phone numbers that
 have been registered.
@@ -104,7 +104,7 @@ have been registered.
 For example:
 
 ```python
-from tls.messaging import bnum
+from telstra.messaging import bnum
 
 phone_numbers = bnum.get()
 print(phone_numbers)
@@ -123,7 +123,7 @@ Create a new subscription for a dedicated mobile number. For more information,
 please see here:
 <https://dev.telstra.com/content/messaging-api#operation/createSubscription>.
 
-The function `tls.messaging.subscription.create` can be used to create a
+The function `telstra.messaging.subscription.create` can be used to create a
 subscription. It takes the following arguments:
 
 - `active_days` (optional): The number of days the subscription will be active,
@@ -132,7 +132,7 @@ subscription. It takes the following arguments:
   new message (i.e. a reply to a message sent) arrives at this destination
   address.
 
-Raises `tls.messaging.exceptions.SubscriptionError` if anything goes wrong.
+Raises `telstra.messaging.exceptions.SubscriptionError` if anything goes wrong.
 
 It returns an object with the following properties:
 
@@ -142,7 +142,7 @@ It returns an object with the following properties:
 For example:
 
 ```python
-from tls.messaging import subscription
+from telstra.messaging import subscription
 
 created_subscription = subscription.create()
 print(created_subscription)
@@ -153,10 +153,10 @@ print(created_subscription)
 Retrieve the current subscription. For more information, please see here:
 <https://dev.telstra.com/content/messaging-api#operation/getSubscription>.
 
-The function `tls.messaging.subscription.get` can be used to get the current
+The function `telstra.messaging.subscription.get` can be used to get the current
 subscription. It takes no arguments.
 
-Raises `tls.messaging.exceptions.SubscriptionError` if anything goes wrong.
+Raises `telstra.messaging.exceptions.SubscriptionError` if anything goes wrong.
 
 It returns an object with the following
 properties:
@@ -167,7 +167,7 @@ properties:
 For example:
 
 ```python
-from tls.messaging import subscription
+from telstra.messaging import subscription
 
 retrieved_subscription = subscription.get()
 print(retrieved_subscription)
@@ -178,15 +178,15 @@ print(retrieved_subscription)
 Delete the current subscription. For more information, please see here:
 <https://dev.telstra.com/content/messaging-api#operation/deleteSubscription>.
 
-The function `tls.messaging.subscription.delete` can be used to delete the current
+The function `telstra.messaging.subscription.delete` can be used to delete the current
 subscription. It takes no arguments.
 
-Raises `tls.messaging.exceptions.SubscriptionError` if anything goes wrong.
+Raises `telstra.messaging.exceptions.SubscriptionError` if anything goes wrong.
 
 It returns nothing.
 
 ```python
-from tls.messaging import subscription
+from telstra.messaging import subscription
 
 subscription.delete()
 ```
@@ -201,7 +201,7 @@ Send and receive SMS. For more information, please see here:
 Send a SMS to a mobile number. For more information, please see here:
 <https://dev.telstra.com/content/messaging-api#operation/sendSms>.
 
-The function `tls.messaging.sms.send` can be used to send SMS. It takes the
+The function `telstra.messaging.sms.send` can be used to send SMS. It takes the
 following arguments:
 
 - `to`: The destination address, expected to be a phone number of the form
@@ -224,7 +224,7 @@ following arguments:
 - `user_msg_ref` (optional): Optional field used by some clients for custom
   reporting.
 
-Raises `tls.messaging.exceptions.SmsError` if anything goes wrong.
+Raises `telstra.messaging.exceptions.SmsError` if anything goes wrong.
 
 It returns an object with the following properties:
 
@@ -236,7 +236,7 @@ It returns an object with the following properties:
 For example:
 
 ```python
-from tls.messaging import sms
+from telstra.messaging import sms
 
 sms.send(to="+61412345678", body="Hi")
 ```
@@ -246,12 +246,12 @@ sms.send(to="+61412345678", body="Hi")
 Find out whether a SMS has been sent. For more information, please see here:
 <https://dev.telstra.com/content/messaging-api#operation/getSmsStatus>.
 
-The function `tls.messaging.sms.get_status` can be used to retrieve
+The function `telstra.messaging.sms.get_status` can be used to retrieve
 the status of a SMS. It takes the following arguments:
 
 - `message_id`:Unique identifier for the message.
 
-Raises `tls.messaging.exceptions.SmsError` if anything goes wrong.
+Raises `telstra.messaging.exceptions.SmsError` if anything goes wrong.
 
 It returns an object with the following properties:
 
@@ -263,7 +263,7 @@ It returns an object with the following properties:
 For example:
 
 ```python
-from tls.messaging import sms
+from telstra.messaging import sms
 
 sent_sms = sms.send(to="+61412345678", body="Hi")
 status = sms.get_status(sent_sms.message_id)
@@ -276,11 +276,11 @@ Retrieve SMS sent to the mobile number associated with the subscription. For
 more information, please see here:
 <https://dev.telstra.com/content/messaging-api#operation/retrieveSmsReplies>.
 
-The function `tls.messaging.sms.get_next_unread_reply` can be used to retrieve
+The function `telstra.messaging.sms.get_next_unread_reply` can be used to retrieve
 the next unread reply for your phone number subscription. It takes no
 arguments.
 
-Raises `tls.messaging.exceptions.SmsError` if anything goes wrong.
+Raises `telstra.messaging.exceptions.SmsError` if anything goes wrong.
 
 It returns `None` if there are no more replies or an object with the
 following properties:
@@ -295,7 +295,7 @@ following properties:
 For example:
 
 ```python
-from tls.messaging import sms
+from telstra.messaging import sms
 
 reply = sms.get_next_unread_reply()
 print(reply)
@@ -306,5 +306,5 @@ print(reply)
 All exceptions that can be raised derive from `MessagingBaseException`:
 
 ```python
-from tls.messaging.exceptions import MessagingBaseException
+from telstra.messaging.exceptions import MessagingBaseException
 ```

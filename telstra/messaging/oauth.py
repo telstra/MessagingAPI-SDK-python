@@ -81,8 +81,8 @@ def _get_token() -> TToken:
     data = parse.urlencode(
         {
             "grant_type": "client_credentials",
-            "client_id": config.get().tls_client_key,
-            "client_secret": config.get().tls_client_secret,
+            "client_id": config.get().telstra_client_id,
+            "client_secret": config.get().telstra_client_secret,
             "scope": "NSMS",
         }
     ).encode("ascii")

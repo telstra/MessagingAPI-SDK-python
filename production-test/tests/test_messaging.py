@@ -1,6 +1,6 @@
 """Tests for the messaging API."""
 
-from tls.messaging import exceptions, sms, subscription
+from telstra.messaging import exceptions, sms, subscription
 
 
 def test_create_subscription():

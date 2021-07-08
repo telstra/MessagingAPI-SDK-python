@@ -27,7 +27,7 @@ repos:
     hooks:
       - id: mypy
         name: mypy (messaging)
-        files: ^tls/messaging/
+        files: ^telstra/messaging/
       - id: mypy
         name: mypy (tests)
         files: ^tests/

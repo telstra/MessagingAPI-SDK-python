@@ -9,7 +9,7 @@ from urllib import request
 
 import pytest
 
-from tls.messaging import exceptions, sms, subscription
+from telstra.messaging import exceptions, sms, subscription
 
 VALID_SEND_KWARGS: typing.Dict[str, typing.Any] = {
     "to": "+61412345678",

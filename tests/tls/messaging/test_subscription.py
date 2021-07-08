@@ -7,7 +7,7 @@ from urllib import request
 
 import pytest
 
-from tls.messaging import exceptions, subscription
+from telstra.messaging import exceptions, subscription
 
 
 @pytest.mark.parametrize(

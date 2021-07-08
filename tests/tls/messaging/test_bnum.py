@@ -4,7 +4,7 @@ import functools
 
 import pytest
 
-from tls.messaging import bnum, exceptions
+from telstra.messaging import bnum, exceptions
 
 
 @pytest.mark.parametrize(

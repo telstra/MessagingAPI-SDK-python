@@ -2,29 +2,29 @@
 
 import pytest
 
-from tls.messaging import exceptions
-from tls.messaging.utils import config
+from telstra.messaging import exceptions
+from telstra.messaging.utils import config
 
 GET_ERROR_TESTS = [
     pytest.param(
-        "TLS_CLIENT_KEY",
-        "tls_client_key",
+        "TELSTRA_CLIENT_ID",
+        "telstra_client_id",
         exceptions.CredentialError,
         [
-            "client key",
+            "client id",
             "https://dev.telstra.com/user/me/apps",
         ],
-        id="TLS_CLIENT_KEY",
+        id="TELSTRA_CLIENT_ID",
     ),
     pytest.param(
-        "TLS_CLIENT_SECRET",
-        "tls_client_secret",
+        "TELSTRA_CLIENT_SECRET",
+        "telstra_client_secret",
         exceptions.CredentialError,
         [
             "client secret",
             "https://dev.telstra.com/user/me/apps",
         ],
-        id="TLS_CLIENT_SECRET",
+        id="TELSTRA_CLIENT_SECRET",
     ),
 ]
 
@@ -53,16 +53,16 @@ def test_get_error(
 
 GET_ENV_DEFINED_TESTS = [
     pytest.param(
-        "TLS_CLIENT_KEY",
-        "tls_client_key",
-        "client key 1",
-        id="TLS_CLIENT_KEY",
+        "TELSTRA_CLIENT_ID",
+        "telstra_client_id",
+        "client id 1",
+        id="TELSTRA_CLIENT_ID",
     ),
     pytest.param(
-        "TLS_CLIENT_SECRET",
-        "tls_client_secret",
+        "TELSTRA_CLIENT_SECRET",
+        "telstra_client_secret",
         "client secret 1",
-        id="TLS_CLIENT_SECRET",
+        id="TELSTRA_CLIENT_SECRET",
     ),
 ]
 
@@ -83,8 +83,10 @@ def test_get_env_defined(env_name, config_name, env_value, monkeypatch):
 
 
 GET_CONFIG_SET_TESTS_TESTS = [
-    pytest.param("tls_client_key", "client key 1", id="tls_client_key"),
-    pytest.param("tls_client_secret", "client secret 1", id="tls_client_secret"),
+    pytest.param("telstra_client_id", "client id 1", id="telstra_client_id"),
+    pytest.param(
+        "telstra_client_secret", "client secret 1", id="telstra_client_secret"
+    ),
 ]
 
 
@@ -121,18 +123,18 @@ def test_init_config_set(config_name, config_value):
 
 SET_ERROR_TESTS = [
     pytest.param(
-        "tls_client_key",
+        "telstra_client_id",
         True,
         exceptions.CredentialError,
         [str(True), "str"],
-        id="tls_client_key",
+        id="telstra_client_id",
     ),
     pytest.param(
-        "tls_client_secret",
+        "telstra_client_secret",
         True,
         exceptions.CredentialError,
         [str(True), "str"],
-        id="tls_client_secret",
+        id="telstra_client_secret",
     ),
 ]
 

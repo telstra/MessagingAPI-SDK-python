@@ -9,7 +9,7 @@ verify_ssl = true
 name = "messaging-pypi"
 
 [packages]
-"tls.messaging" = { version="==${VERSION}", index="messaging-pypi" }
+"telstra.messaging" = { version="==${VERSION}", index="messaging-pypi" }
 
 [dev-packages]
 pytest = "6.2.1"

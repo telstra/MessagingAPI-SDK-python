@@ -36,8 +36,8 @@ jobs:
           poetry update && poetry install --no-root
       - name: run tests
         env:
-          VALID_TLS_CLIENT_KEY: ${{ secrets.VALID_TLS_CLIENT_KEY }}
-          VALID_TLS_CLIENT_SECRET: ${{ secrets.VALID_TLS_CLIENT_SECRET }}
+          VALID_TELSTRA_CLIENT_ID: ${{ secrets.VALID_TELSTRA_CLIENT_ID }}
+          VALID_TELSTRA_CLIENT_SECRET: ${{ secrets.VALID_TELSTRA_CLIENT_SECRET }}
         run: |
           poetry run pytest || (poetry install --no-root && poetry run pytest)
 
@@ -95,11 +95,11 @@ jobs:
           python-version: 3.9
       - name: Install poetry and package
         run: |
-          pip install poetry tls.messaging
+          pip install poetry telstra.messaging
       - name: Check if release is required
         id: check
         run: |
-          RELEASED_VERSION=$(python -c "from importlib.metadata import version;print(version('tls.messaging'))")
+          RELEASED_VERSION=$(python -c "from importlib.metadata import version;print(version('telstra.messaging'))")
           echo released version: $RELEASED_VERSION
           PROJECT_VERSION=$(poetry version -s)
           echo project version: $PROJECT_VERSION
@@ -154,8 +154,8 @@ jobs:
       - name: run tests
         working-directory: production-test
         env:
-          TLS_CLIENT_KEY: ${{ secrets.VALID_TLS_CLIENT_KEY }}
-          TLS_CLIENT_SECRET: ${{ secrets.VALID_TLS_CLIENT_SECRET }}
+          TELSTRA_CLIENT_ID: ${{ secrets.VALID_TELSTRA_CLIENT_ID }}
+          TELSTRA_CLIENT_SECRET: ${{ secrets.VALID_TELSTRA_CLIENT_SECRET }}
         run: |
           pipenv run test
 
@@ -202,7 +202,7 @@ jobs:
       - name: run tests
         working-directory: production-test
         env:
-          TLS_CLIENT_KEY: ${{ secrets.VALID_TLS_CLIENT_KEY }}
-          TLS_CLIENT_SECRET: ${{ secrets.VALID_TLS_CLIENT_SECRET }}
+          TELSTRA_CLIENT_ID: ${{ secrets.VALID_TELSTRA_CLIENT_ID }}
+          TELSTRA_CLIENT_SECRET: ${{ secrets.VALID_TELSTRA_CLIENT_SECRET }}
         run: |
           pipenv run test
