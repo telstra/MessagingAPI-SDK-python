@@ -48,7 +48,7 @@ class Config:
                     f"Then it can be provided as the '{telstra_client_id_env_name}' "
                     "environment variable or "
                     "using the following code: \n"
-                    "from telstra.messaging.utils import CONFIG\n"
+                    "from telstra.messaging.utils.config import CONFIG\n"
                     "CONFIG.telstra_client_id = '<client id>'"
                 )
             self._telstra_client_id = telstra_client_id
@@ -76,10 +76,10 @@ class Config:
                     "The client secret was not configured. "
                     "It can be retrieved from here: "
                     "https://dev.telstra.com/user/me/apps. "
-                    f"Then it can be provided as the '{telstra_client_secret_env_name}'' "
-                    "environment variable or "
+                    "Then it can be provided as the "
+                    f"'{telstra_client_secret_env_name}'' environment variable or "
                     "using the following code: \n"
-                    "from telstra.messaging.utils import CONFIG\n"
+                    "from telstra.messaging.utils.config import CONFIG\n"
                     "CONFIG.telstra_client_secret = '<client secret>'"
                 )
             self._telstra_client_secret = telstra_client_secret

@@ -24,7 +24,7 @@ To send your first SMS:
 ```python
 from telstra.messaging import sms
 
-sms.send(to="+61412345678", body="Hi")
+sms.send(to="+61412345678", body="Hello from Python Messaging SDK!")
 ```
 
 To set the required environment variables if your application is in `app.py`:
@@ -238,7 +238,7 @@ For example:
 ```python
 from telstra.messaging import sms
 
-sms.send(to="+61412345678", body="Hi")
+sms.send(to="+61412345678", body="Hello from Python Messaging SDK!")
 ```
 
 ### Get SMS Status
@@ -265,7 +265,7 @@ For example:
 ```python
 from telstra.messaging import sms
 
-sent_sms = sms.send(to="+61412345678", body="Hi")
+sent_sms = sms.send(to="+61412345678", body="Hello from Python Messaging SDK!")
 status = sms.get_status(sent_sms.message_id)
 print(status)
 ```
