@@ -82,8 +82,6 @@ class Config:
                     "CONFIG.telstra_client_id = '<client id>'"
                 )
 
-        # return self._telstra_client_id
-
     @telstra_client_id.setter
     def telstra_client_id(self, telstra_client_id: TClientId) -> None:
         """Set the telstra_client_id."""
@@ -138,7 +136,6 @@ class Config:
                     "from telstra.messaging.utils.config import CONFIG\n"
                     "CONFIG.telstra_client_secret = '<client secret>'"
                 )
-        # return self._telstra_client_secret
 
     @telstra_client_secret.setter
     def telstra_client_secret(self, telstra_client_secret: TClientSecret) -> None:
