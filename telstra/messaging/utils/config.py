@@ -37,6 +37,11 @@ class Config:
 
     _home_path = Path.home()
     _shared_credentials_file = Path(_home_path.__str__() + "/.telstra/credentials")
+    _f_lines = None
+    if _shared_credentials_file.is_file():
+        _f = open(_shared_credentials_file, "r")
+        _f_lines = _f.readlines()
+        _f.close()
 
     @property
     def telstra_client_id(self) -> TClientId:
@@ -50,25 +55,20 @@ class Config:
                 print(self._telstra_client_id)
                 return self._telstra_client_id
             # from shared file
-            elif self._shared_credentials_file.is_file():
-                # read contents of file
-                _f = open(self._shared_credentials_file, "r")
-                _f_lines = _f.readlines()
-                for line in _f_lines:
+            elif self._f_lines:
+                for line in self._f_lines:
                     if line.find("[default]") != -1:
                         start_index = line.find("[default]")
                         # Iterate the next three lines past default profile
                         for item in [
-                            _f_lines[start_index + 1],
-                            _f_lines[start_index + 2],
+                            self._f_lines[start_index + 1],
+                            self._f_lines[start_index + 2],
                         ]:
                             item_formatted: str = "".join(item.split())
                             _list_of_keys = item_formatted.split("=")
 
                             if _list_of_keys[0] == telstra_client_id_env_name:
                                 self._telstra_client_id = _list_of_keys[1]
-                _f.close()
-                print(self._telstra_client_id)
                 return self._telstra_client_id
             else:
                 raise exceptions.CredentialError(
@@ -105,25 +105,20 @@ class Config:
                 print(self._telstra_client_secret)
                 return self._telstra_client_secret
             # from shared file
-            elif self._shared_credentials_file.is_file():
-                # read contents of file
-                _f = open(self._shared_credentials_file, "r")
-                _f_lines = _f.readlines()
-                for line in _f_lines:
+            elif self._f_lines:
+                for line in self._f_lines:
                     if line.find("[default]") != -1:
                         start_index = line.find("[default]")
                         # Iterate the next three lines past default profile
                         for item in [
-                            _f_lines[start_index + 1],
-                            _f_lines[start_index + 2],
+                            self._f_lines[start_index + 1],
+                            self._f_lines[start_index + 2],
                         ]:
                             item_formatted: str = "".join(item.split())
                             _list_of_keys = item_formatted.split("=")
 
                             if _list_of_keys[0] == telstra_client_secret_env_name:
                                 self._telstra_client_secret = _list_of_keys[1]
-                _f.close()
-                print(self._telstra_client_secret)
                 return self._telstra_client_secret
             else:
                 raise exceptions.CredentialError(
