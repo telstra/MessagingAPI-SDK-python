@@ -4,6 +4,7 @@ import os
 import typing
 
 from .. import exceptions
+from pathlib import Path
 
 TClientId = str
 TClientSecret = str
@@ -34,13 +35,42 @@ class Config:
     _telstra_client_id: typing.Optional[TClientId] = None
     _telstra_client_secret: typing.Optional[TClientSecret] = None
 
+    _home_path = Path.home()
+    _shared_credentials_file = Path(_home_path.__str__() + "/.telstra/credentials")
+
     @property
     def telstra_client_id(self) -> TClientId:
         """Get the telstra_client_id."""
         if self._telstra_client_id is None:
             telstra_client_id_env_name = "TELSTRA_CLIENT_ID"
             telstra_client_id = os.getenv(telstra_client_id_env_name)
-            if not isinstance(telstra_client_id, TClientId):
+            # from env var
+            if isinstance(telstra_client_id, TClientId):
+                self._telstra_client_id = telstra_client_id
+                print(self._telstra_client_id)
+                return self._telstra_client_id
+            # from shared file
+            elif self._shared_credentials_file.is_file():
+                # read contents of file
+                _f = open(self._shared_credentials_file, "r")
+                _f_lines = _f.readlines()
+                for line in _f_lines:
+                    if line.find("[default]") != -1:
+                        start_index = line.find("[default]")
+                        # Iterate the next three lines past default profile
+                        for item in [
+                            _f_lines[start_index + 1],
+                            _f_lines[start_index + 2],
+                        ]:
+                            item_formatted: str = "".join(item.split())
+                            _list_of_keys = item_formatted.split("=")
+
+                            if _list_of_keys[0] == telstra_client_id_env_name:
+                                self._telstra_client_id = _list_of_keys[1]
+                _f.close()
+                print(self._telstra_client_id)
+                return self._telstra_client_id
+            else:
                 raise exceptions.CredentialError(
                     "The client id was not configured. "
                     "It can be retrieved from here: "
@@ -51,8 +81,8 @@ class Config:
                     "from telstra.messaging.utils.config import CONFIG\n"
                     "CONFIG.telstra_client_id = '<client id>'"
                 )
-            self._telstra_client_id = telstra_client_id
-        return self._telstra_client_id
+
+        # return self._telstra_client_id
 
     @telstra_client_id.setter
     def telstra_client_id(self, telstra_client_id: TClientId) -> None:
@@ -71,7 +101,33 @@ class Config:
         if self._telstra_client_secret is None:
             telstra_client_secret_env_name = "TELSTRA_CLIENT_SECRET"
             telstra_client_secret = os.getenv(telstra_client_secret_env_name)
-            if not isinstance(telstra_client_secret, TClientSecret):
+            # from env var
+            if isinstance(telstra_client_secret, TClientSecret):
+                self._telstra_client_secret = telstra_client_secret
+                print(self._telstra_client_secret)
+                return self._telstra_client_secret
+            # from shared file
+            elif self._shared_credentials_file.is_file():
+                # read contents of file
+                _f = open(self._shared_credentials_file, "r")
+                _f_lines = _f.readlines()
+                for line in _f_lines:
+                    if line.find("[default]") != -1:
+                        start_index = line.find("[default]")
+                        # Iterate the next three lines past default profile
+                        for item in [
+                            _f_lines[start_index + 1],
+                            _f_lines[start_index + 2],
+                        ]:
+                            item_formatted: str = "".join(item.split())
+                            _list_of_keys = item_formatted.split("=")
+
+                            if _list_of_keys[0] == telstra_client_secret_env_name:
+                                self._telstra_client_secret = _list_of_keys[1]
+                _f.close()
+                print(self._telstra_client_secret)
+                return self._telstra_client_secret
+            else:
                 raise exceptions.CredentialError(
                     "The client secret was not configured. "
                     "It can be retrieved from here: "
@@ -82,8 +138,7 @@ class Config:
                     "from telstra.messaging.utils.config import CONFIG\n"
                     "CONFIG.telstra_client_secret = '<client secret>'"
                 )
-            self._telstra_client_secret = telstra_client_secret
-        return self._telstra_client_secret
+        # return self._telstra_client_secret
 
     @telstra_client_secret.setter
     def telstra_client_secret(self, telstra_client_secret: TClientSecret) -> None:
