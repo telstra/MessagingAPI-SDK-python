@@ -35,9 +35,34 @@ TELSTRA_CLIENT_ID"<client id>" TELSTRA_CLIENT_SECRET="<client secret>" python ap
 
 ## Authentication
 
+Authentication through environment variables, a shared credentials file and through code are supported.
+
+### Authentication using environment variables
+
+Export the following two environment variables, replacing the values with your own credentials.
+
+```shell
+export TELSTRA_CLIENT_ID="<client id>"
+export TELSTRA_CLIENT_SECRET="<client secret>"
+```
+
+### Authentication using shared credentials
+
+Create a `~/.telstra/credentials` file in your home path with the following contents, replacing the values with your own credentials.
+
+```markdown
+[default]
+TELSTRA_CLIENT_ID = <client id>
+TELSTRA_CLIENT_SECRET = <client secret>
+```
+
+### Authentication using code
+
 On top of the authentication through the `TELSTRA_CLIENT_ID` and
-`TELSTRA_CLIENT_SECRET` environment variables, authentication through code is also
-supported. For example:
+`TELSTRA_CLIENT_SECRET` environment variables
+and a `~/.telstra/credentials` shared credentials
+file, authentication through code is also supported.
+For example:
 
 ```python
 from telstra.messaging.utils.config import CONFIG
