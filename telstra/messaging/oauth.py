@@ -9,6 +9,8 @@ from urllib import error, parse, request
 from . import exceptions
 from .utils import config
 
+_URL = "https://tapi.telstra.com/v2/oauth/token"
+
 
 @dataclasses.dataclass
 class TToken:
@@ -77,7 +79,6 @@ def _get_token() -> TToken:
         The oauth tokens.
 
     """
-    url = "https://tapi.telstra.com/v2/oauth/token"
     data = parse.urlencode(
         {
             "grant_type": "client_credentials",
@@ -86,8 +87,10 @@ def _get_token() -> TToken:
             "scope": "NSMS",
         }
     ).encode("ascii")
+    headers = {"Content-Type": "application/x-www-form-urlencoded", "Accept": "*/*"}
+    oauth_request = request.Request(_URL, data=data, headers=headers, method="POST")
     try:
-        with request.urlopen(url, data) as response:
+        with request.urlopen(oauth_request) as response:
             return TToken(**json.loads(response.read().decode()))
     except error.HTTPError as exc:
         raise exceptions.CredentialError(f"Could not retrieve token: {exc}") from exc

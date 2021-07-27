@@ -17,5 +17,5 @@ class SmsError(MessagingBaseException):
     """Raised when a sms request failed."""
 
 
-class BnumError(MessagingBaseException):
-    """Raised when a bnum request failed."""
+class TrialNumbersError(MessagingBaseException):
+    """Raised when a trial numbers request failed."""

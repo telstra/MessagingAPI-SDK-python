@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "telstra.messaging"
-version = "0.6.4"
+version = "0.6.5"
 readme = "README.md"
 description = "SDK for the Telstra Messaging API"
 license = "Apache-2.0"
@@ -20,6 +20,8 @@ black = {version = "^20.8b1", allow-prereleases = true}
 pytest-cov = "^2.10.1"
 pytest-randomly = "^3.5.0"
 pylint = "^2.6.0"
+requests = "^2.26"
+coverage = "^5.5"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

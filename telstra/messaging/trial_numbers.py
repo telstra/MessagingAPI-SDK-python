@@ -1,4 +1,4 @@
-"""Used to work with BNUMs for the free trial."""
+"""Used to work with Trial Numbers for the free trial."""
 
 import json
 import typing
@@ -23,7 +23,7 @@ def register(phone_numbers: TPhoneNumbers) -> TPhoneNumbers:
 
     """
     if not isinstance(phone_numbers, list):
-        raise exceptions.BnumError(
+        raise exceptions.TrialNumbersError(
             f'invalid value for "phone_numbers" argument, expecting list of strings, '
             f'received "{phone_numbers}"'
         )
@@ -32,27 +32,33 @@ def register(phone_numbers: TPhoneNumbers) -> TPhoneNumbers:
         None,
     )
     if result is not None:
-        raise exceptions.BnumError(
+        raise exceptions.TrialNumbersError(
             f'invalid value for "phone_numbers" argument, {result.reason}'
         )
 
     try:
         token = oauth.get_token()
     except exceptions.CredentialError as exc:
-        raise exceptions.BnumError(f"Could register phone numbers: {exc}") from exc
+        raise exceptions.TrialNumbersError(
+            f"Could register phone numbers: {exc}"
+        ) from exc
 
     data = json.dumps({"bnum": phone_numbers}).encode()
     headers = {
         "Content-Type": "application/json",
         "Authorization": token.authorization,
     }
-    sms_request = request.Request(_URL, data=data, headers=headers, method="POST")
+    trail_numbers_request = request.Request(
+        _URL, data=data, headers=headers, method="POST"
+    )
     try:
-        with request.urlopen(sms_request) as response:
-            bnum_dict = json.loads(response.read().decode())
-            return bnum_dict["bnum"]
+        with request.urlopen(trail_numbers_request) as response:
+            trial_numbers_dict = json.loads(response.read().decode())
+            return trial_numbers_dict["bnum"]
     except error.HTTPError as exc:
-        raise exceptions.BnumError(f"Could register phone numbers: {exc}") from exc
+        raise exceptions.TrialNumbersError(
+            f"Could register phone numbers: {exc}"
+        ) from exc
 
 
 def get() -> TPhoneNumbers:
@@ -66,17 +72,21 @@ def get() -> TPhoneNumbers:
     try:
         token = oauth.get_token()
     except exceptions.CredentialError as exc:
-        raise exceptions.BnumError(f"Could retrieve phone numbers: {exc}") from exc
+        raise exceptions.TrialNumbersError(
+            f"Could retrieve phone numbers: {exc}"
+        ) from exc
 
     headers = {
         "Content-Type": "application/json",
         "Authorization": token.authorization,
     }
-    sms_request = request.Request(_URL, headers=headers, method="GET")
+    trail_numbers_request = request.Request(_URL, headers=headers, method="GET")
     try:
-        with request.urlopen(sms_request) as response:
+        with request.urlopen(trail_numbers_request) as response:
             data = response.read().decode()
-            bnum_dict = json.loads(data)
-            return bnum_dict["bnum"]
+            trial_numbers_dict = json.loads(data)
+            return trial_numbers_dict["bnum"]
     except error.HTTPError as exc:
-        raise exceptions.BnumError(f"Could retrieve phone numbers: {exc}") from exc
+        raise exceptions.TrialNumbersError(
+            f"Could retrieve phone numbers: {exc}"
+        ) from exc

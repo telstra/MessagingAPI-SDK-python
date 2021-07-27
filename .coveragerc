@@ -1,7 +1,7 @@
 [run]
 omit =
     **/conftest.py
-    **bnum.py
+    **trial_numbers.py
 branch = True
 
 [report]
@@ -29,6 +29,6 @@ exclude_lines =
     # Don't complain about platform versions
     .call_args.
 
-skip_covered=true
+skip_covered=false
 show_missing=true
-fail_under=100
+# fail_under=100

@@ -91,22 +91,22 @@ Register destinations for the free trial. For more information, please see
 here:
 <https://dev.telstra.com/content/messaging-api#operation/freeTrialBnumRegister>.
 
-The function `telstra.messaging.bnum.register` can be used to register
+The function `telstra.messaging.trial_numbers.register` can be used to register
 destinations. It takes the following arguments:
 
 - `phone_numbers`: A list of destinations, expected to be phone numbers of the
   form `+614XXXXXXXX` or `04XXXXXXXX`.
 
-Raises `telstra.messaging.exceptions.BnumError` if anything goes wrong.
+Raises `telstra.messaging.exceptions.TrialNumbersError` if anything goes wrong.
 
 It returns the list of phone numbers that have been registered.
 
 For example:
 
 ```python
-from telstra.messaging import bnum
+from telstra.messaging import trial_numbers
 
-phone_numbers = bnum.register(phone_numbers=["+61412345678"])
+phone_numbers = trial_numbers.register(phone_numbers=["+61412345678"])
 print(phone_numbers)
 ```
 
@@ -118,10 +118,10 @@ Retrieve destinations for the free trial. For more information, please see
 here:
 <https://dev.telstra.com/content/messaging-api#operation/freeTrialBnumList>.
 
-The function `telstra.messaging.bnum.get` can be used to retrieve registered
+The function `telstra.messaging.trial_numbers.get` can be used to retrieve registered
 destinations. It takes no arguments.
 
-Raises `telstra.messaging.exceptions.BnumError` if anything goes wrong.
+Raises `telstra.messaging.exceptions.TrialNumbersError` if anything goes wrong.
 
 It returns the list of phone numbers that
 have been registered.
@@ -129,9 +129,9 @@ have been registered.
 For example:
 
 ```python
-from telstra.messaging import bnum
+from telstra.messaging import trial_numbers
 
-phone_numbers = bnum.get()
+phone_numbers = trial_numbers.get()
 print(phone_numbers)
 ```
 

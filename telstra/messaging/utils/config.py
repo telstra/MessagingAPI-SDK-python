@@ -52,7 +52,6 @@ class Config:
             # from env var
             if isinstance(telstra_client_id, TClientId):
                 self._telstra_client_id = telstra_client_id
-                print(self._telstra_client_id)
                 return self._telstra_client_id
             # from shared file
             elif self._f_lines:
@@ -102,7 +101,6 @@ class Config:
             # from env var
             if isinstance(telstra_client_secret, TClientSecret):
                 self._telstra_client_secret = telstra_client_secret
-                print(self._telstra_client_secret)
                 return self._telstra_client_secret
             # from shared file
             elif self._f_lines:
