@@ -1,17 +1,17 @@
 """Tests for the messaging API."""
 
-from telstra.messaging import exceptions, sms, subscription
+from telstra.messaging import exceptions, sms, numbers
 
 
-def test_create_subscription():
+def test_create_numbers():
     """
     GIVEN credentials in the environment
     WHEN create, get and delete are called
     THEN no errors are raised.
     """
-    subscription.create()
-    subscription.get()
-    subscription.delete()
+    numbers.create()
+    numbers.get()
+    numbers.delete()
 
 
 def test_send_sms():
@@ -20,8 +20,8 @@ def test_send_sms():
     WHEN send is called
     THEN no errors are raised.
     """
-    subscription_value = subscription.get()
-    sms.send(to=subscription_value.destination_address, body="Test")
+    numbers_value = numbers.get()
+    sms.send(to=numbers_value.destination_address, body="Test")
 
 
 def test_get_reply():
@@ -30,8 +30,8 @@ def test_get_reply():
     WHEN send and then get_next_unread_reply is called
     THEN no errors are raised.
     """
-    subscription_value = subscription.get()
-    sms.send(to=subscription_value.destination_address, body="Test")
+    numbers_value = numbers.get()
+    sms.send(to=numbers_value.destination_address, body="Test")
     sms.get_next_unread_reply()
 
 
@@ -41,8 +41,8 @@ def test_get_status():
     WHEN get_status is called
     THEN no errors are raised.
     """
-    subscription_value = subscription.get()
-    sent_sms = sms.send(to=subscription_value.destination_address, body="Test")
+    numbers_value = numbers.get()
+    sent_sms = sms.send(to=numbers_value.destination_address, body="Test")
 
     retries = 5
     for retry_counter in range(retries):

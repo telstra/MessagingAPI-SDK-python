@@ -135,85 +135,85 @@ phone_numbers = trial_numbers.get()
 print(phone_numbers)
 ```
 
-## Subscription
+## Numbers
 
-A subscription gives you a dedicated mobile number tied to an application which
+Gives you a dedicated mobile number tied to an application which
 enables you to receive replies from your customers. For more information,
 please see here:
 <https://dev.telstra.com/content/messaging-api#tag/Provisioning>.
 
-### Create Subscription
+### Create Numbers
 
-Create a new subscription for a dedicated mobile number. For more information,
+Create a new number for a dedicated mobile number. For more information,
 please see here:
 <https://dev.telstra.com/content/messaging-api#operation/createSubscription>.
 
-The function `telstra.messaging.subscription.create` can be used to create a
-subscription. It takes the following arguments:
+The function `telstra.messaging.numbers.create` can be used to create a
+numbers. It takes the following arguments:
 
-- `active_days` (optional): The number of days the subscription will be active,
+- `active_days` (optional): The number of days the number will be active,
   defaults to 30.
 - `notify_url` (optional): A notification URL that will be POSTed to whenever a
   new message (i.e. a reply to a message sent) arrives at this destination
   address.
 
-Raises `telstra.messaging.exceptions.SubscriptionError` if anything goes wrong.
+Raises `telstra.messaging.exceptions.NumbersError` if anything goes wrong.
 
 It returns an object with the following properties:
 
 - `destination_address`: The phone number that a message can be sent to.
-- `active_days`: The number of days left on the subscription.
+- `active_days`: The number of days left on the number.
 
 For example:
 
 ```python
-from telstra.messaging import subscription
+from telstra.messaging import numbers
 
-created_subscription = subscription.create()
-print(created_subscription)
+created_numbers = numbers.create()
+print(created_numbers)
 ```
 
-### Get Subscription
+### Retrieve Number
 
-Retrieve the current subscription. For more information, please see here:
+Retrieve the current number. For more information, please see here:
 <https://dev.telstra.com/content/messaging-api#operation/getSubscription>.
 
-The function `telstra.messaging.subscription.get` can be used to get the current
-subscription. It takes no arguments.
+The function `telstra.messaging.numbers.get` can be used to get the current
+number. It takes no arguments.
 
-Raises `telstra.messaging.exceptions.SubscriptionError` if anything goes wrong.
+Raises `telstra.messaging.exceptions.NumbersError` if anything goes wrong.
 
 It returns an object with the following
 properties:
 
 - `destination_address`: The phone number that a message can be sent to.
-- `active_days`: The number of days left on the subscription.
+- `active_days`: The number of days left.
 
 For example:
 
 ```python
-from telstra.messaging import subscription
+from telstra.messaging import numbers
 
-retrieved_subscription = subscription.get()
-print(retrieved_subscription)
+retrieved_numbers = numbers.get()
+print(retrieved_numbers)
 ```
 
-### Delete Subscription
+### Delete Number
 
-Delete the current subscription. For more information, please see here:
+Delete the current number. For more information, please see here:
 <https://dev.telstra.com/content/messaging-api#operation/deleteSubscription>.
 
-The function `telstra.messaging.subscription.delete` can be used to delete the current
-subscription. It takes no arguments.
+The function `telstra.messaging.numbers.delete` can be used to delete the current
+number. It takes no arguments.
 
-Raises `telstra.messaging.exceptions.SubscriptionError` if anything goes wrong.
+Raises `telstra.messaging.exceptions.NumbersError` if anything goes wrong.
 
 It returns nothing.
 
 ```python
-from telstra.messaging import subscription
+from telstra.messaging import numbers
 
-subscription.delete()
+numbers.delete()
 ```
 
 ## SMS
@@ -297,12 +297,12 @@ print(status)
 
 ### Retrieve Reply
 
-Retrieve SMS sent to the mobile number associated with the subscription. For
+Retrieve SMS sent to the mobile number associated with the number. For
 more information, please see here:
 <https://dev.telstra.com/content/messaging-api#operation/retrieveSmsReplies>.
 
 The function `telstra.messaging.sms.get_next_unread_reply` can be used to retrieve
-the next unread reply for your phone number subscription. It takes no
+the next unread reply for your phone number. It takes no
 arguments.
 
 Raises `telstra.messaging.exceptions.SmsError` if anything goes wrong.

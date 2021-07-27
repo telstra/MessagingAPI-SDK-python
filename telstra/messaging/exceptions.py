@@ -9,8 +9,8 @@ class CredentialError(MessagingBaseException):
     """Raised when required credentials are not provided."""
 
 
-class SubscriptionError(MessagingBaseException):
-    """Raised when a subscription request failed."""
+class NumbersError(MessagingBaseException):
+    """Raised when a numbers request failed."""
 
 
 class SmsError(MessagingBaseException):

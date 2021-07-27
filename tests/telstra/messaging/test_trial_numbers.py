@@ -1,6 +1,5 @@
-"""Tests for bun."""
+"""Tests for trial_numbers."""
 
-import functools
 from unittest.mock import patch
 
 import pytest
@@ -10,6 +9,8 @@ from tests.mocs import get_free_port, start_mock_server
 
 
 class TestTrialNumbers(object):
+    """Test Class for trial_numbers."""
+
     @classmethod
     def setup_class(cls):
         cls.mock_server_port = get_free_port()
@@ -86,7 +87,8 @@ class TestTrialNumbers(object):
             )
         )
 
-        # Patch _URL so that the service uses the mock server URL instead of the real URL.
+        # Patch _URL so that the service uses the mock server URL
+        # instead of the real URL.
         with patch.dict(
             "telstra.messaging.trial_numbers.__dict__", {"_URL": mock_trial_numbers_url}
         ):
