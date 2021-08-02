@@ -274,7 +274,7 @@ def send(  # pylint: disable=too-many-arguments,too-many-locals
             f"Could not retrieve an OAuth token: {exc}"
         ) from exc
 
-    _endpoint_type = "/sms"
+    endpoint_suffix = "sms"
 
     data: typing.Dict[str, typing.Any] = {"to": to, "body": body}
     if from_ is not None:
@@ -293,7 +293,7 @@ def send(  # pylint: disable=too-many-arguments,too-many-locals
         data["receiptOff"] = receipt_off
     if mms_content is not None:
         data["MMSContent"] = mms_content
-        _endpoint_type = "/mms"
+        endpoint_suffix = "mms"
     if user_msg_ref is not None:
         data["userMsgRef"] = user_msg_ref
     data_str = json.dumps(data).encode()
@@ -302,7 +302,10 @@ def send(  # pylint: disable=too-many-arguments,too-many-locals
         "Authorization": token.authorization,
     }
     message_request = request.Request(
-        _URL + _endpoint_type, data=data_str, headers=headers, method="POST"
+        f"{_URL}/{endpoint_suffix}",
+        data=data_str,
+        headers=headers,
+        method="POST",
     )
     try:
         with request.urlopen(message_request) as response:
@@ -356,13 +359,13 @@ def get_next_unread_reply(
 
     """
     if message_type is None:
-        endpoint_suffix: types.TMessageType = "/sms"
+        endpoint_suffix: types.TMessageType = "sms"
     elif message_type is not None and not isinstance(message_type, str):
-        endpoint_suffix: types.TMessageType = "/sms"
+        endpoint_suffix: types.TMessageType = "sms"
     elif message_type == "mms":
-        endpoint_suffix: types.TMessageType = "/mms"
+        endpoint_suffix: types.TMessageType = "mms"
     else:
-        endpoint_suffix: types.TMessageType = "/sms"
+        endpoint_suffix: types.TMessageType = "sms"
 
     try:
         token = oauth.get_token()
@@ -373,7 +376,9 @@ def get_next_unread_reply(
 
     headers = {"Authorization": token.authorization}
     reply_request = request.Request(
-        _URL + endpoint_suffix, headers=headers, method="GET"
+        f"{_URL}/{endpoint_suffix}",
+        headers=headers,
+        method="GET",
     )
     try:
         with request.urlopen(reply_request) as response:
@@ -427,16 +432,22 @@ def get_status(message_id: types.TMessageId) -> TStatus:
         The status of the message.
 
     """
+    if re.search("mmsc.telstra.com$", message_id) is not None:
+        endpoint_suffix: str = "mms"
+    else:
+        endpoint_suffix: str = "sms"
+
     try:
         token = oauth.get_token()
     except exceptions.CredentialError as exc:
         raise exceptions.MessageError(
             f"Could not retrieve an OAuth token: {exc}"
         ) from exc
-
     headers = {"Authorization": token.authorization, "Content-Type": "application/json"}
     status_request = request.Request(
-        f"{_URL}/{parse.quote(message_id)}/status", headers=headers, method="GET"
+        f"{_URL}/{endpoint_suffix}/{parse.quote(message_id)}/status",
+        headers=headers,
+        method="GET",
     )
     try:
         with request.urlopen(status_request) as response:
