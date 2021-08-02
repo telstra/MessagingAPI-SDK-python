@@ -248,6 +248,9 @@ following arguments:
 - `receipt_off` (optional): Whether Delivery Receipt will be sent back or not.
 - `user_msg_ref` (optional): Optional field used by some clients for custom
   reporting.
+- `mms_content` (optional): Optional field used by some clients to send an mms.
+  reporting.
+- `subject` (optional): Optional field used by some clients when sending an mms.
 
 Raises `telstra.messaging.exceptions.MessageError` if anything goes wrong.
 
@@ -302,8 +305,10 @@ more information, please see here:
 <https://dev.telstra.com/content/messaging-api#operation/retrieveSmsReplies>.
 
 The function `telstra.messaging.message.get_next_unread_reply` can be used to retrieve
-the next unread reply for your phone number. It takes no
-arguments.
+the next unread reply for your phone number. It takes the
+following arguments:
+
+- `message_type`: Accepts `sms` or `mms` or None, defaults to `sms`.
 
 Raises `telstra.messaging.exceptions.MessageError` if anything goes wrong.
 

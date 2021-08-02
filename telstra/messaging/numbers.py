@@ -103,7 +103,7 @@ def get() -> TNumbers:
                 active_days=numbers_dict["activeDays"],
             )
     except error.HTTPError as exc:
-        raise exceptions.NumbersError(f"Could not delete number: {exc}") from exc
+        raise exceptions.NumbersError(f"Could not retrieve number: {exc}") from exc
 
 
 def delete() -> None:

@@ -12,11 +12,11 @@ from telstra.messaging.utils import phone_number
 from . import exceptions, oauth, types
 from .utils import phone_number
 
-_URL = "https://tapi.telstra.com/v2/messages/sms"
+_URL = "https://tapi.telstra.com/v2/messages"
 
 
 @dataclasses.dataclass
-class TSms:
+class TMessage:
     """
     A message.
 
@@ -87,26 +87,76 @@ def _send_validate_from(from_: typing.Optional[types.TFrom]) -> None:
             )
 
 
+def _send_validate_body(
+    body: typing.Optional[types.TBody], mms_content: typing.Optional[types.TMMSContent]
+) -> None:
+    """Validate the body parameter for send."""
+    if body is None and mms_content is None:
+        raise exceptions.MessageError(
+            '"body" or "mms_content" must be supplied, received '
+            f'body:"{body}"'
+            ", "
+            f'mms_content:"{mms_content}"'
+        )
+    if mms_content is not None and body is not None:
+        raise exceptions.MessageError(
+            'only "mms_content" or "body" should be supplied, received '
+            f'body:"{body}"'
+            ", "
+            f'mms_content:"{mms_content}"'
+        )
+    if body is not None:
+        if not isinstance(body, str):
+            raise exceptions.MessageError(
+                'the value of "body" is not valid, expected a string, received '
+                f'"{body}"'
+            )
+
+
+def _send_validate_mms_content(
+    mms_content: typing.Optional[types.TMMSContent], body: typing.Optional[types.TBody]
+) -> None:
+    """Validate the body parameter for send."""
+    if mms_content is None and body is None:
+        raise exceptions.MessageError(
+            '"mms_content" or "body" must be supplied, received '
+            f'mms_content:"{mms_content}"'
+            ", "
+            f'body:"{body}"'
+        )
+    if mms_content is not None and body is not None:
+        raise exceptions.MessageError(
+            'only "mms_content" or "body" should be supplied, received '
+            f'mms_content:"{mms_content}"'
+            ", "
+            f'body:"{body}"'
+        )
+    # if mms_content is not None and not isinstance(mms_content, str):
+    #     raise exceptions.MessageError(
+    #         'the value of "mms_content" is not valid, expected an MMS Content, '
+    #         f'received "{mms_content}"'
+    #     )
+
+
 def _validate_send_args(  # pylint: disable=too-many-arguments
     to: typing.Union[types.TTo, typing.List[types.TTo]],
-    body: types.TBody,
+    body: typing.Optional[types.TBody],
     from_: typing.Optional[types.TFrom],
     validity: typing.Optional[types.TValidity],
     scheduled_delivery: typing.Optional[types.TScheduledDelivery],
     notify_url: typing.Optional[types.TNotifyUrl],
-    priority: typing.Optional[types.TPriority],
     reply_request: typing.Optional[types.TReplyRequest],
+    priority: typing.Optional[types.TPriority],
     receipt_off: typing.Optional[types.TReceiptOff],
+    mms_content: typing.Optional[typing.Dict[str, typing.Any]],
+    subject: typing.Optional[types.TSubject],
     user_msg_ref: typing.Optional[types.TUsrMsgRef],
 ) -> None:
     """Validate the arguments for send."""
     # Validate to
     _send_validate_to(to)
     # Validate body
-    if not isinstance(body, str):
-        raise exceptions.MessageError(
-            f'the value of "body" is not valid, expected a string, received "{body}"'
-        )
+    _send_validate_body(body, mms_content)
     # Validate from_
     _send_validate_from(from_)
     # Validate validity
@@ -130,32 +180,40 @@ def _validate_send_args(  # pylint: disable=too-many-arguments
     # Validate priority
     if priority is not None and not isinstance(priority, bool):
         raise exceptions.MessageError(
-            'the value of "priority" is not valid, expected an boolean, '
+            'the value of "priority" is not valid, expected a boolean, '
             f'received "{priority}"'
         )
     # Validate reply_request
     if reply_request is not None and not isinstance(reply_request, bool):
         raise exceptions.MessageError(
-            'the value of "reply_request" is not valid, expected an boolean, '
+            'the value of "reply_request" is not valid, expected a boolean, '
             f'received "{reply_request}"'
         )
     # Validate receipt_off
     if receipt_off is not None and not isinstance(receipt_off, bool):
         raise exceptions.MessageError(
-            'the value of "receipt_off" is not valid, expected an boolean, '
+            'the value of "receipt_off" is not valid, expected a boolean, '
             f'received "{receipt_off}"'
+        )
+    # Validate mms_content
+    _send_validate_mms_content(mms_content, body)
+    # Validate subject
+    if subject is not None and not isinstance(subject, str):
+        raise exceptions.MessageError(
+            'the value of "subject" is not valid, expected a string, '
+            f'received "{subject}"'
         )
     # Validate user_msg_ref
     if user_msg_ref is not None and not isinstance(user_msg_ref, str):
         raise exceptions.MessageError(
-            'the value of "user_msg_ref" is not valid, expected an string, '
+            'the value of "user_msg_ref" is not valid, expected a string, '
             f'received "{user_msg_ref}"'
         )
 
 
 def send(  # pylint: disable=too-many-arguments,too-many-locals
     to: typing.Union[types.TTo, typing.List[types.TTo]],
-    body: types.TBody,
+    body: typing.Optional[types.TBody] = None,
     from_: typing.Optional[types.TFrom] = None,
     validity: typing.Optional[types.TValidity] = None,
     scheduled_delivery: typing.Optional[types.TScheduledDelivery] = None,
@@ -163,8 +221,10 @@ def send(  # pylint: disable=too-many-arguments,too-many-locals
     reply_request: typing.Optional[types.TReplyRequest] = None,
     priority: typing.Optional[types.TPriority] = None,
     receipt_off: typing.Optional[types.TReceiptOff] = None,
+    mms_content: typing.Optional[typing.Dict[str, typing.Any]] = None,
+    subject: typing.Optional[types.TSubject] = None,
     user_msg_ref: typing.Optional[types.TUsrMsgRef] = None,
-) -> TSms:
+) -> TMessage:
     """
     Send a message.
 
@@ -184,6 +244,8 @@ def send(  # pylint: disable=too-many-arguments,too-many-locals
         reply_request: If set to true, the reply message functionality will be
             implemented.
         receipt_off: Whether Delivery Receipt will be sent back or not.
+        mms_content: Optional field used by some clients to send an mms.
+        subject: Optional field used by some clients when sending an mms.
         user_msg_ref: Optional field used by some clients for custom reporting.
 
     Returns:
@@ -200,6 +262,8 @@ def send(  # pylint: disable=too-many-arguments,too-many-locals
         priority=priority,
         reply_request=reply_request,
         receipt_off=receipt_off,
+        mms_content=mms_content,
+        subject=subject,
         user_msg_ref=user_msg_ref,
     )
 
@@ -209,6 +273,8 @@ def send(  # pylint: disable=too-many-arguments,too-many-locals
         raise exceptions.MessageError(
             f"Could not retrieve an OAuth token: {exc}"
         ) from exc
+
+    _endpoint_type = "/sms"
 
     data: typing.Dict[str, typing.Any] = {"to": to, "body": body}
     if from_ is not None:
@@ -225,6 +291,9 @@ def send(  # pylint: disable=too-many-arguments,too-many-locals
         data["replyRequest"] = reply_request
     if receipt_off is not None:
         data["receiptOff"] = receipt_off
+    if mms_content is not None:
+        data["MMSContent"] = mms_content
+        _endpoint_type = "/mms"
     if user_msg_ref is not None:
         data["userMsgRef"] = user_msg_ref
     data_str = json.dumps(data).encode()
@@ -233,12 +302,12 @@ def send(  # pylint: disable=too-many-arguments,too-many-locals
         "Authorization": token.authorization,
     }
     message_request = request.Request(
-        _URL, data=data_str, headers=headers, method="POST"
+        _URL + _endpoint_type, data=data_str, headers=headers, method="POST"
     )
     try:
         with request.urlopen(message_request) as response:
             message_dict = json.loads(response.read().decode())
-            return TSms(
+            return TMessage(
                 to=message_dict["messages"][0]["to"],
                 delivery_status=message_dict["messages"][0]["deliveryStatus"],
                 message_id=message_dict["messages"][0]["messageId"],
@@ -271,9 +340,14 @@ class TReply:
     sent_timestamp: types.TSentTimestamp
 
 
-def get_next_unread_reply() -> typing.Optional[TReply]:
+def get_next_unread_reply(
+    message_type: typing.Optional[types.TMessageType] = None,
+) -> typing.Optional[TReply]:
     """
     Get the next unread reply that have been received.
+
+    Attrs:
+        message_type: Accepts sms | mms or None, defaults to sms.
 
     Raises MessageError is anything goes wrong whilst retrieving the reply.
 
@@ -281,6 +355,15 @@ def get_next_unread_reply() -> typing.Optional[TReply]:
         The next unread reply or None if there are no more replies.
 
     """
+    if message_type is None:
+        endpoint_suffix: types.TMessageType = "/sms"
+    elif message_type is not None and not isinstance(message_type, str):
+        endpoint_suffix: types.TMessageType = "/sms"
+    elif message_type == "mms":
+        endpoint_suffix: types.TMessageType = "/mms"
+    else:
+        endpoint_suffix: types.TMessageType = "/sms"
+
     try:
         token = oauth.get_token()
     except exceptions.CredentialError as exc:
@@ -289,7 +372,9 @@ def get_next_unread_reply() -> typing.Optional[TReply]:
         ) from exc
 
     headers = {"Authorization": token.authorization}
-    reply_request = request.Request(_URL, headers=headers, method="GET")
+    reply_request = request.Request(
+        _URL + endpoint_suffix, headers=headers, method="GET"
+    )
     try:
         with request.urlopen(reply_request) as response:
             reply_dict = json.loads(response.read().decode())
@@ -305,7 +390,9 @@ def get_next_unread_reply() -> typing.Optional[TReply]:
             except KeyError:
                 return None
     except error.HTTPError as exc:
-        raise exceptions.MessageError(f"Could not send message: {exc}") from exc
+        raise exceptions.MessageError(
+            f"Could not retrieve message replies: {exc}"
+        ) from exc
 
 
 @dataclasses.dataclass
