@@ -18,7 +18,7 @@ _URL = "https://tapi.telstra.com/v2/messages/sms"
 @dataclasses.dataclass
 class TSms:
     """
-    A sms.
+    A message.
 
     Attrs:
         to: The destination mobile number.
@@ -40,14 +40,14 @@ _VALID_FROM = re.compile(r"^[a-zA-Z0-9]+$")
 def _send_validate_to(to: typing.Union[types.TTo, typing.List[types.TTo]]) -> None:
     """Validate the to parameter for send."""
     if not isinstance(to, str) and not isinstance(to, list):
-        raise exceptions.SmsError(
+        raise exceptions.MessageError(
             f'the value of "to" is not valid, expecting a string or a list of string, '
             f'received "{to}"'
         )
     if isinstance(to, str):
         result = phone_number.check(value=to)
         if not result.valid:
-            raise exceptions.SmsError(
+            raise exceptions.MessageError(
                 f'the value of "to" is not valid, {result.reason}'
             )
     if isinstance(to, list):
@@ -56,7 +56,7 @@ def _send_validate_to(to: typing.Union[types.TTo, typing.List[types.TTo]]) -> No
             None,
         )
         if first_invalid_result is not None:
-            raise exceptions.SmsError(
+            raise exceptions.MessageError(
                 f'the value of "to" is not valid, {first_invalid_result.reason}'
             )
 
@@ -65,23 +65,23 @@ def _send_validate_from(from_: typing.Optional[types.TFrom]) -> None:
     """Validate the from_ parameter for send."""
     if from_ is not None:
         if not isinstance(from_, str):
-            raise exceptions.SmsError(
+            raise exceptions.MessageError(
                 'the value of "from_" is not valid, expected a string, received '
                 f'"{from_}"'
             )
         if len(from_) > 11:
-            raise exceptions.SmsError(
+            raise exceptions.MessageError(
                 'the value of "from_" has too many characters, expected at most 11 '
                 f'characters, received "{from_}"'
             )
         if not _VALID_FROM.search(from_):
-            raise exceptions.SmsError(
+            raise exceptions.MessageError(
                 'the value of "from_" contains invalid characters, expected alpha '
                 f'numeric characters, received "{from_}"'
             )
         result = phone_number.check(value=from_)
         if result.valid:
-            raise exceptions.SmsError(
+            raise exceptions.MessageError(
                 'the value of "from_" is a phone number, expected alpha '
                 f'numeric characters that are not phone numbers, received "{from_}"'
             )
@@ -104,7 +104,7 @@ def _validate_send_args(  # pylint: disable=too-many-arguments
     _send_validate_to(to)
     # Validate body
     if not isinstance(body, str):
-        raise exceptions.SmsError(
+        raise exceptions.MessageError(
             f'the value of "body" is not valid, expected a string, received "{body}"'
         )
     # Validate from_
@@ -113,7 +113,7 @@ def _validate_send_args(  # pylint: disable=too-many-arguments
     if validity is not None and (
         not isinstance(validity, int) or isinstance(validity, bool)
     ):
-        raise exceptions.SmsError(
+        raise exceptions.MessageError(
             'the value of "validity" is not valid, expected an integer, received '
             f'"{validity}"'
         )
@@ -121,33 +121,33 @@ def _validate_send_args(  # pylint: disable=too-many-arguments
     if scheduled_delivery is not None and (
         not isinstance(scheduled_delivery, int) or isinstance(scheduled_delivery, bool)
     ):
-        raise exceptions.SmsError(
+        raise exceptions.MessageError(
             'the value of "scheduled_delivery" is not valid, expected an integer, '
             f'received "{scheduled_delivery}"'
         )
     # Validate notify_url
-    notify_url_util.validate(value=notify_url, exception=exceptions.SmsError)
+    notify_url_util.validate(value=notify_url, exception=exceptions.MessageError)
     # Validate priority
     if priority is not None and not isinstance(priority, bool):
-        raise exceptions.SmsError(
+        raise exceptions.MessageError(
             'the value of "priority" is not valid, expected an boolean, '
             f'received "{priority}"'
         )
     # Validate reply_request
     if reply_request is not None and not isinstance(reply_request, bool):
-        raise exceptions.SmsError(
+        raise exceptions.MessageError(
             'the value of "reply_request" is not valid, expected an boolean, '
             f'received "{reply_request}"'
         )
     # Validate receipt_off
     if receipt_off is not None and not isinstance(receipt_off, bool):
-        raise exceptions.SmsError(
+        raise exceptions.MessageError(
             'the value of "receipt_off" is not valid, expected an boolean, '
             f'received "{receipt_off}"'
         )
     # Validate user_msg_ref
     if user_msg_ref is not None and not isinstance(user_msg_ref, str):
-        raise exceptions.SmsError(
+        raise exceptions.MessageError(
             'the value of "user_msg_ref" is not valid, expected an string, '
             f'received "{user_msg_ref}"'
         )
@@ -166,9 +166,9 @@ def send(  # pylint: disable=too-many-arguments,too-many-locals
     user_msg_ref: typing.Optional[types.TUsrMsgRef] = None,
 ) -> TSms:
     """
-    Send an SMS.
+    Send a message.
 
-    Raises SmsError is anything goes wrong whilst sending a message.
+    Raises MessageError is anything goes wrong whilst sending a message.
 
     Args:
         to: The destination mobile number.
@@ -206,7 +206,9 @@ def send(  # pylint: disable=too-many-arguments,too-many-locals
     try:
         token = oauth.get_token()
     except exceptions.CredentialError as exc:
-        raise exceptions.SmsError(f"Could not retrieve an OAuth token: {exc}") from exc
+        raise exceptions.MessageError(
+            f"Could not retrieve an OAuth token: {exc}"
+        ) from exc
 
     data: typing.Dict[str, typing.Any] = {"to": to, "body": body}
     if from_ is not None:
@@ -230,18 +232,20 @@ def send(  # pylint: disable=too-many-arguments,too-many-locals
         "Content-Type": "application/json",
         "Authorization": token.authorization,
     }
-    sms_request = request.Request(_URL, data=data_str, headers=headers, method="POST")
+    message_request = request.Request(
+        _URL, data=data_str, headers=headers, method="POST"
+    )
     try:
-        with request.urlopen(sms_request) as response:
-            sms_dict = json.loads(response.read().decode())
+        with request.urlopen(message_request) as response:
+            message_dict = json.loads(response.read().decode())
             return TSms(
-                to=sms_dict["messages"][0]["to"],
-                delivery_status=sms_dict["messages"][0]["deliveryStatus"],
-                message_id=sms_dict["messages"][0]["messageId"],
-                message_status_url=sms_dict["messages"][0]["messageStatusURL"],
+                to=message_dict["messages"][0]["to"],
+                delivery_status=message_dict["messages"][0]["deliveryStatus"],
+                message_id=message_dict["messages"][0]["messageId"],
+                message_status_url=message_dict["messages"][0]["messageStatusURL"],
             )
     except error.HTTPError as exc:
-        raise exceptions.SmsError(f"Could not send SMS: {exc}") from exc
+        raise exceptions.MessageError(f"Could not send message: {exc}") from exc
 
 
 @dataclasses.dataclass
@@ -271,7 +275,7 @@ def get_next_unread_reply() -> typing.Optional[TReply]:
     """
     Get the next unread reply that have been received.
 
-    Raises SmsError is anything goes wrong whilst retrieving the reply.
+    Raises MessageError is anything goes wrong whilst retrieving the reply.
 
     Returns:
         The next unread reply or None if there are no more replies.
@@ -280,7 +284,9 @@ def get_next_unread_reply() -> typing.Optional[TReply]:
     try:
         token = oauth.get_token()
     except exceptions.CredentialError as exc:
-        raise exceptions.SmsError(f"Could not retrieve an OAuth token: {exc}") from exc
+        raise exceptions.MessageError(
+            f"Could not retrieve an OAuth token: {exc}"
+        ) from exc
 
     headers = {"Authorization": token.authorization}
     reply_request = request.Request(_URL, headers=headers, method="GET")
@@ -299,7 +305,7 @@ def get_next_unread_reply() -> typing.Optional[TReply]:
             except KeyError:
                 return None
     except error.HTTPError as exc:
-        raise exceptions.SmsError(f"Could not send SMS: {exc}") from exc
+        raise exceptions.MessageError(f"Could not send message: {exc}") from exc
 
 
 @dataclasses.dataclass
@@ -325,7 +331,7 @@ def get_status(message_id: types.TMessageId) -> TStatus:
     """
     Retrieve the status of a message.
 
-    Raises SmsError is anything goes wrong whilst retrieving the status.
+    Raises MessageError is anything goes wrong whilst retrieving the status.
 
     Args:
         message_id: Unique identifier for the message.
@@ -337,7 +343,9 @@ def get_status(message_id: types.TMessageId) -> TStatus:
     try:
         token = oauth.get_token()
     except exceptions.CredentialError as exc:
-        raise exceptions.SmsError(f"Could not retrieve an OAuth token: {exc}") from exc
+        raise exceptions.MessageError(
+            f"Could not retrieve an OAuth token: {exc}"
+        ) from exc
 
     headers = {"Authorization": token.authorization, "Content-Type": "application/json"}
     status_request = request.Request(
@@ -353,4 +361,4 @@ def get_status(message_id: types.TMessageId) -> TStatus:
                 delivery_status=status_dict[0]["deliveryStatus"],
             )
     except error.HTTPError as exc:
-        raise exceptions.SmsError(f"Could not retrieve the status: {exc}") from exc
+        raise exceptions.MessageError(f"Could not retrieve the status: {exc}") from exc

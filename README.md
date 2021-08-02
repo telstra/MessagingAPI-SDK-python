@@ -1,7 +1,7 @@
 # Telstra Messaging
 
-The SDK for the Telstra messaging API which enables you to send and receive SMS
-for Australian mobile numbers. For more information about this product, please
+The SDK for the Telstra Messaging API enables you to send and receive messages
+to Australian mobile numbers. For more information about this product, please
 see here:
 <https://dev.telstra.com/content/messaging-api>.
 
@@ -19,12 +19,12 @@ Set the `TELSTRA_CLIENT_ID` and `TELSTRA_CLIENT_SECRET` environment variables. T
 are the `Client id` and `Client secret` you can find here:
 <https://dev.telstra.com/user/me/apps>.
 
-To send your first SMS:
+To send your first message:
 
 ```python
-from telstra.messaging import sms
+from telstra.messaging import message
 
-sms.send(to="+61412345678", body="Hello from Python Messaging SDK!")
+message.send(to="+61412345678", body="Hello from Python Messaging SDK!")
 ```
 
 To set the required environment variables if your application is in `app.py`:
@@ -72,14 +72,14 @@ CONFIG.telstra_client_secret = '<client secret>'
 ```
 
 This should be done before any interactions requiring authentication, such as
-sending a SMS.
+sending a message.
 
 ## Free Trial
 
 Telstra offers a free trial for the messaging API to help you evaluate whether
 it meets your needs. There are some restrictions that apply compared to the
-full API, including a maximum number of SMS that can be sent and requiring the
-registration of a limited number of destinations before SMS can be sent to that
+full API, including a maximum number of messages that can be sent and requiring the
+registration of a limited number of destinations before a message can be sent to that
 destination. For more information, please see here:
 <https://dev.telstra.com/content/messaging-api#tag/Free-Trial>.
 
@@ -216,22 +216,22 @@ from telstra.messaging import numbers
 numbers.delete()
 ```
 
-## SMS
+## Message
 
-Send and receive SMS. For more information, please see here:
+Send and receive messages. For more information, please see here:
 <https://dev.telstra.com/content/messaging-api#tag/Messaging>.
 
-### Send SMS
+### Send Message
 
-Send a SMS to a mobile number. For more information, please see here:
+Send a message to a mobile number. For more information, please see here:
 <https://dev.telstra.com/content/messaging-api#operation/sendSms>.
 
-The function `telstra.messaging.sms.send` can be used to send SMS. It takes the
+The function `telstra.messaging.message.send` can be used to send a message. It takes the
 following arguments:
 
 - `to`: The destination address, expected to be a phone number of the form
   `+614XXXXXXXX` or `04XXXXXXXX`.
-- `body`: The SMS to send.
+- `body`: The message to send.
 - `from_` (optional): An alphanumeric value which will appear as the sender.
   Note that phone numbers are not supported amd the maximum length is 11
   characters. Certain well know senders will be blocked.
@@ -249,7 +249,7 @@ following arguments:
 - `user_msg_ref` (optional): Optional field used by some clients for custom
   reporting.
 
-Raises `telstra.messaging.exceptions.SmsError` if anything goes wrong.
+Raises `telstra.messaging.exceptions.MessageError` if anything goes wrong.
 
 It returns an object with the following properties:
 
@@ -261,22 +261,22 @@ It returns an object with the following properties:
 For example:
 
 ```python
-from telstra.messaging import sms
+from telstra.messaging import message
 
-sms.send(to="+61412345678", body="Hello from Python Messaging SDK!")
+message.send(to="+61412345678", body="Hello from Python Messaging SDK!")
 ```
 
-### Get SMS Status
+### Get Message Status
 
-Find out whether a SMS has been sent. For more information, please see here:
+Find out whether a message has been sent. For more information, please see here:
 <https://dev.telstra.com/content/messaging-api#operation/getSmsStatus>.
 
-The function `telstra.messaging.sms.get_status` can be used to retrieve
-the status of a SMS. It takes the following arguments:
+The function `telstra.messaging.message.get_status` can be used to retrieve
+the status of a message. It takes the following arguments:
 
 - `message_id`:Unique identifier for the message.
 
-Raises `telstra.messaging.exceptions.SmsError` if anything goes wrong.
+Raises `telstra.messaging.exceptions.MessageError` if anything goes wrong.
 
 It returns an object with the following properties:
 
@@ -288,24 +288,24 @@ It returns an object with the following properties:
 For example:
 
 ```python
-from telstra.messaging import sms
+from telstra.messaging import message
 
-sent_sms = sms.send(to="+61412345678", body="Hello from Python Messaging SDK!")
-status = sms.get_status(sent_sms.message_id)
+sent_message = message.send(to="+61412345678", body="Hello from Python Messaging SDK!")
+status = message.get_status(sent_message.message_id)
 print(status)
 ```
 
 ### Retrieve Reply
 
-Retrieve SMS sent to the mobile number associated with the number. For
+Retrieve messages sent to the mobile number associated with the number. For
 more information, please see here:
 <https://dev.telstra.com/content/messaging-api#operation/retrieveSmsReplies>.
 
-The function `telstra.messaging.sms.get_next_unread_reply` can be used to retrieve
+The function `telstra.messaging.message.get_next_unread_reply` can be used to retrieve
 the next unread reply for your phone number. It takes no
 arguments.
 
-Raises `telstra.messaging.exceptions.SmsError` if anything goes wrong.
+Raises `telstra.messaging.exceptions.MessageError` if anything goes wrong.
 
 It returns `None` if there are no more replies or an object with the
 following properties:
@@ -320,9 +320,9 @@ following properties:
 For example:
 
 ```python
-from telstra.messaging import sms
+from telstra.messaging import message
 
-reply = sms.get_next_unread_reply()
+reply = message.get_next_unread_reply()
 print(reply)
 ```
 

@@ -1,6 +1,6 @@
 """Tests for the messaging API."""
 
-from telstra.messaging import exceptions, sms, numbers
+from telstra.messaging import exceptions, message, numbers
 
 
 def test_create_numbers():
@@ -14,14 +14,14 @@ def test_create_numbers():
     numbers.delete()
 
 
-def test_send_sms():
+def test_send_message():
     """
     GIVEN credentials in the environment
     WHEN send is called
     THEN no errors are raised.
     """
     numbers_value = numbers.get()
-    sms.send(to=numbers_value.destination_address, body="Test")
+    message.send(to=numbers_value.destination_address, body="Test")
 
 
 def test_get_reply():
@@ -31,23 +31,23 @@ def test_get_reply():
     THEN no errors are raised.
     """
     numbers_value = numbers.get()
-    sms.send(to=numbers_value.destination_address, body="Test")
-    sms.get_next_unread_reply()
+    message.send(to=numbers_value.destination_address, body="Test")
+    message.get_next_unread_reply()
 
 
 def test_get_status():
     """
-    GIVEN credentials in the environment and a sent SMS
+    GIVEN credentials in the environment and a sent message
     WHEN get_status is called
     THEN no errors are raised.
     """
     numbers_value = numbers.get()
-    sent_sms = sms.send(to=numbers_value.destination_address, body="Test")
+    sent_message = message.send(to=numbers_value.destination_address, body="Test")
 
     retries = 5
     for retry_counter in range(retries):
         try:
-            sms.get_status(sent_sms.message_id)
-        except exceptions.SmsError as exc:
+            message.get_status(sent_message.message_id)
+        except exceptions.MessageError as exc:
             if retry_counter == retries - 1:
                 raise exc

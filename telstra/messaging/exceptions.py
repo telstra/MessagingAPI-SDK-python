@@ -13,8 +13,8 @@ class NumbersError(MessagingBaseException):
     """Raised when a numbers request failed."""
 
 
-class SmsError(MessagingBaseException):
-    """Raised when a sms request failed."""
+class MessageError(MessagingBaseException):
+    """Raised when a message request failed."""
 
 
 class TrialNumbersError(MessagingBaseException):

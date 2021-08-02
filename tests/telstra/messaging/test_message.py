@@ -1,4 +1,4 @@
-"""Tests for sms."""
+"""Tests for message."""
 
 import functools
 import json
@@ -9,7 +9,7 @@ from urllib import request
 
 import pytest
 
-from telstra.messaging import exceptions, sms, numbers
+from telstra.messaging import exceptions, message, numbers
 
 VALID_SEND_KWARGS: typing.Dict[str, typing.Any] = {
     "to": "+61412345678",
@@ -131,15 +131,15 @@ VALID_SEND_KWARGS: typing.Dict[str, typing.Any] = {
         ),
     ],
 )
-@pytest.mark.sms
+@pytest.mark.message
 def test_send_invalid_param(kwargs, expected_contents):
     """
     GIVEN invalid parameters
     WHEN send is called with the parameters
-    THEN SmsError is raised with the expected contents.
+    THEN MessageError is raised with the expected contents.
     """
-    with pytest.raises(exceptions.SmsError) as exc_info:
-        sms.send(**kwargs)
+    with pytest.raises(exceptions.MessageError) as exc_info:
+        message.send(**kwargs)
 
     for content in expected_contents:
         assert content in str(exc_info.value)
@@ -169,29 +169,29 @@ def test_send_invalid_param(kwargs, expected_contents):
 #         pytest.param({"receipt_off": True}, id="receipt_off"),
 #     ],
 # )
-# @pytest.mark.sms
+# @pytest.mark.message
 # def test_send(kwargs, _valid_credentials):
 #     """
 #     GIVEN valid credentials and a destination and body and kwargs
 #     WHEN send is called with to as a string and then as a list and kwargs
-#     THEN a sms is sent.
+#     THEN a message is sent.
 #     """
 #     to = numbers.get().destination_address
 #     body = "body 1"
 
-#     returned_sms = sms.send(to=to, body=body, **kwargs)
+#     returned_message = message.send(to=to, body=body, **kwargs)
 
-#     assert returned_sms.to == to
-#     assert returned_sms.delivery_status is not None
-#     assert returned_sms.message_id is not None
-#     assert returned_sms.message_status_url is not None
+#     assert returned_message.to == to
+#     assert returned_message.delivery_status is not None
+#     assert returned_message.message_id is not None
+#     assert returned_message.message_status_url is not None
 
-#     returned_sms = sms.send(to=[to], body=body)
+#     returned_message = message.send(to=[to], body=body)
 
-#     assert returned_sms.to == to
-#     assert returned_sms.delivery_status is not None
-#     assert returned_sms.message_id is not None
-#     assert returned_sms.message_status_url is not None
+#     assert returned_message.to == to
+#     assert returned_message.delivery_status is not None
+#     assert returned_message.message_id is not None
+#     assert returned_message.message_status_url is not None
 
 
 SEND_PARAM_TESTS = [
@@ -215,14 +215,14 @@ SEND_PARAM_TESTS = [
 
 
 @pytest.mark.parametrize("name, value, expected_name, expected_value", SEND_PARAM_TESTS)
-@pytest.mark.sms
+@pytest.mark.message
 def test_send_param(
     name, value, expected_name, expected_value, monkeypatch, _mocked_oauth_get_token
 ):
     """
     GIVEN parameter name and value
     WHEN send is called with the parameter
-    THEN a sms is sent with the expected parameter name and value.
+    THEN a message is sent with the expected parameter name and value.
     """
     to = "0412345678"
     body = "body 1"
@@ -244,7 +244,7 @@ def test_send_param(
     mock_urlopen.return_value.__enter__.return_value = mock_response
     monkeypatch.setattr(request, "urlopen", mock_urlopen)
 
-    sms.send(to=to, body=body, **{name: value})
+    message.send(to=to, body=body, **{name: value})
 
     if int(platform.python_version_tuple()[1]) >= 8:
         request_data = mock_urlopen.call_args.args[0].data.decode()
@@ -260,20 +260,20 @@ def test_send_param(
     "func",
     [
         pytest.param(
-            functools.partial(sms.send, to="0412345678", body="body 1"), id="send"
+            functools.partial(message.send, to="0412345678", body="body 1"), id="send"
         ),
-        pytest.param(sms.get_next_unread_reply, id="get_next_unread_reply"),
-        pytest.param(functools.partial(sms.get_status, "id 1"), id="get_status"),
+        pytest.param(message.get_next_unread_reply, id="get_next_unread_reply"),
+        pytest.param(functools.partial(message.get_status, "id 1"), id="get_status"),
     ],
 )
-@pytest.mark.sms
+@pytest.mark.message
 def test_send_error_oauth(func, mocked_oauth_get_token_error):
     """
     GIVEN function and oauth that raises an error
     WHEN function is called
-    THEN SmsError is raised.
+    THEN MessageError is raised.
     """
-    with pytest.raises(exceptions.SmsError) as exc:
+    with pytest.raises(exceptions.MessageError) as exc:
         func()
 
     assert mocked_oauth_get_token_error in str(exc.value)
@@ -283,27 +283,27 @@ def test_send_error_oauth(func, mocked_oauth_get_token_error):
     "func",
     [
         pytest.param(
-            functools.partial(sms.send, to="0412345678", body="body 1"), id="send"
+            functools.partial(message.send, to="0412345678", body="body 1"), id="send"
         ),
-        pytest.param(sms.get_next_unread_reply, id="get_next_unread_reply"),
-        pytest.param(functools.partial(sms.get_status, "id 1"), id="get_status"),
+        pytest.param(message.get_next_unread_reply, id="get_next_unread_reply"),
+        pytest.param(functools.partial(message.get_status, "id 1"), id="get_status"),
     ],
 )
-@pytest.mark.sms
+@pytest.mark.message
 def test_error_http(func, _mocked_oauth_get_token, mocked_request_urlopen_error):
     """
     GIVEN function, get_token that returns a token and urlopen that raises an error
     WHEN function is called
-    THEN SmsError is raised.
+    THEN MessageError is raised.
     """
-    with pytest.raises(exceptions.SmsError) as exc:
+    with pytest.raises(exceptions.MessageError) as exc:
         func()
 
     assert mocked_request_urlopen_error.message in str(exc.value)
     assert str(mocked_request_urlopen_error.code) in str(exc.value)
 
 
-# @pytest.mark.sms
+# @pytest.mark.message
 # def test_get_next_unread_reply(_valid_credentials):
 #     """
 #     GIVEN a message has been received
@@ -313,8 +313,8 @@ def test_error_http(func, _mocked_oauth_get_token, mocked_request_urlopen_error)
 #     to = numbers.get().destination_address
 #     body = "body 1"
 
-#     sms.send(to=to, body=body)
-#     returned_reply = sms.get_next_unread_reply()
+#     message.send(to=to, body=body)
+#     returned_reply = message.get_next_unread_reply()
 
 #     assert returned_reply.destination_address is not None
 #     assert returned_reply.sender_address is not None
@@ -324,7 +324,7 @@ def test_error_http(func, _mocked_oauth_get_token, mocked_request_urlopen_error)
 #     assert returned_reply.sent_timestamp is not None
 
 
-@pytest.mark.sms
+@pytest.mark.message
 def test_get_next_unread_reply_empty(
     monkeypatch, _valid_credentials, _mocked_oauth_get_token
 ):
@@ -339,12 +339,12 @@ def test_get_next_unread_reply_empty(
     mock_urlopen.return_value.__enter__.return_value = mock_response
     monkeypatch.setattr(request, "urlopen", mock_urlopen)
 
-    returned_reply = sms.get_next_unread_reply()
+    returned_reply = message.get_next_unread_reply()
 
     assert returned_reply is None
 
 
-# @pytest.mark.sms
+# @pytest.mark.message
 # def test_get_status(_valid_credentials):
 #     """
 #     GIVEN a message has been sent
@@ -354,14 +354,14 @@ def test_get_next_unread_reply_empty(
 #     to = numbers.get().destination_address
 #     body = "body 1"
 
-#     sent_message = sms.send(to=to, body=body)
+#     sent_message = message.send(to=to, body=body)
 #     # Retry a few times because sometimes it takes a short time to be able to get the
 #     # status
 #     for _ in range(5):  # pragma: no cover
 #         try:
-#             returned_status = sms.get_status(sent_message.message_id)
+#             returned_status = message.get_status(sent_message.message_id)
 #             break
-#         except exceptions.SmsError:
+#         except exceptions.MessageError:
 #             pass
 #     else:
 #         raise AssertionError("could not get the status after 5 attempts")
