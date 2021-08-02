@@ -2,9 +2,9 @@
 
 import os
 import typing
+from pathlib import Path
 
 from .. import exceptions
-from pathlib import Path
 
 TClientId = str
 TClientSecret = str
