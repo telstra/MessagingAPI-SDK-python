@@ -254,6 +254,15 @@ following arguments:
 
 Raises `telstra.messaging.exceptions.MessageError` if anything goes wrong.
 
+The dataclass `telstra.messaging.message.Attachments` can be used to build an mms payload. It takes the
+following arguments:
+
+- `type`: The content type of the attachment, for example `image/png`.
+- `filename` (optional): Optional field, for example `image.png`.
+- `payload`: The payload of an mms encoded as base64.
+
+Raises `telstra.messaging.exceptions.MessageError` if anything goes wrong.
+
 It returns an object with the following properties:
 
 - `to`: The destination mobile number.
