@@ -16,6 +16,25 @@ _URL = "https://tapi.telstra.com/v2/messages"
 
 
 @dataclasses.dataclass
+class Attachments:
+    """data class for mms content"""
+
+    type: str
+    filename: str
+    payload: str
+
+
+class AttachmentsEncoder(json.JSONEncoder):
+    """encoder class for Attachments class"""
+
+    def default(self, obj):
+        if isinstance(obj, Attachments):
+            return obj.__dict__
+        # Base class default() raises TypeError:
+        return json.JSONEncoder.default(self, obj)
+
+
+@dataclasses.dataclass
 class TMessage:
     """
     A message.
@@ -88,22 +107,22 @@ def _send_validate_from(from_: typing.Optional[types.TFrom]) -> None:
 
 
 def _send_validate_body(
-    body: typing.Optional[types.TBody], mms_content: typing.Optional[types.TMMSContent]
+    body: typing.Optional[types.TBody], attachments: typing.Optional[Attachments]
 ) -> None:
     """Validate the body parameter for send."""
-    if body is None and mms_content is None:
+    if body is None and attachments is None:
         raise exceptions.MessageError(
-            '"body" or "mms_content" must be supplied, received '
-            f'body:"{body}"'
+            '"body" or "attachments" must be supplied, received '
+            f"body: {body}"
             ", "
-            f'mms_content:"{mms_content}"'
+            f"attachments: {attachments}"
         )
-    if mms_content is not None and body is not None:
+    if attachments is not None and body is not None:
         raise exceptions.MessageError(
-            'only "mms_content" or "body" should be supplied, received '
-            f'body:"{body}"'
+            'only "attachments" or "body" should be supplied, received '
+            f"body: {body}"
             ", "
-            f'mms_content:"{mms_content}"'
+            f"attachments: {attachments}"
         )
     if body is not None:
         if not isinstance(body, str):
@@ -113,28 +132,28 @@ def _send_validate_body(
             )
 
 
-def _send_validate_mms_content(
-    mms_content: typing.Optional[types.TMMSContent], body: typing.Optional[types.TBody]
+def _send_validate_attachments(
+    attachments: typing.Optional[Attachments], body: typing.Optional[types.TBody]
 ) -> None:
     """Validate the body parameter for send."""
-    if mms_content is None and body is None:
+    if attachments is None and body is None:
         raise exceptions.MessageError(
-            '"mms_content" or "body" must be supplied, received '
-            f'mms_content:"{mms_content}"'
+            '"attachments" or "body" must be supplied, received '
+            f"attachments: {attachments}"
             ", "
-            f'body:"{body}"'
+            f"body: {body}"
         )
-    if mms_content is not None and body is not None:
+    if attachments is not None and body is not None:
         raise exceptions.MessageError(
-            'only "mms_content" or "body" should be supplied, received '
-            f'mms_content:"{mms_content}"'
+            'only "attachments" or "body" should be supplied, received '
+            f"attachments: {attachments}"
             ", "
-            f'body:"{body}"'
+            f"body: {body}"
         )
-    # if mms_content is not None and not isinstance(mms_content, str):
+    # if attachments is not None and not isinstance(attachments, Attachments):
     #     raise exceptions.MessageError(
-    #         'the value of "mms_content" is not valid, expected an MMS Content, '
-    #         f'received "{mms_content}"'
+    #         f'the value of "attachments" is not valid, expected "{Attachments}", '
+    #         f'received "{attachments}"'
     #     )
 
 
@@ -148,7 +167,7 @@ def _validate_send_args(  # pylint: disable=too-many-arguments
     reply_request: typing.Optional[types.TReplyRequest],
     priority: typing.Optional[types.TPriority],
     receipt_off: typing.Optional[types.TReceiptOff],
-    mms_content: typing.Optional[typing.Dict[str, typing.Any]],
+    attachments: typing.Optional[Attachments],
     subject: typing.Optional[types.TSubject],
     user_msg_ref: typing.Optional[types.TUsrMsgRef],
 ) -> None:
@@ -156,7 +175,7 @@ def _validate_send_args(  # pylint: disable=too-many-arguments
     # Validate to
     _send_validate_to(to)
     # Validate body
-    _send_validate_body(body, mms_content)
+    _send_validate_body(body, attachments)
     # Validate from_
     _send_validate_from(from_)
     # Validate validity
@@ -195,8 +214,8 @@ def _validate_send_args(  # pylint: disable=too-many-arguments
             'the value of "receipt_off" is not valid, expected a boolean, '
             f'received "{receipt_off}"'
         )
-    # Validate mms_content
-    _send_validate_mms_content(mms_content, body)
+    # Validate attachments
+    _send_validate_attachments(attachments, body)
     # Validate subject
     if subject is not None and not isinstance(subject, str):
         raise exceptions.MessageError(
@@ -221,7 +240,7 @@ def send(  # pylint: disable=too-many-arguments,too-many-locals
     reply_request: typing.Optional[types.TReplyRequest] = None,
     priority: typing.Optional[types.TPriority] = None,
     receipt_off: typing.Optional[types.TReceiptOff] = None,
-    mms_content: typing.Optional[typing.Dict[str, typing.Any]] = None,
+    attachments: typing.Optional[Attachments] = None,
     subject: typing.Optional[types.TSubject] = None,
     user_msg_ref: typing.Optional[types.TUsrMsgRef] = None,
 ) -> TMessage:
@@ -244,7 +263,7 @@ def send(  # pylint: disable=too-many-arguments,too-many-locals
         reply_request: If set to true, the reply message functionality will be
             implemented.
         receipt_off: Whether Delivery Receipt will be sent back or not.
-        mms_content: Optional field used by some clients to send an mms.
+        attachments: Optional field used by some clients to send an mms.
         subject: Optional field used by some clients when sending an mms.
         user_msg_ref: Optional field used by some clients for custom reporting.
 
@@ -262,7 +281,7 @@ def send(  # pylint: disable=too-many-arguments,too-many-locals
         priority=priority,
         reply_request=reply_request,
         receipt_off=receipt_off,
-        mms_content=mms_content,
+        attachments=attachments,
         subject=subject,
         user_msg_ref=user_msg_ref,
     )
@@ -276,7 +295,12 @@ def send(  # pylint: disable=too-many-arguments,too-many-locals
 
     endpoint_suffix = "sms"
 
-    data: typing.Dict[str, typing.Any] = {"to": to, "body": body}
+    attachments = json.dumps(attachments, cls=AttachmentsEncoder)
+    attachments = json.loads(attachments)
+
+    data: typing.Dict[str, typing.Any] = {"to": to}
+    if body is not None:
+        data["body"] = body
     if from_ is not None:
         data["from"] = from_
     if validity is not None:
@@ -291,8 +315,8 @@ def send(  # pylint: disable=too-many-arguments,too-many-locals
         data["replyRequest"] = reply_request
     if receipt_off is not None:
         data["receiptOff"] = receipt_off
-    if mms_content is not None:
-        data["MMSContent"] = mms_content
+    if attachments is not None:
+        data["MMSContent"] = attachments
         endpoint_suffix = "mms"
     if user_msg_ref is not None:
         data["userMsgRef"] = user_msg_ref

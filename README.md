@@ -248,7 +248,7 @@ following arguments:
 - `receipt_off` (optional): Whether Delivery Receipt will be sent back or not.
 - `user_msg_ref` (optional): Optional field used by some clients for custom
   reporting.
-- `mms_content` (optional): Optional field used by some clients to send an mms.
+- `attachments` (optional): Optional field used by some clients to send an mms.
   reporting.
 - `subject` (optional): Optional field used by some clients when sending an mms.
 
@@ -264,9 +264,24 @@ It returns an object with the following properties:
 For example:
 
 ```python
+# Send an SMS
 from telstra.messaging import message
 
 message.send(to="+61412345678", body="Hello from Python Messaging SDK!")
+
+# Send an MMS
+message.send(
+    to="+61412345678",
+    subject="Hello from Python Messaging SDK!",
+    reply_request=True,
+    attachments=[
+      message.Attachments(
+        type="<content type eg: image/png>",
+        filename="<optional filename eg: bus.png>",
+        payload="<base64 encoded string>",
+      )
+    ],
+)
 ```
 
 ### Get Message Status

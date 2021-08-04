@@ -18,7 +18,7 @@ TSubject = str
 TMessageType = str
 
 
-class TMMSContentType(Enum):
+class TAttachmentContentTypes(Enum):
     """MMS Content Type"""
 
     AUDIO_AMR: str = "audio/amr"
@@ -44,11 +44,3 @@ class TMMSContentType(Enum):
     TEXT_PLAIN: str = "text/plain"
     TEXT_X_VCARD: str = "text/x-vCard"
     TEXT_X_VCALENDAR: str = "text/x-vCalendar"
-
-
-class TMMSContent:
-    """MMS Content Object"""
-
-    type: TMMSContentType
-    filename: str
-    payload: str
