@@ -84,8 +84,12 @@ def get() -> TPhoneNumbers:
     try:
         with request.urlopen(trail_numbers_request) as response:
             data = response.read().decode()
-            trial_numbers_dict = json.loads(data)
-            return trial_numbers_dict["bnum"]
+            if data is not None and isinstance(data, str) and len(data) > 0:
+                trial_numbers_dict = json.loads(data)
+                return trial_numbers_dict["bnum"]
+            else:
+                return []
+
     except error.HTTPError as exc:
         raise exceptions.TrialNumbersError(
             f"Could retrieve phone numbers: {exc}"
