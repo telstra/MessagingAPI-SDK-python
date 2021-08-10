@@ -46,9 +46,34 @@ VALID_SEND_KWARGS: typing.Dict[str, typing.Any] = {
             id="to invalid list multiple second",
         ),
         pytest.param(
-            {**VALID_SEND_KWARGS, "body": None},
-            ["body", "received", f'"{None}"', "expected", "string"],
-            id="body not string",
+            {**VALID_SEND_KWARGS, "body": "Hello", "attachments": []},
+            [
+                "body",
+                "received",
+                'a value of "body"',
+                'or "attachments"',
+            ],
+            id="body None attachments None",
+        ),
+        pytest.param(
+            {**VALID_SEND_KWARGS, "body": None, "attachments": None},
+            [
+                "body",
+                "received",
+                'a value of "body"',
+                'or "attachments"',
+            ],
+            id="body None attachments None",
+        ),
+        pytest.param(
+            {**VALID_SEND_KWARGS, "body": 1},
+            ["body", "received", f'"{1}"', "string"],
+            id="body integer",
+        ),
+        pytest.param(
+            {**VALID_SEND_KWARGS, "attachments": 1},
+            ["attachments", "received", f'"{1}"', "list"],
+            id="attachments integer",
         ),
         pytest.param(
             {**VALID_SEND_KWARGS, "from_": True},

@@ -106,57 +106,6 @@ def _send_validate_from(from_: typing.Optional[types.TFrom]) -> None:
             )
 
 
-def _send_validate_body(
-    body: typing.Optional[types.TBody], attachments: typing.Optional[Attachments]
-) -> None:
-    """Validate the body parameter for send."""
-    if body is None and attachments is None:
-        raise exceptions.MessageError(
-            '"body" or "attachments" must be supplied, received '
-            f"body: {body}"
-            ", "
-            f"attachments: {attachments}"
-        )
-    if attachments is not None and body is not None:
-        raise exceptions.MessageError(
-            'only "attachments" or "body" should be supplied, received '
-            f"body: {body}"
-            ", "
-            f"attachments: {attachments}"
-        )
-    if body is not None:
-        if not isinstance(body, str):
-            raise exceptions.MessageError(
-                'the value of "body" is not valid, expected a string, received '
-                f'"{body}"'
-            )
-
-
-def _send_validate_attachments(
-    attachments: typing.Optional[Attachments], body: typing.Optional[types.TBody]
-) -> None:
-    """Validate the body parameter for send."""
-    if attachments is None and body is None:
-        raise exceptions.MessageError(
-            '"attachments" or "body" must be supplied, received '
-            f"attachments: {attachments}"
-            ", "
-            f"body: {body}"
-        )
-    if attachments is not None and body is not None:
-        raise exceptions.MessageError(
-            'only "attachments" or "body" should be supplied, received '
-            f"attachments: {attachments}"
-            ", "
-            f"body: {body}"
-        )
-    # if attachments is not None and not isinstance(attachments, Attachments):
-    #     raise exceptions.MessageError(
-    #         f'the value of "attachments" is not valid, expected "{Attachments}", '
-    #         f'received "{attachments}"'
-    #     )
-
-
 def _validate_send_args(  # pylint: disable=too-many-arguments
     to: typing.Union[types.TTo, typing.List[types.TTo]],
     body: typing.Optional[types.TBody],
@@ -174,8 +123,23 @@ def _validate_send_args(  # pylint: disable=too-many-arguments
     """Validate the arguments for send."""
     # Validate to
     _send_validate_to(to)
-    # Validate body
-    _send_validate_body(body, attachments)
+    # Validate body & attachments
+    if body is not None and not isinstance(body, str):
+        raise exceptions.MessageError(
+            f'the value of "body" is not valid, expected a string, received "{body}"'
+        )
+    if attachments is not None and not isinstance(attachments, list):
+        raise exceptions.MessageError(
+            f'the value of "attachments" is not valid, expected a list, received "{attachments}"'
+        )
+    if body is None and attachments is None:
+        raise exceptions.MessageError(
+            f'a value of "body" or "attachments" must be supplied, received body: "{body}" attachments: "{attachments}"'
+        )
+    if body is not None and attachments is not None:
+        raise exceptions.MessageError(
+            f'a value of "body" or "attachments" must be supplied, received body: "{body}" attachments: "{attachments}"'
+        )
     # Validate from_
     _send_validate_from(from_)
     # Validate validity
@@ -214,8 +178,6 @@ def _validate_send_args(  # pylint: disable=too-many-arguments
             'the value of "receipt_off" is not valid, expected a boolean, '
             f'received "{receipt_off}"'
         )
-    # Validate attachments
-    _send_validate_attachments(attachments, body)
     # Validate subject
     if subject is not None and not isinstance(subject, str):
         raise exceptions.MessageError(
