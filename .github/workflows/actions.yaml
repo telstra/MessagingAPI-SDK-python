@@ -3,7 +3,7 @@ name: CI-CD
 on:
   push:
     branches:
-      - refactor/modernize-sdk
+      - release/messaging-v3
 
 jobs:
   test:
