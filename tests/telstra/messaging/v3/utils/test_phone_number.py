@@ -2,7 +2,7 @@
 
 import pytest
 
-from telstra.messaging.utils import phone_number
+from telstra.messaging.v3.utils import free_trial_number
 
 
 @pytest.mark.parametrize(
@@ -62,7 +62,7 @@ def test_check(value, expected_result, expected_reason_contents):
     WHEN check is called with the phone number
     THEN the expected result and contents in the reason are returned.
     """
-    returned_result = phone_number.check(value)
+    returned_result = free_trial_number.check(value)
 
     assert returned_result.valid == expected_result
     if not expected_result:

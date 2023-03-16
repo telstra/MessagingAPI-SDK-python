@@ -9,13 +9,17 @@ class CredentialError(MessagingBaseException):
     """Raised when required credentials are not provided."""
 
 
-class NumbersError(MessagingBaseException):
-    """Raised when a numbers request failed."""
+class VirtualNumbersError(MessagingBaseException):
+    """Raised when a virtual numbers request failed."""
 
 
 class MessageError(MessagingBaseException):
     """Raised when a message request failed."""
 
 
-class TrialNumbersError(MessagingBaseException):
-    """Raised when a trial numbers request failed."""
+class FreeTrialNumbersError(MessagingBaseException):
+    """Raised when a free trial numbers request failed."""
+
+
+class HealthCheckError(MessagingBaseException):
+    """Raised when a health check request failed."""

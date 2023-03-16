@@ -8,8 +8,8 @@ from urllib import error, request
 
 import pytest
 
-from telstra.messaging import exceptions, oauth, numbers
-from telstra.messaging.utils import config
+from telstra.messaging.v3 import exceptions, oauth, virtual_number
+from telstra.messaging.v3.utils import config
 
 
 @pytest.fixture
@@ -27,8 +27,8 @@ def _valid_credentials(monkeypatch):
     yield
 
     try:
-        numbers.delete()
-    except exceptions.NumbersError:
+        virtual_number.delete(virtual_number="0400000001")
+    except exceptions.VirtualNumbersError:
         pass
 
 

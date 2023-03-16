@@ -20,8 +20,8 @@ repos:
     rev: v2.1.1
     hooks:
       - id: pydocstyle
-        args: ["--add-select=D213,D404", "--ignore=D202,D212,D406,D407,D203"]
-        exclude: "test"
+        args: ['--add-select=D213,D404', '--ignore=D202,D212,D406,D407,D203']
+        exclude: 'test'
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v0.790
     hooks:
@@ -35,19 +35,19 @@ repos:
         name: mypy (production-test)
         files: ^production-test/
   - repo: https://github.com/pre-commit/mirrors-pylint
-    rev: "v2.6.0"
+    rev: 'v2.6.0'
     hooks:
       - id: pylint
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: "v2.2.1"
+    rev: 'v2.2.1'
     hooks:
-      - exclude: ".vscode|.ts$"
+      - exclude: '.vscode|.ts$'
         id: prettier
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v3.3.0
     hooks:
       - id: check-added-large-files
-        exclude: "sdk/package-lock.json"
+        exclude: 'sdk/package-lock.json'
       - id: check-case-conflict
       - id: check-docstring-first
       - id: check-merge-conflict
@@ -56,7 +56,7 @@ repos:
       - id: check-toml
       - id: debug-statements
       - id: name-tests-test
-        args: ["--django"]
+        args: ['--django']
         exclude: "\/helpers.py$"
       - id: trailing-whitespace
   - repo: https://github.com/Lucas-C/pre-commit-hooks

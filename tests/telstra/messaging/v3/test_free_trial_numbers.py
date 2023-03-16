@@ -1,14 +1,14 @@
-"""Tests for trial_numbers."""
+"""Tests for free_trial_numbers."""
 
 from unittest.mock import patch
 
 import pytest
 
-from telstra.messaging import trial_numbers, exceptions, oauth
+from telstra.messaging.v3 import free_trial_numbers, exceptions, oauth
 from tests.mocs import get_free_port, start_mock_server
 
 
-class TestTrialNumbers(object):
+class TestFreeTrialNumbers(object):
     """Test Class for trial_numbers."""
 
     @classmethod
@@ -21,7 +21,9 @@ class TestTrialNumbers(object):
         )
 
         # Patch _URL so that the service uses the mock server URL instead of the real URL.
-        with patch.dict("telstra.messaging.oauth.__dict__", {"_URL": mock_oauth_url}):
+        with patch.dict(
+            "telstra.messaging.v3.oauth.__dict__", {"_URL": mock_oauth_url}
+        ):
             oauth.get_token()
 
     @pytest.mark.parametrize(
@@ -60,29 +62,29 @@ class TestTrialNumbers(object):
         ],
     )
     @pytest.mark.trial_numbers
-    def test_register_invalid_param(self, phone_numbers, expected_contents):
+    def test_create_invalid_param(self, phone_numbers, expected_contents):
         """
         GIVEN invalid parameters
-        WHEN register is called with the parameters
+        WHEN create is called with the parameters
         THEN TrialNumbersError is raised with the expected contents.
         """
-        with pytest.raises(exceptions.TrialNumbersError) as exc:
-            trial_numbers.register(phone_numbers=phone_numbers)
+        with pytest.raises(exceptions.FreeTrialNumbersError) as exc:
+            free_trial_numbers.create(phone_numbers=phone_numbers)
 
         for content in expected_contents:
             assert content in str(exc)
 
     @pytest.mark.trial_numbers
-    def test_register(self):
+    def test_create(self):
         """
         GIVEN
-        WHEN register is called
+        WHEN create is called
         THEN phone numbers are registered.
         """
         phone_numbers = ["+61412345678"]
 
         mock_trial_numbers_url = (
-            "http://localhost:{port}/v2/messages/freetrial/bnum".format(
+            "http://localhost:{port}/messaging/v3/free-trial-numbers".format(
                 port=self.mock_server_port
             )
         )
@@ -90,9 +92,10 @@ class TestTrialNumbers(object):
         # Patch _URL so that the service uses the mock server URL
         # instead of the real URL.
         with patch.dict(
-            "telstra.messaging.trial_numbers.__dict__", {"_URL": mock_trial_numbers_url}
+            "telstra.messaging.v3.free_trial_numbers.__dict__",
+            {"_URL": mock_trial_numbers_url},
         ):
-            mocked = trial_numbers.register(phone_numbers=phone_numbers)
+            mocked = free_trial_numbers.create(phone_numbers=phone_numbers)
 
         assert mocked is not None
         assert mocked == phone_numbers
@@ -150,6 +153,6 @@ class TestTrialNumbers(object):
         WHEN get is called
         THEN phone numbers are returned.
         """
-        returned_phone_numbers = trial_numbers.get()
+        returned_phone_numbers = free_trial_numbers.get_all()
 
         assert isinstance(returned_phone_numbers, list)

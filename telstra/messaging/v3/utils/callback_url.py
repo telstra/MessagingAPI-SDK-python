@@ -7,18 +7,19 @@ from .. import exceptions, types
 
 def validate(
     *,
-    value: typing.Optional[types.TNotifyUrl],
+    name: str,
+    value: typing.Optional[types.TStatusCallbackUrl],
     exception: typing.Type[exceptions.MessagingBaseException],
 ) -> None:
-    """Validate the notify_url parameter for send."""
+    """Validate the callback_url parameter for send."""
     if value is not None:
         if not isinstance(value, str):
             raise exception(
-                'the value of "notify_url" is not valid, expected a string, received '
+                f'the value of "{name}" is not valid, expected a string, received '
                 f'"{value}"'
             )
         if not value.lower().startswith("https"):
             raise exception(
-                'the value of "notify_url" is not valid, it must start with https, '
+                f'the value of "{name}" is not valid, it must start with https, '
                 f'received "{value}"'
             )
