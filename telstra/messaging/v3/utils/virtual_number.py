@@ -1,4 +1,4 @@
-"""Helper for free trial numbers."""
+"""Helper for virtual numbers."""
 
 import dataclasses
 import re
@@ -11,8 +11,8 @@ class Result:
     Result of the check.
 
     Attrs:
-        valid: Whether the phone number is valid.
-        reason: If the phone number is not valid, the reason why.
+        valid: Whether the virtual number is valid.
+        reason: If the virtual number is not valid, the reason why.
 
     """
 
@@ -20,7 +20,7 @@ class Result:
     reason: typing.Optional[str]
 
 
-_PHONE_REGEX = re.compile(r"^((\+614)|(04))\d{8}$")
+_PHONE_REGEX = re.compile(r"^(04)\d{8}$")
 
 
 def check(value: str) -> Result:
@@ -37,22 +37,12 @@ def check(value: str) -> Result:
     if not isinstance(value, str):
         return Result(valid=False, reason=f'expecting a string, received "{value}"')
 
-    if not value.startswith("+614") and not value.startswith("04"):
+    if not value.startswith("04"):
         return Result(
             valid=False,
             reason=(
-                "expecting a phone number starting with +614 or 04 "
+                "expecting a virtual number starting with 04 "
                 f'followed by 8 digits, received "{value}"'
-            ),
-        )
-
-    if value.startswith("+614") and len(value) != 12:
-        return Result(
-            valid=False,
-            reason=(
-                "the phone number has an incorrect number of characters, "
-                f'expecting 12, received "{value}" which has {len(value)} '
-                "characters"
             ),
         )
 
@@ -60,7 +50,7 @@ def check(value: str) -> Result:
         return Result(
             valid=False,
             reason=(
-                "the phone number has an incorrect number of characters, "
+                "the virtual number has an incorrect number of characters, "
                 f'expecting 10, received "{value}" which has {len(value)} '
                 "characters"
             ),
@@ -70,8 +60,8 @@ def check(value: str) -> Result:
         return Result(
             valid=False,
             reason=(
-                "the phone number contains invalid characters, "
-                "expecting a phone number starting with +614 or 04 "
+                "the virtual number contains invalid characters, "
+                "expecting a phone number starting with 04 "
                 f'followed by 8 digits, received "{value}"'
             ),
         )

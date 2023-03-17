@@ -1,19 +1,16 @@
-"""Handle numbers."""
+"""Handle virtual numbers."""
 
 import dataclasses
 import json
-import ssl
 import typing
-from urllib import error, request, parse
+from urllib import error, parse, request
 
 from . import exceptions, oauth, types
 from .utils import callback_url as callback_url_util
+from .utils import virtual_number as virtual_number_util
 from .utils import querystring
 
-_URL = "https://products.api.telstra.com/messaging/v3/virtual-numbers"  # "https://qa.org005.t-dev.telstra.net/messaging/v3/virtual-numbers"
-# gcontext = (
-#     ssl._create_unverified_context()
-# )  ## TODO Remove this line, only for NP to circumvent certificate issue
+_URL = "https://products.api.telstra.com/messaging/v3/virtual-numbers"
 
 
 @dataclasses.dataclass
@@ -22,7 +19,8 @@ class TVirtualNumber:
     A virtual phone number.
 
     Attrs:
-        reply_callback_url: URL that replies to the Virtual Number should be sent to.
+        reply_callback_url: URL that replies to the Virtual Number
+        should be sent to.
         tags: List of strings used as tags to the virtual number.
 
     """
@@ -77,7 +75,8 @@ def assign(
     Raises VirtualNumbersError if anything goes wrong.
 
     Args:
-        reply_callback_url: URL that replies to the Virtual Number should be sent to.
+        reply_callback_url: URL that replies to the Virtual Number
+        should be sent to.
         tags: List of strings used as tags to the virtual number.
 
     """
@@ -88,7 +87,8 @@ def assign(
         and (len(tags) < 1 or len(tags) > 10)
     ):
         raise exceptions.MessageError(
-            'the value of "tags" is not valid, expected a list of strings with alteast one tag or a maximum of 10, '
+            'the value of "tags" is not valid, expected a list of strings '
+            "with alteast one tag or a maximum of 10, "
             f'received "{tags}"'
         )
     # Validate reply_callback_url
@@ -128,20 +128,22 @@ def assign(
             virtual_numbers_dict = json.loads(response.read().decode())
             return TVirtualNumber(
                 virtual_number=virtual_numbers_dict.get("virtualNumber"),
-                reply_callback_url=virtual_numbers_dict.get("replyCallbackUrl", None),
+                reply_callback_url=virtual_numbers_dict.get(
+                    "replyCallbackUrl", None),
                 tags=virtual_numbers_dict.get("tags", None),
                 last_use=virtual_numbers_dict.get("lastUse"),
             )
     except error.HTTPError as exc:
         raise exceptions.VirtualNumbersError(
-            f"Could not assign virtual number: {exc}"
+            "Could not assign virtual number, "
+            f"please check your account limits: {exc}"
         ) from exc
 
 
 def _validate_get_all_args(
     limit: typing.Optional[types.TLimit] = None,
     offset: typing.Optional[types.TOffset] = None,
-    filter: typing.Optional[types.TFilter] = None,
+    filter_: typing.Optional[types.TFilter] = None,
 ) -> None:
     # Validate limit
     if (limit is not None and not isinstance(limit, types.TLimit)) or (
@@ -150,8 +152,8 @@ def _validate_get_all_args(
         and (limit < 1 or limit > 50)
     ):
         raise exceptions.MessageError(
-            'the value of "limit" is not valid, expected a int value between 1 and 50, '
-            f'received "{limit}"'
+            'the value of "limit" is not valid, expected a int value '
+            f'between 1 and 50, received "{limit}"'
         )
 
     # Validate offset
@@ -161,22 +163,22 @@ def _validate_get_all_args(
         and (offset < 0 or limit > 999999)
     ):
         raise exceptions.MessageError(
-            'the value of "offset" is not valid, expected a int value between 0 and 999999, '
-            f'received "{offset}"'
+            'the value of "offset" is not valid, expected a int value '
+            f'between 0 and 999999, received "{offset}"'
         )
 
     # Validate filter
-    if filter is not None and not isinstance(filter, types.TFilter):
+    if filter_ is not None and not isinstance(filter_, types.TFilter):
         raise exceptions.MessageError(
             'the value of "filter" is not valid, expected a string, '
-            f'received "{filter}"'
+            f'received "{filter_}"'
         )
 
 
 def get_all(
     limit: typing.Optional[types.TLimit] = None,
     offset: typing.Optional[types.TOffset] = None,
-    filter: typing.Optional[types.TFilter] = None,
+    filter_: typing.Optional[types.TFilter] = None,
 ) -> TVirtualNumbers:
     """
     Retrieve all virtual numbers assigned to you.
@@ -185,7 +187,7 @@ def get_all(
 
     """
 
-    _validate_get_all_args(limit=limit, offset=offset, filter=filter)
+    _validate_get_all_args(limit=limit, offset=offset, filter_=filter_)
 
     try:
         token = oauth.get_token()
@@ -204,19 +206,22 @@ def get_all(
         "Cache-Control": "no-cache",
     }
     virtual_numbers_request = request.Request(
-        f"{_URL}{querystring.build(limit=limit, offset=offset, filter=filter)}",
+        f"{_URL}"
+        f"{querystring.build(limit=limit, offset=offset, filter=filter_)}",
         headers=headers,
         method="GET",
     )
     try:
         with request.urlopen(virtual_numbers_request) as response:
             virtual_numbers: list[TVirtualNumber] = []
-            virtual_numbers_response_dict = json.loads(response.read().decode())
+            virtual_numbers_response_dict = json.loads(
+                response.read().decode())
             virtual_numbers_list = virtual_numbers_response_dict.get(
                 "virtualNumbers", []
             )
 
-            if virtual_numbers_list is not None and len(virtual_numbers_list) > 1:
+            if (virtual_numbers_list is not None
+                    and len(virtual_numbers_list) > 0):
                 virtual_numbers = [
                     TVirtualNumber(
                         virtual_number=d.get("virtualNumber"),
@@ -227,17 +232,20 @@ def get_all(
                     for d in virtual_numbers_list
                 ]
             paging = TPaging(
-                next_page=virtual_numbers_response_dict["paging"].get("nextPage", ""),
+                next_page=virtual_numbers_response_dict["paging"].get(
+                    "nextPage", ""),
                 previous_page=virtual_numbers_response_dict["paging"].get(
                     "previousPage", ""
                 ),
-                last_page=virtual_numbers_response_dict["paging"].get("lastPage", ""),
+                last_page=virtual_numbers_response_dict["paging"].get(
+                    "lastPage", ""),
                 total_count=virtual_numbers_response_dict["paging"].get(
                     "totalCount", 0
                 ),
             )
             return TVirtualNumbers(
-                virtual_numbers=[] if virtual_numbers is None else virtual_numbers,
+                virtual_numbers=(
+                    [] if virtual_numbers is None else virtual_numbers),
                 paging=paging,
             )
     except error.HTTPError as exc:
@@ -253,6 +261,13 @@ def get(virtual_number: str) -> TVirtualNumber:
     Raises VirtualNumbersError if anything goes wrong.
 
     """
+    # Validate virtual_number
+    result = virtual_number_util.check(virtual_number)
+    if not result.valid:
+        raise exceptions.VirtualNumbersError(
+            f'the value of "virtual_number" is not valid, {result.reason}'
+        )
+
     try:
         token = oauth.get_token()
     except exceptions.CredentialError as exc:
@@ -277,7 +292,8 @@ def get(virtual_number: str) -> TVirtualNumber:
             virtual_numbers_dict = json.loads(response.read().decode())
             return TVirtualNumber(
                 virtual_number=virtual_numbers_dict.get("virtualNumber"),
-                reply_callback_url=virtual_numbers_dict.get("replyCallbackUrl", None),
+                reply_callback_url=virtual_numbers_dict.get(
+                    "replyCallbackUrl", None),
                 tags=virtual_numbers_dict.get("tags", None),
                 last_use=virtual_numbers_dict.get("lastUse"),
             )
@@ -298,10 +314,18 @@ def update(
     Raises VirtualNumbersError if anything goes wrong.
 
     Args:
-        reply_callback_url: URL that replies to the Virtual Number should be sent to.
+        reply_callback_url: URL that replies to the Virtual Number
+        should be sent to.
         tags: List of strings used as tags to the virtual number.
 
     """
+    # Validate virtual_number
+    result = virtual_number_util.check(virtual_number)
+    if not result.valid:
+        raise exceptions.VirtualNumbersError(
+            f'the value of "virtual_number" is not valid, {result.reason}'
+        )
+
     # Validate tags
     if (tags is not None and not isinstance(tags, list)) or (
         tags is not None
@@ -309,9 +333,11 @@ def update(
         and (len(tags) < 1 or len(tags) > 10)
     ):
         raise exceptions.MessageError(
-            'the value of "tags" is not valid, expected a list of strings with alteast one tag or a maximum of 10, '
+            'the value of "tags" is not valid, expected a list of '
+            "strings with alteast one tag or a maximum of 10, "
             f'received "{tags}"'
         )
+
     # Validate reply_callback_url
     callback_url_util.validate(
         name="reply_callback_url",
@@ -352,7 +378,8 @@ def update(
             virtual_numbers_dict = json.loads(response.read().decode())
             return TVirtualNumber(
                 virtual_number=virtual_numbers_dict.get("virtualNumber"),
-                reply_callback_url=virtual_numbers_dict.get("replyCallbackUrl", None),
+                reply_callback_url=virtual_numbers_dict.get(
+                    "replyCallbackUrl", None),
                 tags=virtual_numbers_dict.get("tags", None),
                 last_use=virtual_numbers_dict.get("lastUse"),
             )
@@ -369,6 +396,13 @@ def delete(virtual_number: str) -> None:
     Raises VirtualNumbersError if anything goes wrong.
 
     """
+    # Validate virtual_number
+    result = virtual_number_util.check(virtual_number)
+    if not result.valid:
+        raise exceptions.VirtualNumbersError(
+            f'the value of "virtual_number" is not valid, {result.reason}'
+        )
+
     try:
         token = oauth.get_token()
     except exceptions.CredentialError as exc:
@@ -377,12 +411,18 @@ def delete(virtual_number: str) -> None:
         ) from exc
 
     headers = {
-        "Content-Type": "application/json",
         "Authorization": token.authorization,
+        "Telstra-api-version": "3.1.0",
+        "Content-Language": "en-au",
+        "Accept-Charset": "utf-8",
+        "Accept": "application/json",
+        "Content-Type": "application/json",
         "Cache-Control": "no-cache",
     }
     numbers_request = request.Request(
-        f"{_URL}/{parse.quote(virtual_number)}", headers=headers, method="DELETE"
+        f"{_URL}/{parse.quote(virtual_number)}",
+        headers=headers,
+        method="DELETE"
     )
     try:
         with request.urlopen(numbers_request):

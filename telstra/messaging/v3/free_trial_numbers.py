@@ -1,7 +1,6 @@
-"""Used to work with Trial Numbers for the free trial."""
+"""Used to work with Free Trial Numbers."""
 
 import json
-import ssl
 import typing
 from urllib import error, request
 
@@ -9,9 +8,6 @@ from . import exceptions, oauth
 from .utils import free_trial_number
 
 _URL = "https://products.api.telstra.com/messaging/v3/free-trial-numbers"
-# gcontext = (
-#     ssl._create_unverified_context()
-# )  ## TODO Remove this line, only for NP to circumvent certificate issue
 TFreeTrialNumbers = typing.List[str]
 
 
@@ -28,7 +24,8 @@ def create(phone_numbers: TFreeTrialNumbers) -> TFreeTrialNumbers:
     """
     if not isinstance(phone_numbers, list):
         raise exceptions.FreeTrialNumbersError(
-            f'invalid value for "phone_numbers" argument, expecting list of strings, '
+            'invalid value for "phone_numbers" argument, '
+            "expecting list of strings, "
             f'received "{phone_numbers}"'
         )
     result = next(
@@ -76,7 +73,8 @@ def get_all() -> TFreeTrialNumbers:
     Retrieve the free trial numbers.
 
     Returns:
-        The list of phone numbers that have been added to you free trial numbers list.
+        The list of phone numbers that have been added
+          to your free trial numbers list.
 
     """
     try:

@@ -1,14 +1,10 @@
-"""Used to work with Trial Numbers for the free trial."""
+"""Used to work with health check of messaging services."""
 
-import ssl
 from urllib import error, request
 
 from . import exceptions, oauth
 
 _URL = "https://products.api.telstra.com/messaging/v3/health-check"
-# gcontext = (
-#     ssl._create_unverified_context()
-# )  ## TODO Remove this line, only for NP to circumvent certificate issue
 
 
 def get() -> None:
@@ -35,7 +31,7 @@ def get() -> None:
     }
     health_check_request = request.Request(_URL, headers=headers, method="GET")
     try:
-        with request.urlopen(health_check_request) as response:
+        with request.urlopen(health_check_request):
             return
     except error.HTTPError as exc:
         raise exceptions.HealthCheckError(f"Health check failed: {exc}") from exc

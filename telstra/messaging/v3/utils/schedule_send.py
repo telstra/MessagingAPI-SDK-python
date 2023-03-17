@@ -1,3 +1,5 @@
+"""Utilities for the schedule send"""
+
 # ISO format example: "2019-08-24T15:39:00Z"
 import re
 import typing
@@ -17,11 +19,11 @@ def validate(
         )
         if not isinstance(value, str):
             raise exception(
-                'the value of "schedule_send" is not valid, expected a string, received '
-                f'"{value}"'
+                'the value of "schedule_send" is not valid, '
+                f'expected a string, received "{value}"'
             )
         if not bool(is_iso_date_pattern.match(value)):
             raise exception(
-                'the value of "schedule_send" is not valid, it must be ISO format date, '
-                f'received "{value}"'
+                'the value of "schedule_send" is not valid, '
+                f'it must be ISO format date, received "{value}"'
             )

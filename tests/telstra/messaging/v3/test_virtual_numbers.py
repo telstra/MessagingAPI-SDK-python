@@ -4,7 +4,7 @@ from unittest.mock import patch
 
 import pytest
 
-from telstra.messaging.v3 import exceptions, virtual_number, oauth
+from telstra.messaging.v3 import exceptions, oauth, virtual_number
 from tests.mocs import get_free_port, start_mock_server
 
 

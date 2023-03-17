@@ -1,4 +1,4 @@
-"""Utilities for the notify URL."""
+"""Utilities for the message id"""
 
 import typing
 import uuid
@@ -23,11 +23,11 @@ def validate(
     if value is not None:
         if not isinstance(value, str):
             raise exception(
-                'the value of "message_id" is not valid, expected a uuid format string, received '
-                f'"{value}"'
+                'the value of "message_id" is not valid, expected a '
+                f'uuid format string, received "{value}"'
             )
         if not _is_valid_uuid_v1(value):
             raise exception(
-                'the value of "message_id" is not valid, it must be uuid of type v1, '
-                f'received "{value}"'
+                'the value of "message_id" is not valid, it must be '
+                f'uuid of type v1, received "{value}"'
             )

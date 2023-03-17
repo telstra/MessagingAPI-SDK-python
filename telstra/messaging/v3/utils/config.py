@@ -36,10 +36,10 @@ class Config:
     _telstra_client_secret: typing.Optional[TClientSecret] = None
 
     _home_path = Path.home()
-    _shared_credentials_file = Path(_home_path.__str__() + "/.telstra/credentials")
+    _shared_credentials_file = Path(str(_home_path) + "/.telstra/credentials")
     _f_lines = None
     if _shared_credentials_file.is_file():
-        _f = open(_shared_credentials_file, "r")
+        _f = open(_shared_credentials_file, "r", encoding="utf8")
         _f_lines = _f.readlines()
         _f.close()
 
@@ -73,8 +73,8 @@ class Config:
                 raise exceptions.CredentialError(
                     "The client id was not configured. "
                     "It can be retrieved from here: "
-                    "https://dev.telstra.com/user/me/apps. "
-                    f"Then it can be provided as the '{telstra_client_id_env_name}' "
+                    "https://dev.telstra.com/user/me/apps. Then it can be"
+                    f" provided as the '{telstra_client_id_env_name}' "
                     "environment variable or "
                     "using the following code: \n"
                     "from telstra.messaging.v3.utils.config import CONFIG\n"
@@ -124,8 +124,8 @@ class Config:
                     "It can be retrieved from here: "
                     "https://dev.telstra.com/user/me/apps. "
                     "Then it can be provided as the "
-                    f"'{telstra_client_secret_env_name}'' environment variable or "
-                    "using the following code: \n"
+                    f"'{telstra_client_secret_env_name}'' environment "
+                    "variable or using the following code: \n"
                     "from telstra.messaging.v3.utils.config import CONFIG\n"
                     "CONFIG.telstra_client_secret = '<client secret>'"
                 )

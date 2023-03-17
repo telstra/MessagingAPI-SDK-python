@@ -1,4 +1,4 @@
-"""Utilities for the notify URL."""
+"""Utilities for the callback URL."""
 
 import typing
 
@@ -15,11 +15,11 @@ def validate(
     if value is not None:
         if not isinstance(value, str):
             raise exception(
-                f'the value of "{name}" is not valid, expected a string, received '
-                f'"{value}"'
+                f'the value of "{name}" is not valid, expected a string, '
+                f'received "{value}"'
             )
         if not value.lower().startswith("https"):
             raise exception(
-                f'the value of "{name}" is not valid, it must start with https, '
-                f'received "{value}"'
+                f'the value of "{name}" is not valid, '
+                f'it must start with https, received "{value}"'
             )

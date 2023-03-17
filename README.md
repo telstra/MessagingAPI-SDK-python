@@ -202,8 +202,8 @@ For example:
 # Get a virtual number
 from telstra.messaging.v3 import virtual_number
 
-retrieved_numbers = virtual_number.get()
-print(retrieved_numbers)
+retrieved_number = virtual_number.get(virtual_number="0400000001")
+print(retrieved_number)
 ```
 
 ### Fetch all Virtual Numbers
@@ -286,7 +286,7 @@ It returns nothing.
 # Delete a virtual number
 from telstra.messaging.v3 import virtual_number
 
-virtual_number.delete()
+virtual_number.delete(virtual_number="0400000001")
 ```
 
 ## Message
@@ -377,20 +377,28 @@ Raises `telstra.messaging.v3.exceptions.MessageError` if anything goes wrong.
 
 It returns an object with the following properties:
 
-- `messageId`: Use this UUID with our other endpoints to fetch, update or delete the message.
+- `messageId`: Use this UUID with our other endpoints to fetch,
+  update or delete the message.
 - `status`: The status will be either queued, sent, delivered or expired.
-- `create_timestamp`: The time you submitted the message to the queue for sending.
+- `create_timestamp`: The time you submitted the message to
+  the queue for sending.
 - `sent_timestamp`: The time the message was sent from the server.
-- `received_timestamp`: The time the message was received by the recipient's device.
+- `received_timestamp`: The time the message was received by the
+  recipient's device.
 - `to`: The recipient's mobile number(s).
-- `from`: This will be either "privateNumber", one of your Virtual Numbers or your senderName.
+- `from`: This will be either "privateNumber", one of your
+  Virtual Numbers or your senderName.
 - `message_content`: The content of the message.
 - `multimedia`: The multimedia content of the message (MMS only).
 - `direction`: Direction of the message (outgoing or incoming).
-- `retry_timeout`: How many minutes you asked the server to keep trying to send the message.
-- `schedule_send`: The time (in Central Standard Time) the message is scheduled to send.
-- `delivery_notification`: If set to true, you will receive a notification to the statusCallbackUrl when your SMS is delivered (paid feature).
-- `status_callback_url`: The URL the API will call when the status of the message changes.
+- `retry_timeout`: How many minutes you asked the server to keep
+  trying to send the message.
+- `schedule_send`: The time (in Central Standard Time) the message is
+  scheduled to send.
+- `delivery_notification`: If set to true, you will receive a notification
+  to the statusCallbackUrl when your SMS is delivered (paid feature).
+- `status_callback_url`: The URL the API will call when the status of
+  the message changes.
 - `queue_priority`: The priority assigned to the message.
 - `tags`: Any customisable tags assigned to the message.
 
@@ -400,16 +408,21 @@ For example:
 # Get a message
 from telstra.messaging.v3 import message
 
-sent_message = message.send(to="+61412345678", from_="privateNumber", message_content="Hello from Python Messaging SDK!")
-message = message.get(sent_message.message_id)
+sent_message = message.send(
+  to="+61412345678",
+  from_="privateNumber",
+  message_content="Hello from Python Messaging SDK!"
+  )
+message = message.get(message_id = sent_message.message_id)
 print(message)
 ```
 
 ### Get all Messages
 
 Fetch messages that have been sent from/to your account in the last 30 days.
-Note that in the current release, inbound MMS or messages sent in reply to an MMS will not be retrieved.. For
-more information, please see here:
+Note that in the current release, inbound MMS or messages sent
+in reply to an MMS will not be retrieved.
+For more information, please see here:
 <https://dev.telstra.com/content/messaging-api-v3#operation/getMessages>.
 
 The function `telstra.messaging.v3.message.get_all` can be used to fetch
@@ -417,7 +430,8 @@ all messages. It takes the
 following arguments:
 
 - `limit`: Tell us how many results you want us to return, up to a maximum of 50.
-- `offset`: Use the offset to navigate between the response results. An offset of 0 will display the first page of results, and so on.
+- `offset`: Use the offset to navigate between the response results.
+  An offset of 0 will display the first page of results, and so on.
 - `filter`: Filter your Virtual Numbers by tag or by number.
 
 Raises `telstra.messaging.v3.exceptions.MessageError` if anything goes wrong.
@@ -440,29 +454,35 @@ print(reply)
 
 ### Update a Message
 
-Update a message that's scheduled for sending, you can change any of the below parameters, as long as the message hasn't been sent yet.
+Update a message that's scheduled for sending, you can change any of
+the below parameters, as long as the message hasn't been sent yet.
 For more information, please see here:
 <https://dev.telstra.com/content/messaging-api-v3#operation/updateMessageById>.
 
-The function `telstra.messaging.v3.message.update` can be used to update a message. It takes the
-following arguments:
+The function `telstra.messaging.v3.message.update` can be used to update a message.
+It takes the following arguments:
 
 - `to`: The destination address, expected to be a phone number of the form
   `+614XXXXXXXX` or `04XXXXXXXX`.
-- `from_`: This will be either "privateNumber", one of your Virtual Numbers or your senderName.
-- `message_content`(Either one of messageContent or multimedia is required): The content of the message.
-- `multimedia` (Either one of messageContent or multimedia is required): MMS multimedia content.
-- `retry_timeout` (optional): How many minutes you asked the server to keep trying to send the message.
-- `schedule_send` (optional): The time (in Central Standard Time) the message is scheduled to send.
-- `delivery_notification` (optional): If set to true, you will receive a notification to the statusCallbackUrl
-  when your SMS is delivered (paid feature).
-- `status_callback_url` (optional): The URL the API will call when the status of the message changes.
+- `from_`: This will be either "privateNumber", one of your
+  Virtual Numbers or your senderName.
+- `message_content`The content of the message.
+  Either one of messageContent or multimedia is required.
+- `multimedia` MMS multimedia content.
+- `retry_timeout` (optional): How many minutes you asked the server to
+  keep trying to send the message.
+- `schedule_send` (optional): The time (in Central Standard Time) the
+  message is scheduled to send.
+- `delivery_notification` (optional): If set to true, you will receive a
+  notification to the statusCallbackUrl when your SMS is delivered (paid feature).
+- `status_callback_url` (optional): The URL the API will call when
+  the status of the message changes.
 - `tags` (optional): Any customisable tags assigned to the message.
 
 Raises `telstra.messaging.v3.exceptions.MessageError` if anything goes wrong.
 
-The dataclass `telstra.messaging.v3.message.Multimedia` can be used to build an mms payload. It takes the
-following arguments:
+The dataclass `telstra.messaging.v3.message.Multimedia` can be used to build
+a mms payload. It takes the following arguments:
 
 - `type`: The content type of the attachment, for example `image/png`.
 - `filename` (optional): Optional field, for example `image.png`.
@@ -472,16 +492,22 @@ Raises `telstra.messaging.v3.exceptions.MessageError` if anything goes wrong.
 
 It returns an object with the following properties:
 
-- `messageId`: Use this UUID with our other endpoints to fetch, update or delete the message.
+- `messageId`: Use this UUID with our other endpoints to fetch,
+  update or delete the message.
 - `status`: The status will be either queued, sent, delivered or expired.
 - `to`: The recipient's mobile number(s).
-- `from`: This will be either "privateNumber", one of your Virtual Numbers or your senderName.
+- `from`: This will be either "privateNumber", one of your
+  Virtual Numbers or your senderName.
 - `message_content`: The content of the message.
 - `multimedia`: The multimedia content of the message (MMS only).
-- `retry_timeout`: How many minutes you asked the server to keep trying to send the message.
-- `schedule_send`: The time (in Central Standard Time) the message is scheduled to send.
-- `delivery_notification`: If set to true, you will receive a notification to the statusCallbackUrl when your SMS is delivered (paid feature).
-- `status_callback_url`: The URL the API will call when the status of the message changes.
+- `retry_timeout`: How many minutes you asked the server to keep trying
+  to send the message.
+- `schedule_send`: The time (in Central Standard Time) the message
+  is scheduled to send.
+- `delivery_notification`: If set to true, you will receive a notification to the
+  statusCallbackUrl when your SMS is delivered (paid feature).
+- `status_callback_url`: The URL the API will call when the
+  status of the message changes.
 - `tags`: Any customisable tags assigned to the message.
 
 For example:
@@ -490,7 +516,12 @@ For example:
 # Update a message
 from telstra.messaging.v3 import message
 
-message.update(message_id="8540d774-4863-4d2b-b788-4ecb19412e85",to="+61412345678", from_="privateNumber", message_content="Hello from Python Messaging SDK!")
+message.update(
+  message_id="8540d774-4863-4d2b-b788-4ecb19412e85",
+  to="+61412345678",
+  from_="privateNumber",
+  message_content="Hello from Python Messaging SDK!"
+  )
 ```
 
 ### Update Message Tags
@@ -499,8 +530,8 @@ Update message tags, you can update them even after your message has been delive
 For more information, please see here:
 <https://dev.telstra.com/content/messaging-api-v3#operation/updateMessageTags>.
 
-The function `telstra.messaging.v3.message.update_tags` can be used to update message tags. It takes the
-following arguments:
+The function `telstra.messaging.v3.message.update_tags` can be used to
+update message tags. It takes the following arguments:
 
 - `message_id`:Unique identifier for the message.
 - `tags` (optional): Any customisable tags assigned to the message.
@@ -524,8 +555,8 @@ Delete a scheduled message, but hasn't yet sent.
 For more information, please see here:
 <https://dev.telstra.com/content/messaging-api-v3#operation/deleteMessageById>.
 
-The function `telstra.messaging.v3.message.delete` can be used to delete a message. It takes the
-following arguments:
+The function `telstra.messaging.v3.message.delete` can be used to delete a message.
+It takes the following arguments:
 
 - `message_id`: Unique identifier for the message.
 
@@ -546,7 +577,8 @@ message.delete(message_id="8540d774-4863-4d2b-b788-4ecb19412e85")
 
 ### Get operational status of the messaging service
 
-Check the operational status of the messaging service. For more information, please see here:
+Check the operational status of the messaging service.
+For more information, please see here:
 <https://dev.telstra.com/content/messaging-api-v3#operation/healthCheck>.
 
 The function `telstra.messaging.v3.health_check.get` can be used to get the status.

@@ -3,14 +3,13 @@
 import dataclasses
 import json
 import math
-import ssl
 import time
 from urllib import error, parse, request
 
 from . import exceptions
 from .utils import config
 
-_URL = "https://products.api.telstra.com/v2/oauth/token"  # "https://qa.org005.t-dev.telstra.net/v2/oauth/token"
+_URL = "https://products.api.telstra.com/v2/oauth/token"
 
 
 @dataclasses.dataclass
@@ -85,12 +84,13 @@ def _get_token() -> TToken:
             "grant_type": "client_credentials",
             "client_id": config.get().telstra_client_id,
             "client_secret": config.get().telstra_client_secret,
-            "scope": "free-trial-numbers:read free-trial-numbers:write virtual-numbers:read virtual-numbers:write messages:read messages:write messaging:read messaging:write",
+            "scope": "free-trial-numbers:read free-trial-numbers:write "
+            "virtual-numbers:read virtual-numbers:write messages:read "
+            "messages:write messaging:read messaging:write",
         }
     ).encode("ascii")
     headers = {"Content-Type": "application/x-www-form-urlencoded", "Accept": "*/*"}
     oauth_request = request.Request(_URL, data=data, headers=headers, method="POST")
-    gcontext = ssl._create_unverified_context()  # Only for gangstars
     try:
         with request.urlopen(oauth_request) as response:
             return TToken(**json.loads(response.read().decode()))

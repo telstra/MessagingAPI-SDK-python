@@ -3,22 +3,17 @@
 import dataclasses
 import json
 import re
-import ssl
 import typing
 from urllib import error, parse, request
 
-from .utils import callback_url as callback_url_util
-from .utils import schedule_send as schedule_send_iso_date_util
-from .utils import message_id as message_id_util
-from .utils import free_trial_number
-from .utils import querystring
-
 from . import exceptions, oauth, types
+from .utils import callback_url as callback_url_util
+from .utils import free_trial_number
+from .utils import message_id as message_id_util
+from .utils import querystring
+from .utils import schedule_send as schedule_send_iso_date_util
 
-_URL = "https://products.api.telstra.com/messaging/v3/messages"  # "https://qa.org005.t-dev.telstra.net/messaging/v3/messages"
-# gcontext = (
-#     ssl._create_unverified_context()
-# )  ## TODO Remove this line, only for NP to circumvent certificate issue
+_URL = "https://products.api.telstra.com/messaging/v3/messages"
 
 
 @dataclasses.dataclass
@@ -51,10 +46,14 @@ class TMessage:
         from_: Alphanumeric string.
         message_content: The text content of the message.
         multimedia: Multimedia content of the message.
-        retry_timeout: How long the platform should keep attempting to resend a message (in minutes), default is 10 minutes.
-        schedule_send: ISO format GMT time string. You can schedule a message up to 10 days into the future.
-        delivery_notification: Accepts boolean, to receive a notification when your SMS has been delivered.
-        status_callback_url: URL you want the API to call when the status of your SMS updates.
+        retry_timeout: How long the platform should keep attempting to resend
+                       a message (in minutes), default is 10 minutes.
+        schedule_send: ISO format GMT time string. You can schedule a message
+                       up to 10 days into the future.
+        delivery_notification: Accepts boolean, to receive a notification when
+                               your SMS has been delivered.
+        status_callback_url: URL you want the API to call when the status of
+                             your SMS updates.
         tags: List of strings used as tags to the message.
 
     """
@@ -118,7 +117,8 @@ def _send_validate_to(to: typing.Union[types.TTo, typing.List[types.TTo]]) -> No
     """Validate the to parameter for send."""
     if not isinstance(to, str) and not isinstance(to, list):
         raise exceptions.MessageError(
-            f'the value of "to" is not valid, expecting a string or a list of string, '
+            'the value of "to" is not valid, '
+            "expecting a string or a list of string, "
             f'received "{to}"'
         )
     if isinstance(to, str):
@@ -134,7 +134,7 @@ def _send_validate_to(to: typing.Union[types.TTo, typing.List[types.TTo]]) -> No
         )
         if first_invalid_result is not None:
             raise exceptions.MessageError(
-                f'the value of "to" is not valid, {first_invalid_result.reason}'
+                'the value of "to" is not valid, ' / f"{first_invalid_result.reason}"
             )
 
 
@@ -147,20 +147,14 @@ def _send_validate_from(from_: typing.Optional[types.TFrom]) -> None:
         )
     if len(from_) > 13:
         raise exceptions.MessageError(
-            'the value of "from_" has too many characters, expected at most 13 '
-            f'characters, received "{from_}"'
+            'the value of "from_" has too many characters, expected at most 13'
+            f' characters, received "{from_}"'
         )
     if not _VALID_FROM.search(from_):
         raise exceptions.MessageError(
             'the value of "from_" contains invalid characters, expected alpha '
             f'numeric characters, received "{from_}"'
         )
-    result = free_trial_number.check(value=from_)
-    # if result.valid:
-    #     raise exceptions.MessageError(
-    #         'the value of "from_" is a phone number, expected alpha '
-    #         f'numeric characters that are not phone numbers, received "{from_}"'
-    #     )
 
 
 def _validate_send_args(  # pylint: disable=too-many-arguments
@@ -184,24 +178,28 @@ def _validate_send_args(  # pylint: disable=too-many-arguments
         message_content is not None and len(message_content) > 1600
     ):
         raise exceptions.MessageError(
-            f'the value of "message_content" is not valid, expected a string with maximum 1600 characters, received "{message_content}"'
+            'the value of "message_content" is not valid, expected a string '
+            / f'with maximum 1600 characters, received "{message_content}"'
         )
     if (multimedia is not None and not isinstance(multimedia, list)) or (
         multimedia is not None and len(multimedia) > 5
     ):
         raise exceptions.MessageError(
-            f'the value of "multimedia" is not valid, expected list with maximum 5 multimedia, received "{multimedia}"'
+            'the value of "multimedia" is not valid, expected list with '
+            f'maximum 5 multimedia, received "{multimedia}"'
         )
     if message_content is None and multimedia is None:
         raise exceptions.MessageError(
-            f'a value of "messageContent" or "multimedia" must be supplied, received message_content: "{message_content}" multimedia: "{multimedia}"'
+            'a value of "messageContent" or "multimedia" must be supplied, '
+            f'received message_content: "{message_content}" '
+            f'multimedia: "{multimedia}"'
         )
 
     # Validate retry_timeout
     if retry_timeout is not None and not isinstance(retry_timeout, int):
         raise exceptions.MessageError(
-            'the value of "retry_timeout" is not valid, expected an integer, received '
-            f'"{retry_timeout}"'
+            'the value of "retry_timeout" is not valid, expected an integer, '
+            f'received "{retry_timeout}"'
         )
     # Validate schedule_send
     schedule_send_iso_date_util.validate(
@@ -212,8 +210,8 @@ def _validate_send_args(  # pylint: disable=too-many-arguments
         delivery_notification, bool
     ):
         raise exceptions.MessageError(
-            'the value of "delivery_notification" is not valid, expected an bool, received '
-            f'"{delivery_notification}"'
+            'the value of "delivery_notification" is not valid, '
+            f'expected a bool, received "{delivery_notification}"'
         )
 
     # Validate status_callback_url
@@ -229,8 +227,8 @@ def _validate_send_args(  # pylint: disable=too-many-arguments
         and (len(tags) < 1 or len(tags) > 10)
     ):
         raise exceptions.MessageError(
-            'the value of "tags" is not valid, expected a list of strings with alteast one tag or a maximum of 10, '
-            f'received "{tags}"'
+            'the value of "tags" is not valid, expected a list of strings '
+            f'with alteast one tag or a maximum of 10, received "{tags}"'
         )
 
 
@@ -252,13 +250,20 @@ def send(  # pylint: disable=too-many-arguments,too-many-locals
 
     Args:
         to: The destination mobile number.
-        from: You can choose whether they'll see a privateNumber, virtualNumber or senderName (paid plans only) in the from field.
-        message_content: The text content of the message. Use this field to send an SMS.
-        multimedia: Multimedia content of the message. Use this field to send an MMS.
-        retry_timeout: How long the platform should keep attempting to resend a message (in minutes), default is 10 minutes.
-        schedule_send: ISO format GMT time string. You can schedule a message up to 10 days into the future.
-        delivery_notification: Accepts boolean, to receive a notification when your SMS has been delivered.
-        status_callback_url: URL you want the API to call when the status of your SMS updates.
+        from: You can choose whether they'll see a privateNumber,
+            virtualNumber or senderName (paid plans only) in the from field.
+        message_content: The text content of the message.
+            Use this field to send an SMS.
+        multimedia: Multimedia content of the message.
+            Use this field to send an MMS.
+        retry_timeout: How long the platform should keep attempting to resend
+            a message (in minutes), default is 10 minutes.
+        schedule_send: ISO format GMT time string. You can schedule a
+            message up to 10 days into the future.
+        delivery_notification: Accepts boolean, to receive a notification
+            when your SMS has been delivered.
+        status_callback_url: URL you want the API to call when the status
+            of your SMS updates.
         tags: List of strings used as tags to the message.
 
     Returns:
@@ -387,13 +392,20 @@ def update(  # pylint: disable=too-many-arguments,too-many-locals
     Args:
         message_id: Unique identifier for the message.
         to: The destination mobile number.
-        from: You can choose whether they'll see a privateNumber, virtualNumber or senderName (paid plans only) in the from field.
-        message_content: The text content of the message. Use this field to send an SMS.
-        multimedia: Multimedia content of the message. Use this field to send an MMS.
-        retry_timeout: How long the platform should keep attempting to resend a message (in minutes), default is 10 minutes.
-        schedule_send: ISO format GMT time string. You can schedule a message up to 10 days into the future.
-        delivery_notification: Accepts boolean, to receive a notification when your SMS has been delivered.
-        status_callback_url: URL you want the API to call when the status of your SMS updates.
+        from: You can choose whether they'll see a privateNumber,
+            virtualNumber or senderName (paid plans only) in the from field.
+        message_content: The text content of the message.
+            Use this field to send an SMS.
+        multimedia: Multimedia content of the message.
+            Use this field to send an MMS.
+        retry_timeout: How long the platform should keep attempting to resend
+            a message (in minutes), default is 10 minutes.
+        schedule_send: ISO format GMT time string. You can schedule a message
+            up to 10 days into the future.
+        delivery_notification: Accepts boolean, to receive a notification when
+            your SMS has been delivered.
+        status_callback_url: URL you want the API to call when the status
+            of your SMS updates.
         tags: List of strings used as tags to the message.
 
     Returns:
@@ -484,8 +496,8 @@ def _validate_update_tags_args(  # pylint: disable=too-many-arguments
         isinstance(tags, list) and (len(tags) < 1 or len(tags) > 10)
     ):
         raise exceptions.MessageError(
-            'the value of "tags" is not valid, expected a list of strings with alteast one tag or a maximum of 10, '
-            f'received "{tags}"'
+            'the value of "tags" is not valid, expected a list of strings '
+            f'with alteast one tag or a maximum of 10, received "{tags}"'
         )
 
 
@@ -535,8 +547,7 @@ def update_tags(  # pylint: disable=too-many-arguments,too-many-locals
         method="PATCH",
     )
     try:
-        with request.urlopen(update_tags_request) as response:
-            # json.loads(response.read().decode())
+        with request.urlopen(update_tags_request):
             return None
     except error.HTTPError as exc:
         raise exceptions.MessageError(f"Could not update message tags: {exc}") from exc
@@ -605,7 +616,7 @@ def get(message_id: types.TMessageId) -> TMessage:
 def _validate_get_all_args(
     limit: typing.Optional[types.TLimit] = None,
     offset: typing.Optional[types.TOffset] = None,
-    filter: typing.Optional[types.TFilter] = None,
+    filter_: typing.Optional[types.TFilter] = None,
 ) -> None:
     # Validate limit
     if (limit is not None and not isinstance(limit, types.TLimit)) or (
@@ -614,8 +625,8 @@ def _validate_get_all_args(
         and (limit < 1 or limit > 50)
     ):
         raise exceptions.MessageError(
-            'the value of "limit" is not valid, expected a int value between 1 and 50, '
-            f'received "{limit}"'
+            'the value of "limit" is not valid, expected a int value between '
+            f'1 and 50, received "{limit}"'
         )
 
     # Validate offset
@@ -625,22 +636,22 @@ def _validate_get_all_args(
         and (offset < 0 or limit > 999999)
     ):
         raise exceptions.MessageError(
-            'the value of "offset" is not valid, expected a int value between 0 and 999999, '
-            f'received "{offset}"'
+            'the value of "offset" is not valid, expected a int value '
+            f'between 0 and 999999, received "{offset}"'
         )
 
     # Validate filter
-    if filter is not None and not isinstance(filter, types.TFilter):
+    if filter_ is not None and not isinstance(filter_, types.TFilter):
         raise exceptions.MessageError(
             'the value of "filter" is not valid, expected a string, '
-            f'received "{filter}"'
+            f'received "{filter_}"'
         )
 
 
 def get_all(
     limit: typing.Optional[types.TLimit] = None,
     offset: typing.Optional[types.TOffset] = None,
-    filter: typing.Optional[types.TFilter] = None,
+    filter_: typing.Optional[types.TFilter] = None,
 ) -> TMessages:
     """
     Retrieves all messages.
@@ -652,7 +663,7 @@ def get_all(
 
     """
 
-    _validate_get_all_args(limit=limit, offset=offset, filter=filter)
+    _validate_get_all_args(limit=limit, offset=offset, filter_=filter_)
 
     try:
         token = oauth.get_token()
@@ -669,7 +680,7 @@ def get_all(
         "Content-Type": "application/json",
     }
     messages_get_request = request.Request(
-        f"{_URL}{querystring.build(limit=limit, offset=offset, filter=filter)}",
+        f"{_URL}" f"{querystring.build(limit=limit, offset=offset, filter_=filter_)}",
         headers=headers,
         method="GET",
     )
@@ -678,7 +689,7 @@ def get_all(
             messages: list[TMessage] = []
             messages_response_dict = json.loads(response.read().decode())
             messages_list = messages_response_dict.get("messages", [])
-            if messages_list is not None and len(messages_list) > 1:
+            if messages_list is not None and len(messages_list) > 0:
                 messages = [
                     TMessage(
                         message_id=d.get("messageId"),
@@ -748,8 +759,7 @@ def delete(message_id: types.TMessageId) -> None:
         method="DELETE",
     )
     try:
-        with request.urlopen(delete_request) as response:
-            # delete_dict = json.loads(response.read().decode())
+        with request.urlopen(delete_request):
             return None
     except error.HTTPError as exc:
         raise exceptions.MessageError(f"Could not delete the message: {exc}") from exc

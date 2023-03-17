@@ -1,8 +1,8 @@
 # Standard library imports...
-from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 import re
 import socket
+from http.server import BaseHTTPRequestHandler, HTTPServer
 from threading import Thread
 
 # Third-party imports...
