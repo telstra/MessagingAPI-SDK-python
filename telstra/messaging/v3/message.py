@@ -8,6 +8,7 @@ from urllib import error, parse, request
 
 from . import exceptions, oauth, types
 from .utils import callback_url as callback_url_util
+from .utils import error_response as error_response_util
 from .utils import free_trial_number
 from .utils import message_id as message_id_util
 from .utils import querystring
@@ -18,7 +19,7 @@ _URL = "https://products.api.telstra.com/messaging/v3/messages"
 
 @dataclasses.dataclass
 class Multimedia:
-    """data class for mms content"""
+    """Data class for mms content."""
 
     type: str
     fileName: str
@@ -26,9 +27,10 @@ class Multimedia:
 
 
 class MultimediaEncoder(json.JSONEncoder):
-    """encoder class for Multimedia class"""
+    """Encoder class for Multimedia class."""
 
     def default(self, obj):
+        """Class default function."""
         if isinstance(obj, Multimedia):
             return obj.__dict__
         # Base class default() raises TypeError:
@@ -69,11 +71,11 @@ class TMessage:
     delivery_notification: types.TDeliveryNotification
     status_callback_url: types.TStatusCallbackUrl
     tags: types.TTags
-    direction: str = None
-    queue_priority: int = None
-    create_timestamp: str = None
-    sent_timestamp: str = None
-    received_timestamp: str = None
+    direction: str | None = None
+    queue_priority: int = 2
+    create_timestamp: str | None = None
+    sent_timestamp: str | None = None
+    received_timestamp: str | None = None
 
 
 @dataclasses.dataclass
@@ -134,7 +136,7 @@ def _send_validate_to(to: typing.Union[types.TTo, typing.List[types.TTo]]) -> No
         )
         if first_invalid_result is not None:
             raise exceptions.MessageError(
-                'the value of "to" is not valid, ' / f"{first_invalid_result.reason}"
+                f'the value of "to" is not valid, {first_invalid_result.reason}'
             )
 
 
@@ -179,7 +181,7 @@ def _validate_send_args(  # pylint: disable=too-many-arguments
     ):
         raise exceptions.MessageError(
             'the value of "message_content" is not valid, expected a string '
-            / f'with maximum 1600 characters, received "{message_content}"'
+            f'with maximum 1600 characters, received "{message_content}"'
         )
     if (multimedia is not None and not isinstance(multimedia, list)) or (
         multimedia is not None and len(multimedia) > 5
@@ -289,13 +291,11 @@ def send(  # pylint: disable=too-many-arguments,too-many-locals
             f"Could not retrieve an OAuth token: {exc}"
         ) from exc
 
-    multimedia = json.dumps(multimedia, cls=MultimediaEncoder)
-    multimedia = json.loads(multimedia)
-
     data: typing.Dict[str, typing.Any] = {"to": to, "from": from_}
     if message_content is not None:
         data["messageContent"] = message_content
     if multimedia is not None:
+        multimedia = json.loads(json.dumps(multimedia, cls=MultimediaEncoder))
         data["multimedia"] = multimedia
     if retry_timeout is not None:
         data["retryTimeout"] = retry_timeout
@@ -341,7 +341,20 @@ def send(  # pylint: disable=too-many-arguments,too-many-locals
                 tags=message_dict.get("tags", None),
             )
     except error.HTTPError as exc:
-        raise exceptions.MessageError(f"Could not send message: {exc}") from exc
+        suggested_actions_string = ""
+        try:
+            error_response = json.loads(exc.read().decode())
+            list_of_error_dicts = error_response.get("errors", [])
+            suggested_actions_string = (
+                error_response_util.get_suggeted_actions_list_str(
+                    list_of_error_dicts=list_of_error_dicts, key="suggested_action"
+                )
+            )
+        except Exception:
+            raise exceptions.MessageError(f"Could not send message: {exc}") from exc
+        raise exceptions.MessageError(
+            f"Could not send message. {suggested_actions_string}"
+        ) from exc
 
 
 def _validate_update_args(  # pylint: disable=too-many-arguments
@@ -373,7 +386,7 @@ def _validate_update_args(  # pylint: disable=too-many-arguments
 
 
 def update(  # pylint: disable=too-many-arguments,too-many-locals
-    message_id: typing.Optional[types.TMessageId],
+    message_id: types.TMessageId,
     to: typing.Union[types.TTo, typing.List[types.TTo]],
     from_: typing.Optional[types.TFrom] = None,
     message_content: typing.Optional[types.TMessageContent] = None,
@@ -432,12 +445,12 @@ def update(  # pylint: disable=too-many-arguments,too-many-locals
             f"Could not retrieve an OAuth token: {exc}"
         ) from exc
 
-    multimedia = json.dumps(multimedia, cls=MultimediaEncoder)
-    multimedia = json.loads(multimedia)
-
     data: typing.Dict[str, typing.Any] = {"to": to, "from": from_}
     if message_content is not None:
         data["messageContent"] = message_content
+    if multimedia is not None:
+        multimedia = json.loads(json.dumps(multimedia, cls=MultimediaEncoder))
+        data["multimedia"] = multimedia
     if retry_timeout is not None:
         data["retryTimeout"] = retry_timeout
     if schedule_send is not None:
@@ -481,7 +494,20 @@ def update(  # pylint: disable=too-many-arguments,too-many-locals
                 tags=message_dict.get("tags", None),
             )
     except error.HTTPError as exc:
-        raise exceptions.MessageError(f"Could not send message: {exc}") from exc
+        suggested_actions_string = ""
+        try:
+            error_response = json.loads(exc.read().decode())
+            list_of_error_dicts = error_response.get("errors", [])
+            suggested_actions_string = (
+                error_response_util.get_suggeted_actions_list_str(
+                    list_of_error_dicts=list_of_error_dicts, key="suggested_action"
+                )
+            )
+        except Exception:
+            raise exceptions.MessageError(f"Could not update message: {exc}") from exc
+        raise exceptions.MessageError(
+            f"Could not update message. {suggested_actions_string}"
+        ) from exc
 
 
 def _validate_update_tags_args(  # pylint: disable=too-many-arguments
@@ -502,7 +528,7 @@ def _validate_update_tags_args(  # pylint: disable=too-many-arguments
 
 
 def update_tags(  # pylint: disable=too-many-arguments,too-many-locals
-    message_id: typing.Optional[types.TMessageId],
+    message_id: types.TMessageId,
     tags: typing.Optional[typing.List[types.TTags]],
 ) -> None:
     """
@@ -550,7 +576,22 @@ def update_tags(  # pylint: disable=too-many-arguments,too-many-locals
         with request.urlopen(update_tags_request):
             return None
     except error.HTTPError as exc:
-        raise exceptions.MessageError(f"Could not update message tags: {exc}") from exc
+        suggested_actions_string = ""
+        try:
+            error_response = json.loads(exc.read().decode())
+            list_of_error_dicts = error_response.get("errors", [])
+            suggested_actions_string = (
+                error_response_util.get_suggeted_actions_list_str(
+                    list_of_error_dicts=list_of_error_dicts, key="suggested_action"
+                )
+            )
+        except Exception:
+            raise exceptions.MessageError(
+                f"Could not update message tags: {exc}"
+            ) from exc
+        raise exceptions.MessageError(
+            f"Could not update message tags. {suggested_actions_string}"
+        ) from exc
 
 
 def get(message_id: types.TMessageId) -> TMessage:
@@ -610,7 +651,22 @@ def get(message_id: types.TMessageId) -> TMessage:
                 received_timestamp=message_get_dict.get("receivedTimestamp", None),
             )
     except error.HTTPError as exc:
-        raise exceptions.MessageError(f"Could not retrieve the message: {exc}") from exc
+        suggested_actions_string = ""
+        try:
+            error_response = json.loads(exc.read().decode())
+            list_of_error_dicts = error_response.get("errors", [])
+            suggested_actions_string = (
+                error_response_util.get_suggeted_actions_list_str(
+                    list_of_error_dicts=list_of_error_dicts, key="suggested_action"
+                )
+            )
+        except Exception:
+            raise exceptions.MessageError(
+                f"Could not retrieve the message: {exc}"
+            ) from exc
+        raise exceptions.MessageError(
+            f"Could not retrieve the message. {suggested_actions_string}"
+        ) from exc
 
 
 def _validate_get_all_args(
@@ -633,7 +689,7 @@ def _validate_get_all_args(
     if (offset is not None and not isinstance(offset, types.TOffset)) or (
         offset is not None
         and isinstance(offset, types.TOffset)
-        and (offset < 0 or limit > 999999)
+        and (offset < 0 or offset > 999999)
     ):
         raise exceptions.MessageError(
             'the value of "offset" is not valid, expected a int value '
@@ -654,7 +710,7 @@ def get_all(
     filter_: typing.Optional[types.TFilter] = None,
 ) -> TMessages:
     """
-    Retrieves all messages.
+    Retrieve all messages.
 
     Raises MessageError is anything goes wrong whilst retrieving messages.
 
@@ -680,7 +736,7 @@ def get_all(
         "Content-Type": "application/json",
     }
     messages_get_request = request.Request(
-        f"{_URL}" f"{querystring.build(limit=limit, offset=offset, filter_=filter_)}",
+        f"{_URL}{querystring.build(limit=limit, offset=offset, filter_=filter_)}",
         headers=headers,
         method="GET",
     )
@@ -722,7 +778,22 @@ def get_all(
                 paging=paging,
             )
     except error.HTTPError as exc:
-        raise exceptions.MessageError(f"Could not retrieve messages: {exc}") from exc
+        suggested_actions_string = ""
+        try:
+            error_response = json.loads(exc.read().decode())
+            list_of_error_dicts = error_response.get("errors", [])
+            suggested_actions_string = (
+                error_response_util.get_suggeted_actions_list_str(
+                    list_of_error_dicts=list_of_error_dicts, key="suggested_action"
+                )
+            )
+        except Exception:
+            raise exceptions.MessageError(
+                f"Could not retrieve messages: {exc}"
+            ) from exc
+        raise exceptions.MessageError(
+            f"Could not retrieve messages. {suggested_actions_string}"
+        ) from exc
 
 
 def delete(message_id: types.TMessageId) -> None:
@@ -762,4 +833,19 @@ def delete(message_id: types.TMessageId) -> None:
         with request.urlopen(delete_request):
             return None
     except error.HTTPError as exc:
-        raise exceptions.MessageError(f"Could not delete the message: {exc}") from exc
+        suggested_actions_string = ""
+        try:
+            error_response = json.loads(exc.read().decode())
+            list_of_error_dicts = error_response.get("errors", [])
+            suggested_actions_string = (
+                error_response_util.get_suggeted_actions_list_str(
+                    list_of_error_dicts=list_of_error_dicts, key="suggested_action"
+                )
+            )
+        except Exception:
+            raise exceptions.MessageError(
+                f"Could not delete the message: {exc}"
+            ) from exc
+        raise exceptions.MessageError(
+            f"Could not delete the message. {suggested_actions_string}"
+        ) from exc

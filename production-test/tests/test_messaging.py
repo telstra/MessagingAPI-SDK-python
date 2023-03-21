@@ -1,6 +1,6 @@
 """Tests for the messaging API."""
 
-from telstra.messaging import exceptions, message, numbers
+from telstra.messaging.v3 import exceptions, message, virtual_number
 
 
 def test_create_numbers():
@@ -9,9 +9,9 @@ def test_create_numbers():
     WHEN create, get and delete are called
     THEN no errors are raised.
     """
-    numbers.create()
-    numbers.get()
-    numbers.delete()
+    vn_response = virtual_number.assign()
+    virtual_number.get(virtual_number=vn_response.virtual_number)
+    virtual_number.delete(virtual_number=vn_response.virtual_number)
 
 
 def test_send_message():
@@ -20,34 +20,24 @@ def test_send_message():
     WHEN send is called
     THEN no errors are raised.
     """
-    numbers_value = numbers.get()
-    message.send(to=numbers_value.destination_address, body="Test")
+    virtual_numbers = virtual_number.get_all()
+    message.send(
+        to=virtual_numbers.virtual_numbers[0].virtual_number,
+        from_="privateNumber",
+        message_content="Test",
+    )
 
 
-def test_get_reply():
+def test_get_message():
     """
     GIVEN credentials in the environment
     WHEN send and then get_next_unread_reply is called
     THEN no errors are raised.
     """
-    numbers_value = numbers.get()
-    message.send(to=numbers_value.destination_address, body="Test")
-    message.get_next_unread_reply()
-
-
-def test_get_status():
-    """
-    GIVEN credentials in the environment and a sent message
-    WHEN get_status is called
-    THEN no errors are raised.
-    """
-    numbers_value = numbers.get()
-    sent_message = message.send(to=numbers_value.destination_address, body="Test")
-
-    retries = 5
-    for retry_counter in range(retries):
-        try:
-            message.get_status(sent_message.message_id)
-        except exceptions.MessageError as exc:
-            if retry_counter == retries - 1:
-                raise exc
+    virtual_numbers = virtual_number.get_all()
+    message_response = message.send(
+        to=virtual_numbers.virtual_numbers[0].virtual_number,
+        from_="privateNumber",
+        message_content="Test",
+    )
+    message.get(message_id=message_response.message_id)

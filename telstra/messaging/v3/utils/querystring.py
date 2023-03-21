@@ -1,10 +1,10 @@
-"""Utilities for the querystring"""
+"""Utilities for the querystring."""
 
 from urllib.parse import urlencode
 
 
 def build(**kwargs) -> str:
-    """Build a querystring"""
+    """Build a querystring."""
     params = kwargs.get("params")
     if params:
         query_dict = eval(params)

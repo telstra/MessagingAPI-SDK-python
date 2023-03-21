@@ -80,35 +80,6 @@ VALID_SEND_KWARGS: typing.Dict[str, typing.Any] = {
             ["multimedia", "received", f'"{1}"', "list"],
             id="multimedia integer",
         ),
-        # pytest.param(
-        #     {**VALID_SEND_KWARGS, "from_": True},
-        #     ["from_", "received", f'"{True}"', "expected", "string"],
-        #     id="from_ not string",
-        # ),
-        # pytest.param(
-        #     {**VALID_SEND_KWARGS, "from_": "0123456789ab"},
-        #     [
-        #         "from_",
-        #         "received",
-        #         '"0123456789ab"',
-        #         "too many characters",
-        #         "expected",
-        #         "at most",
-        #         "11",
-        #         "characters",
-        #     ],
-        #     id="from_ too long",
-        # ),
-        # pytest.param(
-        #     {**VALID_SEND_KWARGS, "from_": "-"},
-        #     ["from_", "received", '"-"', "contains", "invalid", "characters"],
-        #     id="from_ not alpha numeric",
-        # ),
-        # pytest.param(
-        #     {**VALID_SEND_KWARGS, "from_": "0412345678"},
-        #     ["from_", "received", '"0412345678"', "phone number"],
-        #     id="from_ phone number",
-        # ),
         pytest.param(
             {**VALID_SEND_KWARGS, "retry_timeout": "1"},
             ["retry_timeout", "received", '"1"', "integer"],
@@ -237,7 +208,6 @@ def test_send_param(
         request_data = mock_urlopen.call_args.args[0].data.decode()
     else:
         request_data = mock_urlopen.call_args[0][0].data.decode()
-    print(f"********************{request_data}")
     assert to in request_data
     assert "privateNumber" in request_data
     assert message_content in request_data
@@ -293,7 +263,8 @@ def test_send_error_oauth(func, mocked_oauth_get_token_error):
 @pytest.mark.message
 def test_error_http(func, _mocked_oauth_get_token, mocked_request_urlopen_error):
     """
-    GIVEN function, get_token that returns a token and urlopen that raises an error
+    GIVEN function, get_token that returns a token and
+    urlopen that raises an error
     WHEN function is called
     THEN MessageError is raised.
     """

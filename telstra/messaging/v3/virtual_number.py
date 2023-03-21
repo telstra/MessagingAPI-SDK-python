@@ -7,8 +7,9 @@ from urllib import error, parse, request
 
 from . import exceptions, oauth, types
 from .utils import callback_url as callback_url_util
-from .utils import virtual_number as virtual_number_util
+from .utils import error_response as error_response_util
 from .utils import querystring
+from .utils import virtual_number as virtual_number_util
 
 _URL = "https://products.api.telstra.com/messaging/v3/virtual-numbers"
 
@@ -27,8 +28,8 @@ class TVirtualNumber:
 
     virtual_number: str
     last_use: str
-    reply_callback_url: types.TStatusCallbackUrl = None
-    tags: types.TTags = None
+    reply_callback_url: types.TStatusCallbackUrl | None = None
+    tags: types.TTags | None = None
 
 
 @dataclasses.dataclass
@@ -128,15 +129,26 @@ def assign(
             virtual_numbers_dict = json.loads(response.read().decode())
             return TVirtualNumber(
                 virtual_number=virtual_numbers_dict.get("virtualNumber"),
-                reply_callback_url=virtual_numbers_dict.get(
-                    "replyCallbackUrl", None),
+                reply_callback_url=virtual_numbers_dict.get("replyCallbackUrl", None),
                 tags=virtual_numbers_dict.get("tags", None),
                 last_use=virtual_numbers_dict.get("lastUse"),
             )
     except error.HTTPError as exc:
+        suggested_actions_string = ""
+        try:
+            error_response = json.loads(exc.read().decode())
+            list_of_error_dicts = error_response.get("errors", [])
+            suggested_actions_string = (
+                error_response_util.get_suggeted_actions_list_str(
+                    list_of_error_dicts=list_of_error_dicts, key="suggested_action"
+                )
+            )
+        except Exception:
+            raise exceptions.VirtualNumbersError(
+                f"Could not assign virtual number: {exc}"
+            ) from exc
         raise exceptions.VirtualNumbersError(
-            "Could not assign virtual number, "
-            f"please check your account limits: {exc}"
+            f"Could not assign virtual number. {suggested_actions_string}"
         ) from exc
 
 
@@ -160,7 +172,7 @@ def _validate_get_all_args(
     if (offset is not None and not isinstance(offset, types.TOffset)) or (
         offset is not None
         and isinstance(offset, types.TOffset)
-        and (offset < 0 or limit > 999999)
+        and (offset < 0 or offset > 999999)
     ):
         raise exceptions.MessageError(
             'the value of "offset" is not valid, expected a int value '
@@ -206,22 +218,19 @@ def get_all(
         "Cache-Control": "no-cache",
     }
     virtual_numbers_request = request.Request(
-        f"{_URL}"
-        f"{querystring.build(limit=limit, offset=offset, filter=filter_)}",
+        f"{_URL}" f"{querystring.build(limit=limit, offset=offset, filter=filter_)}",
         headers=headers,
         method="GET",
     )
     try:
         with request.urlopen(virtual_numbers_request) as response:
             virtual_numbers: list[TVirtualNumber] = []
-            virtual_numbers_response_dict = json.loads(
-                response.read().decode())
+            virtual_numbers_response_dict = json.loads(response.read().decode())
             virtual_numbers_list = virtual_numbers_response_dict.get(
                 "virtualNumbers", []
             )
 
-            if (virtual_numbers_list is not None
-                    and len(virtual_numbers_list) > 0):
+            if virtual_numbers_list is not None and len(virtual_numbers_list) > 0:
                 virtual_numbers = [
                     TVirtualNumber(
                         virtual_number=d.get("virtualNumber"),
@@ -232,25 +241,35 @@ def get_all(
                     for d in virtual_numbers_list
                 ]
             paging = TPaging(
-                next_page=virtual_numbers_response_dict["paging"].get(
-                    "nextPage", ""),
+                next_page=virtual_numbers_response_dict["paging"].get("nextPage", ""),
                 previous_page=virtual_numbers_response_dict["paging"].get(
                     "previousPage", ""
                 ),
-                last_page=virtual_numbers_response_dict["paging"].get(
-                    "lastPage", ""),
+                last_page=virtual_numbers_response_dict["paging"].get("lastPage", ""),
                 total_count=virtual_numbers_response_dict["paging"].get(
                     "totalCount", 0
                 ),
             )
             return TVirtualNumbers(
-                virtual_numbers=(
-                    [] if virtual_numbers is None else virtual_numbers),
+                virtual_numbers=([] if virtual_numbers is None else virtual_numbers),
                 paging=paging,
             )
     except error.HTTPError as exc:
+        suggested_actions_string = ""
+        try:
+            error_response = json.loads(exc.read().decode())
+            list_of_error_dicts = error_response.get("errors", [])
+            suggested_actions_string = (
+                error_response_util.get_suggeted_actions_list_str(
+                    list_of_error_dicts=list_of_error_dicts, key="suggested_action"
+                )
+            )
+        except Exception:
+            raise exceptions.VirtualNumbersError(
+                f"Could not retrieve virtual numbers: {exc}"
+            ) from exc
         raise exceptions.VirtualNumbersError(
-            f"Could not retrieve virtual number: {exc}"
+            f"Could not retrieve virtual numbers. {suggested_actions_string}"
         ) from exc
 
 
@@ -292,14 +311,26 @@ def get(virtual_number: str) -> TVirtualNumber:
             virtual_numbers_dict = json.loads(response.read().decode())
             return TVirtualNumber(
                 virtual_number=virtual_numbers_dict.get("virtualNumber"),
-                reply_callback_url=virtual_numbers_dict.get(
-                    "replyCallbackUrl", None),
+                reply_callback_url=virtual_numbers_dict.get("replyCallbackUrl", None),
                 tags=virtual_numbers_dict.get("tags", None),
                 last_use=virtual_numbers_dict.get("lastUse"),
             )
     except error.HTTPError as exc:
+        suggested_actions_string = ""
+        try:
+            error_response = json.loads(exc.read().decode())
+            list_of_error_dicts = error_response.get("errors", [])
+            suggested_actions_string = (
+                error_response_util.get_suggeted_actions_list_str(
+                    list_of_error_dicts=list_of_error_dicts, key="suggested_action"
+                )
+            )
+        except Exception:
+            raise exceptions.VirtualNumbersError(
+                f"Could not retrieve virtual number: {exc}"
+            ) from exc
         raise exceptions.VirtualNumbersError(
-            f"Could not retrieve virtual number: {exc}"
+            f"Could not retrieve virtual number. {suggested_actions_string}"
         ) from exc
 
 
@@ -314,6 +345,7 @@ def update(
     Raises VirtualNumbersError if anything goes wrong.
 
     Args:
+        virtual_number: virtual_number you want to update.
         reply_callback_url: URL that replies to the Virtual Number
         should be sent to.
         tags: List of strings used as tags to the virtual number.
@@ -378,14 +410,26 @@ def update(
             virtual_numbers_dict = json.loads(response.read().decode())
             return TVirtualNumber(
                 virtual_number=virtual_numbers_dict.get("virtualNumber"),
-                reply_callback_url=virtual_numbers_dict.get(
-                    "replyCallbackUrl", None),
+                reply_callback_url=virtual_numbers_dict.get("replyCallbackUrl", None),
                 tags=virtual_numbers_dict.get("tags", None),
                 last_use=virtual_numbers_dict.get("lastUse"),
             )
     except error.HTTPError as exc:
+        suggested_actions_string = ""
+        try:
+            error_response = json.loads(exc.read().decode())
+            list_of_error_dicts = error_response.get("errors", [])
+            suggested_actions_string = (
+                error_response_util.get_suggeted_actions_list_str(
+                    list_of_error_dicts=list_of_error_dicts, key="suggested_action"
+                )
+            )
+        except Exception:
+            raise exceptions.VirtualNumbersError(
+                f"Could not update virtual number: {exc}"
+            ) from exc
         raise exceptions.VirtualNumbersError(
-            f"Could not update virtual number: {exc}"
+            f"Could not update virtual number. {suggested_actions_string}"
         ) from exc
 
 
@@ -420,14 +464,25 @@ def delete(virtual_number: str) -> None:
         "Cache-Control": "no-cache",
     }
     numbers_request = request.Request(
-        f"{_URL}/{parse.quote(virtual_number)}",
-        headers=headers,
-        method="DELETE"
+        f"{_URL}/{parse.quote(virtual_number)}", headers=headers, method="DELETE"
     )
     try:
         with request.urlopen(numbers_request):
             return
     except error.HTTPError as exc:
+        suggested_actions_string = ""
+        try:
+            error_response = json.loads(exc.read().decode())
+            list_of_error_dicts = error_response.get("errors", [])
+            suggested_actions_string = (
+                error_response_util.get_suggeted_actions_list_str(
+                    list_of_error_dicts=list_of_error_dicts, key="suggested_action"
+                )
+            )
+        except Exception:
+            raise exceptions.VirtualNumbersError(
+                f"Could not delete virtual number: {exc}"
+            ) from exc
         raise exceptions.VirtualNumbersError(
-            f"Could not delete virtual number: {exc}"
+            f"Could not delete virtual number. {suggested_actions_string}"
         ) from exc

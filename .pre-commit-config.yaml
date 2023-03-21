@@ -16,8 +16,8 @@ repos:
     rev: v5.10.1
     hooks:
       - id: isort
-  - repo: https://github.com/chewse/pre-commit-mirrors-pydocstyle
-    rev: v2.1.1
+  - repo: https://github.com/PyCQA/pydocstyle
+    rev: 6.3.0
     hooks:
       - id: pydocstyle
         args: ["--add-select=D213,D404", "--ignore=D202,D212,D406,D407,D203"]

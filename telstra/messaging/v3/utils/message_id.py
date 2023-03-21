@@ -1,4 +1,4 @@
-"""Utilities for the message id"""
+"""Utilities for the message id."""
 
 import typing
 import uuid

@@ -44,7 +44,7 @@ class Config:
         _f.close()
 
     @property
-    def telstra_client_id(self) -> TClientId:
+    def telstra_client_id(self) -> TClientId | None:
         """Get the telstra_client_id."""
         if self._telstra_client_id is None:
             telstra_client_id_env_name = "TELSTRA_CLIENT_ID"
@@ -80,6 +80,7 @@ class Config:
                     "from telstra.messaging.v3.utils.config import CONFIG\n"
                     "CONFIG.telstra_client_id = '<client id>'"
                 )
+        return self._telstra_client_id
 
     @telstra_client_id.setter
     def telstra_client_id(self, telstra_client_id: TClientId) -> None:
@@ -93,7 +94,7 @@ class Config:
         self._telstra_client_id = telstra_client_id
 
     @property
-    def telstra_client_secret(self) -> TClientSecret:
+    def telstra_client_secret(self) -> TClientSecret | None:
         """Get the telstra_client_secret."""
         if self._telstra_client_secret is None:
             telstra_client_secret_env_name = "TELSTRA_CLIENT_SECRET"
@@ -129,6 +130,7 @@ class Config:
                     "from telstra.messaging.v3.utils.config import CONFIG\n"
                     "CONFIG.telstra_client_secret = '<client secret>'"
                 )
+        return self._telstra_client_secret
 
     @telstra_client_secret.setter
     def telstra_client_secret(self, telstra_client_secret: TClientSecret) -> None:

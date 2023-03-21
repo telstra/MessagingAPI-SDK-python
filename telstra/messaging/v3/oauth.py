@@ -62,7 +62,7 @@ def _reuse_token(func):
     """Decorate to reuse tokens that are not expired."""
 
     def inner() -> TToken:
-        """Decorator."""
+        """Decorate."""
         if _CACHE["old_token"] is None or _CACHE["old_token"].expired:
             _CACHE["old_token"] = func()
         assert _CACHE["old_token"] is not None

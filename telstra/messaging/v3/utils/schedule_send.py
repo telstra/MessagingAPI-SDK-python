@@ -1,4 +1,4 @@
-"""Utilities for the schedule send"""
+"""Utilities for the schedule send."""
 
 # ISO format example: "2019-08-24T15:39:00Z"
 import re

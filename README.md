@@ -24,7 +24,11 @@ To send your first message:
 ```python
 from telstra.messaging.v3 import message
 
-message.send(to="+61412345678", from_="privateNumber", message_content="Hello from Python Messaging SDK!")
+message.send(
+  to="+61412345678",
+  from_="privateNumber",
+  message_content="Hello from Python Messaging SDK!"
+  )
 ```
 
 To set the required environment variables if your application is in `app.py`:
@@ -35,11 +39,13 @@ TELSTRA_CLIENT_ID"<client id>" TELSTRA_CLIENT_SECRET="<client secret>" python ap
 
 ## Authentication
 
-Authentication through environment variables, a shared credentials file and through code are supported.
+Authentication through environment variables, a shared credentials file
+and through code are supported.
 
 ### Authentication using environment variables
 
-Export the following two environment variables, replacing the values with your own credentials.
+Export the following two environment variables, replacing the values
+with your own credentials.
 
 ```shell
 export TELSTRA_CLIENT_ID="<client id>"
@@ -48,7 +54,8 @@ export TELSTRA_CLIENT_SECRET="<client secret>"
 
 ### Authentication using shared credentials
 
-Create a `~/.telstra/credentials` file in your home path with the following contents, replacing the values with your own credentials.
+Create a `~/.telstra/credentials` file in your home path with the following contents,
+replacing the values with your own credentials.
 
 ```markdown
 [default]
@@ -79,8 +86,8 @@ sending a message.
 Telstra offers a free trial for the messaging API to help you evaluate whether
 it meets your needs. There are some restrictions that apply compared to the
 full API, including a maximum number of messages that can be sent and requiring the
-registration of a limited number of destinations before a message can be sent to that
-destination. For more information, please see here:
+registration of a limited number of destinations before a message can be sent
+to that destination. For more information, please see here:
 <https://dev.telstra.com/content/messaging-api#tag/Free-Trial>.
 
 ### Registering Free Trial Numbers
@@ -115,12 +122,13 @@ print(phone_numbers)
 
 > :information_source: **Only required for the free trial**
 
-Fetch the Free Trial Number(s) currently assigned to your account. For more information, please see
-here:
+Fetch the Free Trial Number(s) currently assigned to your account. For more information,
+please see here:
 <https://dev.telstra.com/content/messaging-api-v3#operation/getTrialNumbers>.
 
-The function `telstra.messaging.v3.free_trial_numbers.get_all` can be used to retrieve registered
-destinations. It takes no arguments.
+The function `telstra.messaging.v3.free_trial_numbers.get_all`
+can be used to retrieve registered destinations.
+It takes no arguments.
 
 Raises `telstra.messaging.v3.exceptions.FreeTrialNumbersError` if anything goes wrong.
 
@@ -146,16 +154,20 @@ please see here:
 
 ### Assign Virtual Number
 
-When a recipient receives your message, you can choose whether they'll see a privateNumber, Virtual Number or senderName (paid plans only) in the from field.
-If you want to use a Virtual Number, use this function to assign one.. For more information,
-please see here:
+When a recipient receives your message, you can choose whether they'll see a privateNumber,
+Virtual Number or senderName (paid plans only) in the from field.
+If you want to use a Virtual Number, use this function to assign one.
+For more information, please see here:
 <https://dev.telstra.com/content/messaging-api-v3#operation/assignNumber>.
 
 The function `telstra.messaging.v3.virtual_number.create` can be used to create a
 numbers. It takes the following arguments:
 
-- `reply_callback_url` (optional): The URL that replies to the Virtual Number will be posted to.
-- `tags` (optional): Create your own tags and use them to fetch, sort and report on your Virtual Numbers through our other endpoints. You can assign up to 10 tags per number.
+- `reply_callback_url` (optional): The URL that replies to the
+  Virtual Number will be posted to.
+- `tags` (optional): Create your own tags and use them to fetch,
+  sort and report on your Virtual Numbers through our other endpoints.
+  You can assign up to 10 tags per number.
 
 Raises `telstra.messaging.v3.exceptions.VirtualNumbersError` if anything goes wrong.
 
@@ -163,7 +175,8 @@ It returns an object with the following properties:
 
 - `virtual_number`: The Virtual Number assigned to your account.
 - `last_use`: The last time the Virtual Number was used to send a message.
-- `reply_callback_url`: The URL that replies to the Virtual Number will be posted to.
+- `reply_callback_url`: The URL that replies to the
+  Virtual Number will be posted to.
 - `tags`: Any customisable tags assigned to the Virtual Number.
 
 For example:
@@ -178,7 +191,8 @@ print(assigned_numbers)
 
 ### Fetch a Virtual Number
 
-Fetch the tags, replyCallbackUrl and lastUse date for a Virtual Number. For more information, please see here:
+Fetch the tags, replyCallbackUrl and lastUse date for a Virtual Number.
+For more information, please see here:
 <https://dev.telstra.com/content/messaging-api-v3#operation/getVirtualNumber>.
 
 The function `telstra.messaging.v3.virtual_number.get` can be used to get the current
@@ -193,7 +207,8 @@ properties:
 
 - `virtual_number`: The Virtual Number assigned to your account.
 - `last_use`: The last time the Virtual Number was used to send a message.
-- `reply_callback_url`: The URL that replies to the Virtual Number will be posted to.
+- `reply_callback_url`: The URL that replies to the
+  Virtual Number will be posted to.
 - `tags`: Any customisable tags assigned to the Virtual Number.
 
 For example:
@@ -208,14 +223,17 @@ print(retrieved_number)
 
 ### Fetch all Virtual Numbers
 
-Fetch all Virtual Numbers currently assigned to your account.. For more information, please see here:
+Fetch all Virtual Numbers currently assigned to your account.
+For more information, please see here:
 <https://dev.telstra.com/content/messaging-api-v3#operation/getNumbers>.
 
-The function `telstra.messaging.v3.virtual_number.get_all` can be used to get the all virtual
-numbers associated to your account. It takes the following arguments:
+The function `telstra.messaging.v3.virtual_number.get_all` can be used to
+get the all virtual numbers associated to your account.
+It takes the following arguments:
 
 - `limit`: Tell us how many results you want us to return, up to a maximum of 50.
-- `offset`: Use the offset to navigate between the response results. An offset of 0 will display the first page of results, and so on.
+- `offset`: Use the offset to navigate between the response results.
+  An offset of 0 will display the first page of results, and so on.
 - `filter`: Filter your Virtual Numbers by tag or by number.
 
 Raises `telstra.messaging.v3.exceptions.VirtualNumbersError` if anything goes wrong.
@@ -246,8 +264,11 @@ The function `telstra.messaging.v3.virtual_number.update` can be used to update 
 virtual number. It takes the following arguments:
 
 - `virtual_number`: The Virtual Number assigned to your account.
-- `reply_callback_url` (optional): The URL that replies to the Virtual Number will be posted to.
-- `tags` (optional): Create your own tags and use them to fetch, sort and report on your Virtual Numbers through our other endpoints. You can assign up to 10 tags per number.
+- `reply_callback_url` (optional): The URL that replies to the
+  Virtual Number will be posted to.
+- `tags` (optional): Create your own tags and use them to fetch,
+  sort and report on your Virtual Numbers through our other endpoints.
+  You can assign up to 10 tags per number.
 
 Raises `telstra.messaging.v3.exceptions.VirtualNumbersError` if anything goes wrong.
 
@@ -255,7 +276,8 @@ It returns an object with the following properties:
 
 - `virtual_number`: The Virtual Number assigned to your account.
 - `last_use`: The last time the Virtual Number was used to send a message.
-- `reply_callback_url`: The URL that replies to the Virtual Number will be posted to.
+- `reply_callback_url`: The URL that replies to the
+  Virtual Number will be posted to.
 - `tags`: Any customisable tags assigned to the Virtual Number.
 
 For example:
@@ -264,7 +286,10 @@ For example:
 # Update a virtual number
 from telstra.messaging.v3 import virtual_number
 
-updated_virtual_number = virtual_number.update(virtual_number="0400000001", tags=["sdk", "v3"])
+updated_virtual_number = virtual_number.update(
+  virtual_number="0400000001",
+  tags=["sdk", "v3"]
+  )
 print(updated_virtual_number)
 ```
 
@@ -273,8 +298,8 @@ print(updated_virtual_number)
 Delete the a virtual number. For more information, please see here:
 <https://dev.telstra.com/content/messaging-api-v3#operation/deleteNumber>.
 
-The function `telstra.messaging.v3.virtual_number.delete` can be used to delete the current
-number. It takes the following arguments:
+The function `telstra.messaging.v3.virtual_number.delete` can be used
+to delete the current number. It takes the following arguments:
 
 - `virtual_number`: The Virtual Number assigned to your account.
 
@@ -296,28 +321,36 @@ Send and receive messages. For more information, please see here:
 
 ### Send Message
 
-Send a message to a mobile number, or to multiple mobile numbers. For more information, please see here:
+Send a message to a mobile number, or to multiple mobile numbers.
+For more information, please see here:
 <https://dev.telstra.com/content/messaging-api-v3#operation/sendMessages>.
 
-The function `telstra.messaging.v3.message.send` can be used to send a message. It takes the
-following arguments:
+The function `telstra.messaging.v3.message.send` can be used to send a message.
+It takes the following arguments:
 
 - `to`: The destination address, expected to be a phone number of the form
   `+614XXXXXXXX` or `04XXXXXXXX`.
-- `from_`: This will be either "privateNumber", one of your Virtual Numbers or your senderName.
-- `message_content`(Either one of messageContent or multimedia is required): The content of the message.
-- `multimedia` (Either one of messageContent or multimedia is required): MMS multimedia content.
-- `retry_timeout` (optional): How many minutes you asked the server to keep trying to send the message.
-- `schedule_send` (optional): The time (in Central Standard Time) the message is scheduled to send.
-- `delivery_notification` (optional): If set to true, you will receive a notification to the statusCallbackUrl
-  when your SMS is delivered (paid feature).
-- `status_callback_url` (optional): The URL the API will call when the status of the message changes.
+- `from_`: This will be either "privateNumber", one of your Virtual Numbers
+  or your senderName.
+- `message_content`(Either one of messageContent or multimedia is required).
+  The content of the message.
+- `multimedia` (Either one of messageContent or multimedia is required).
+  MMS multimedia content.
+- `retry_timeout` (optional): How many minutes you asked the server to
+  keep trying to send the message.
+- `schedule_send` (optional): The time (in Central Standard Time)
+  the message is scheduled to send.
+- `delivery_notification` (optional): If set to true, you will receive
+  a notification to the statusCallbackUrl when your SMS is delivered (paid feature).
+- `status_callback_url` (optional): The URL the API will call when the
+  status of the message changes.
 - `tags` (optional): Any customisable tags assigned to the message.
 
 Raises `telstra.messaging.v3.exceptions.MessageError` if anything goes wrong.
 
-The dataclass `telstra.messaging.v3.message.Multimedia` can be used to build an mms payload. It takes the
-following arguments:
+The dataclass `telstra.messaging.v3.message.Multimedia`
+can be used to build an mms payload.
+It takes the following arguments:
 
 - `type`: The content type of the attachment, for example `image/png`.
 - `filename` (optional): Optional field, for example `image.png`.
@@ -327,16 +360,22 @@ Raises `telstra.messaging.v3.exceptions.MessageError` if anything goes wrong.
 
 It returns an object with the following properties:
 
-- `messageId`: Use this UUID with our other endpoints to fetch, update or delete the message.
+- `messageId`: Use this UUID with our other endpoints to fetch,
+  update or delete the message.
 - `status`: The status will be either queued, sent, delivered or expired.
 - `to`: The recipient's mobile number(s).
-- `from`: This will be either "privateNumber", one of your Virtual Numbers or your senderName.
+- `from`: This will be either "privateNumber", one of your
+  Virtual Numbers or your senderName.
 - `message_content`: The content of the message.
 - `multimedia`: The multimedia content of the message (MMS only).
-- `retry_timeout`: How many minutes you asked the server to keep trying to send the message.
-- `schedule_send`: The time (in Central Standard Time) the message is scheduled to send.
-- `delivery_notification`: If set to true, you will receive a notification to the statusCallbackUrl when your SMS is delivered (paid feature).
-- `status_callback_url`: The URL the API will call when the status of the message changes.
+- `retry_timeout`: How many minutes you asked the server to keep
+  trying to send the message.
+- `schedule_send`: The time (in Central Standard Time) a message
+  is scheduled to send.
+- `delivery_notification`: If set to true, you will receive a notification to the
+  statusCallbackUrl when your SMS is delivered (paid feature).
+- `status_callback_url`: The URL the API will call when the status of
+  the message changes.
 - `tags`: Any customisable tags assigned to the message.
 
 For example:
@@ -345,7 +384,11 @@ For example:
 # Send an SMS
 from telstra.messaging.v3 import message
 
-message.send(to="+61412345678", from_="privateNumber", message_content="Hello from Python Messaging SDK!")
+message.send(
+  to="+61412345678",
+  from_="privateNumber",
+  message_content="Hello from Python Messaging SDK!"
+)
 
 # Send an MMS
 message.send(
@@ -363,8 +406,10 @@ message.send(
 
 ### Get a Message
 
-Use the messageId to fetch a message that's been sent from/to your account within the last 30 days.
-Note that in the current release, inbound MMS or messages sent in reply to an MMS will not be retrieved..
+Use the messageId to fetch a message that's been sent from/to
+your account within the last 30 days.
+Note that in the current release, inbound MMS or messages sent in
+reply to an MMS will not be retrieved..
 For more information, please see here:
 <https://dev.telstra.com/content/messaging-api-v3#operation/getMessageById>.
 

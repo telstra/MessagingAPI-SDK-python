@@ -18,7 +18,7 @@ TFilter = str
 
 
 class TMultimediaContentTypes(Enum):
-    """MMS Content Type"""
+    """MMS Content Type."""
 
     AUDIO_AMR: str = "audio/amr"
     AUDIO_MP3: str = "audio/mp3"

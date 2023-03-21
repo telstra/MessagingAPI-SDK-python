@@ -28,29 +28,6 @@ GET_ERROR_TESTS = [
     ),
 ]
 
-
-# @pytest.mark.parametrize(
-#     "env_name, config_name, expected_exception, expected_contents", GET_ERROR_TESTS
-# )
-# @pytest.mark.config
-# def test_get_error(
-#     env_name, config_name, expected_exception, expected_contents, monkeypatch
-# ):
-#     """
-#     GIVEN environment variable name, configuration name and expected exception and
-#         contents
-#     WHEN the environment variable is deleted and the config retrieved
-#     THEN the expected exception is raised with the expected contents.
-#     """
-#     monkeypatch.delenv(env_name)
-
-#     with pytest.raises(expected_exception) as exc_info:
-#         getattr(config.Config(), config_name)
-
-#     for content in expected_contents:
-#         assert content in str(exc_info.value)
-
-
 GET_ENV_DEFINED_TESTS = [
     pytest.param(
         "TELSTRA_CLIENT_ID",
@@ -88,38 +65,6 @@ GET_CONFIG_SET_TESTS_TESTS = [
         "telstra_client_secret", "client secret 1", id="telstra_client_secret"
     ),
 ]
-
-
-# @pytest.mark.parametrize("config_name, config_value", GET_CONFIG_SET_TESTS_TESTS)
-# @pytest.mark.config
-# def test_get_config_set(config_name, config_value):
-#     """
-#     GIVEN configuration name and value
-#     WHEN the config is set is set and then retrieved
-#     THEN value is returned.
-#     """
-#     config_instance = config.Config()
-#     setattr(config_instance, config_name, config_value)
-
-#     returned_value = getattr(config_instance, config_name)
-
-#     assert returned_value == config_value
-
-
-# @pytest.mark.parametrize("config_name, config_value", GET_CONFIG_SET_TESTS_TESTS)
-# @pytest.mark.config
-# def test_init_config_set(config_name, config_value):
-#     """
-#     GIVEN configuration name and value
-#     WHEN the config is constructed with the value and then retrieved
-#     THEN value is returned.
-#     """
-#     config_instance = config.Config(**{config_name: config_value})
-
-#     returned_value = getattr(config_instance, config_name)
-
-#     assert returned_value == config_value
-
 
 SET_ERROR_TESTS = [
     pytest.param(

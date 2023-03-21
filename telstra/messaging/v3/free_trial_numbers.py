@@ -5,6 +5,7 @@ import typing
 from urllib import error, request
 
 from . import exceptions, oauth
+from .utils import error_response as error_response_util
 from .utils import free_trial_number
 
 _URL = "https://products.api.telstra.com/messaging/v3/free-trial-numbers"
@@ -63,8 +64,21 @@ def create(phone_numbers: TFreeTrialNumbers) -> TFreeTrialNumbers:
             free_trial_numbers_dict = json.loads(response.read().decode())
             return free_trial_numbers_dict["freeTrialNumbers"]
     except error.HTTPError as exc:
+        suggested_actions_string = ""
+        try:
+            error_response = json.loads(exc.read().decode())
+            list_of_error_dicts = error_response.get("errors", [])
+            suggested_actions_string = (
+                error_response_util.get_suggeted_actions_list_str(
+                    list_of_error_dicts=list_of_error_dicts, key="suggested_action"
+                )
+            )
+        except Exception:
+            raise exceptions.FreeTrialNumbersError(
+                f"Could not register free trial numbers: {exc}"
+            ) from exc
         raise exceptions.FreeTrialNumbersError(
-            f"Could not add phone numbers to your free trial numbers: {exc}"
+            f"Could not register free trial numbers. {suggested_actions_string}"
         ) from exc
 
 
@@ -103,6 +117,19 @@ def get_all() -> TFreeTrialNumbers:
                 return []
 
     except error.HTTPError as exc:
+        suggested_actions_string = ""
+        try:
+            error_response = json.loads(exc.read().decode())
+            list_of_error_dicts = error_response.get("errors", [])
+            suggested_actions_string = (
+                error_response_util.get_suggeted_actions_list_str(
+                    list_of_error_dicts=list_of_error_dicts, key="suggested_action"
+                )
+            )
+        except Exception:
+            raise exceptions.FreeTrialNumbersError(
+                f"Could not retrieve free trial numbers: {exc}"
+            ) from exc
         raise exceptions.FreeTrialNumbersError(
-            f"Could not retrieve free trial numbers: {exc}"
+            f"Could not retrieve free trial numbers. {suggested_actions_string}"
         ) from exc
