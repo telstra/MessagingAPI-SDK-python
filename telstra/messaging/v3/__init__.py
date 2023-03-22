@@ -1,3 +1,3 @@
 """Messaging V3."""
 
-__version__ = "3.0.0"
+__version__ = "1.1beta2"
