@@ -39,8 +39,7 @@ class MockServerRequestHandler(BaseHTTPRequestHandler):
             self.end_headers()
 
             # Add response content.
-            response_content = json.dumps(
-                {"freeTrialNumbers": ["+61412345678"]})
+            response_content = json.dumps({"freeTrialNumbers": ["+61412345678"]})
             self.wfile.write(response_content.encode("utf-8"))
             return
 
@@ -56,8 +55,7 @@ class MockServerRequestHandler(BaseHTTPRequestHandler):
             self.end_headers()
 
             # Add response content.
-            response_content = json.dumps(
-                {"freeTrialNumbers": ["+61412345678"]})
+            response_content = json.dumps({"freeTrialNumbers": ["+61412345678"]})
             self.wfile.write(response_content.encode("utf-8"))
             return
 
