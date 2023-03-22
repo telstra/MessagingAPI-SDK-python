@@ -2,7 +2,6 @@
 
 import time
 from unittest import mock
-from urllib import request
 
 import pytest
 
@@ -131,29 +130,3 @@ class TestGetToken:
             oauth._get_token()
 
         assert "Unauthorized" in str(exc)
-
-
-# def test_get_token_multiple_call(_valid_credentials, monkeypatch):
-#     """
-#     GIVEN mocked environment that returns valid credentials
-#     WHEN get_token is called multiple times after some time passes
-#     THEN urlopen is only called once the token is expired.
-#     """
-#     urlopen_spy = mock.MagicMock()
-#     urlopen_spy.side_effect = request.urlopen
-#     monkeypatch.setattr(request, "urlopen", urlopen_spy)
-#     mock_time = mock.MagicMock()
-#     monkeypatch.setattr(time, "time", mock_time)
-#     # Clear current token
-#     oauth._CACHE["old_token"] = None  # pylint: disable=protected-access
-
-#     mock_time.return_value = 1000000
-#     oauth.get_token()
-#     assert urlopen_spy.call_count == 1
-
-#     oauth.get_token()
-#     assert urlopen_spy.call_count == 1
-
-#     mock_time.return_value = 2000000
-#     oauth.get_token()
-#     assert urlopen_spy.call_count == 2

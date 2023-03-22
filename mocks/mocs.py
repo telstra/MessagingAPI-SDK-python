@@ -18,7 +18,19 @@ class MockServerRequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         """Make GET request."""
 
-        if re.search(self.USERS_PATTERN, self.path):
+        # if re.search(self.USERS_PATTERN, self.path):
+        #     # Add response status code.
+        #     self.send_response(200)
+
+        #     # Add response headers.
+        #     self.send_header("Content-Type", "application/json; charset=utf-8")
+        #     self.end_headers()
+
+        #     # Add response content.
+        #     response_content = json.dumps([])
+        #     self.wfile.write(response_content.encode("utf-8"))
+        #     return
+        if re.search(self.TRIAL_NUMBERS_PATTERN, self.path):
             # Add response status code.
             self.send_response(200)
 
@@ -27,7 +39,8 @@ class MockServerRequestHandler(BaseHTTPRequestHandler):
             self.end_headers()
 
             # Add response content.
-            response_content = json.dumps([])
+            response_content = json.dumps(
+                {"freeTrialNumbers": ["+61412345678"]})
             self.wfile.write(response_content.encode("utf-8"))
             return
 
@@ -43,7 +56,8 @@ class MockServerRequestHandler(BaseHTTPRequestHandler):
             self.end_headers()
 
             # Add response content.
-            response_content = json.dumps({"freeTrialNumbers": ["+61412345678"]})
+            response_content = json.dumps(
+                {"freeTrialNumbers": ["+61412345678"]})
             self.wfile.write(response_content.encode("utf-8"))
             return
 
@@ -92,7 +106,7 @@ def get_free_port():
 
     s = socket.socket(socket.AF_INET, type=socket.SOCK_STREAM)
     s.bind(("localhost", 0))
-    port = s.getsockname()
+    port = s.getsockname()[1]
     s.close()
     return port
 
@@ -102,5 +116,5 @@ def start_mock_server(port):
 
     mock_server = HTTPServer(("localhost", port), MockServerRequestHandler)
     mock_server_thread = Thread(target=mock_server.serve_forever)
-    mock_server_thread.setDaemon(True)
+    mock_server_thread.daemon = True
     mock_server_thread.start()

@@ -12,7 +12,7 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.7.2"
+python = "^3.9"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.2.2"
@@ -26,3 +26,16 @@ coverage = "^7.2.1"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q --ignore=production-test"
+testpaths = [
+    "tests",
+]
+markers = [
+    "config",
+    "message",
+    "numbers",
+    "trial_numbers",
+]

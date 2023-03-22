@@ -40,7 +40,7 @@ class TestNumbers(object):
         "name, value, expected_name, expected_value", CREATE_PARAM_TESTS
     )
     @pytest.mark.numbers
-    def test_create_param(self, name, value):
+    def test_create_param(self, name, value, expected_name, expected_value):
         """
         GIVEN parameter name and value
         WHEN create is called with the parameter
@@ -49,7 +49,7 @@ class TestNumbers(object):
         """
 
         mock_trial_numbers_url = (
-            f"http://localhost:{self.mock_server_port}" "/messaging/v3/virtual-numbers"
+            f"http://localhost:{self.mock_server_port}/messaging/v3/virtual-numbers"
         )
 
         # Patch _URL so that the service uses the mock server URL
@@ -127,9 +127,7 @@ class TestNumbers(object):
         ],
     )
     @pytest.mark.numbers
-    def test_error_http(
-        self, func, mocked_request_urlopen_error, _mocked_oauth_get_token
-    ):
+    def test_error_http(self, func, mocked_request_urlopen_error):
         """
         GIVEN numbers function and urlopen that raises an error
         WHEN function is called

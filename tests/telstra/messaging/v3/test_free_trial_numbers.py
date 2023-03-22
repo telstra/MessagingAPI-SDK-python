@@ -100,52 +100,6 @@ class TestFreeTrialNumbers(object):
         assert mocked is not None
         assert mocked == phone_numbers
 
-    # @pytest.mark.parametrize(
-    #     "func",
-    #     [
-    #         pytest.param(
-    #             functools.partial(trial_numbers.register, phone_numbers=[]), id="register"
-    #         ),
-    #         pytest.param(trial_numbers.get, id="get"),
-    #     ],
-    # )
-    # @pytest.mark.trial_numbers
-    # def test_error_oauth(self, func, mocked_oauth_get_token_error):
-    #     """
-    #     GIVEN oauth get_token that raises an error and a function
-    #     WHEN the function is called
-    #     THEN TrialNumbersError is raised.
-    #     """
-    #     with pytest.raises(exceptions.TrialNumbersError) as exc:
-    #         func()
-
-    #     assert mocked_oauth_get_token_error in str(exc.value)
-
-    # @pytest.mark.parametrize(
-    #     "func",
-    #     [
-    #         pytest.param(
-    #             functools.partial(trial_numbers.register, phone_numbers=[]), id="register"
-    #         ),
-    #         pytest.param(trial_numbers.get, id="get"),
-    #     ],
-    # )
-    # @pytest.mark.trial_numbers
-    # def test_error_http(
-    #     self, mocked_request_urlopen_error, _mocked_oauth_get_token, func
-    # ):
-    #     """
-    #     GIVEN urlopen that raises an error and function
-    #     WHEN the function is called is called
-    #     THEN TrialNumbersError is raised.
-    #     """
-    #     with pytest.raises(exceptions.TrialNumbersError) as exc:
-    #         func()
-
-    #     assert mocked_request_urlopen_error.message in str(exc.value)
-    #     assert str(mocked_request_urlopen_error.code) in str(exc.value)
-
-    @pytest.mark.xfail
     @pytest.mark.trial_numbers
     def test_get(self, _valid_credentials):
         """
@@ -153,6 +107,18 @@ class TestFreeTrialNumbers(object):
         WHEN get is called
         THEN phone numbers are returned.
         """
-        returned_phone_numbers = free_trial_numbers.get_all()
+        mock_trial_numbers_url = (
+            "http://localhost:{port}/messaging/v3/free-trial-numbers".format(
+                port=self.mock_server_port
+            )
+        )
 
-        assert isinstance(returned_phone_numbers, list)
+        # Patch _URL so that the service uses the mock server URL
+        # instead of the real URL.
+        with patch.dict(
+            "telstra.messaging.v3.free_trial_numbers.__dict__",
+            {"_URL": mock_trial_numbers_url},
+        ):
+            mocked_returned_phone_numbers = free_trial_numbers.get_all()
+
+        assert isinstance(mocked_returned_phone_numbers, list)
