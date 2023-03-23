@@ -2,7 +2,7 @@
 
 import pytest
 
-from telstra.messaging.v3.utils import free_trial_number
+from telstra.messaging.utils import free_trial_number
 
 
 @pytest.mark.parametrize(

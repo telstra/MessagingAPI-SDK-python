@@ -9,7 +9,7 @@ from urllib import request
 
 import pytest
 
-from telstra.messaging.v3 import exceptions, message
+from telstra.messaging import exceptions, message
 
 VALID_SEND_KWARGS: typing.Dict[str, typing.Any] = {
     "to": "+61412345678",
@@ -143,7 +143,8 @@ def test_send_invalid_param(kwargs, expected_contents):
 
 SEND_PARAM_TESTS = [
     # pytest.param("from_", "a1", "from", "a1", id="from_"),
-    pytest.param("retry_timeout", 1, "retryTimeout", str(1), id="retry_timeout"),
+    pytest.param("retry_timeout", 1, "retryTimeout",
+                 str(1), id="retry_timeout"),
     pytest.param(
         "schedule_send",
         "2023-03-11T05:25:14.591Z",

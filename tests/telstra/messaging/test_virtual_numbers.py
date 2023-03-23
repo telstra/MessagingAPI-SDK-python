@@ -5,7 +5,7 @@ from unittest.mock import patch
 import pytest
 
 from mocks.mocs import get_free_port, start_mock_server
-from telstra.messaging.v3 import exceptions, oauth, virtual_number
+from telstra.messaging import exceptions, oauth, virtual_number
 
 
 class TestNumbers(object):
@@ -21,12 +21,13 @@ class TestNumbers(object):
         # Patch _URL so that the service uses the mock server
         # URL instead of the real URL.
         with patch.dict(
-            "telstra.messaging.v3.oauth.__dict__", {"_URL": mock_oauth_url}
+            "telstra.messaging.oauth.__dict__", {"_URL": mock_oauth_url}
         ):
             oauth.get_token()
 
     CREATE_PARAM_TESTS = [
-        pytest.param("tags", ["Python", "SDK"], "tags", ["Python", "SDK"], id="tags"),
+        pytest.param("tags", ["Python", "SDK"], "tags",
+                     ["Python", "SDK"], id="tags"),
         pytest.param(
             "reply_callback_url",
             "https://example.com",
@@ -55,7 +56,7 @@ class TestNumbers(object):
         # Patch _URL so that the service uses the mock server URL
         # instead of the real URL.
         with patch.dict(
-            "telstra.messaging.v3.virtual_number.__dict__",
+            "telstra.messaging.virtual_number.__dict__",
             {"_URL": mock_trial_numbers_url},
         ):
             mocked = virtual_number.assign(**{name: value})

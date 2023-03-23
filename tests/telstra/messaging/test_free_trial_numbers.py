@@ -5,7 +5,7 @@ from unittest.mock import patch
 import pytest
 
 from mocks.mocs import get_free_port, start_mock_server
-from telstra.messaging.v3 import exceptions, free_trial_numbers, oauth
+from telstra.messaging import exceptions, free_trial_numbers, oauth
 
 
 class TestFreeTrialNumbers(object):
@@ -22,7 +22,7 @@ class TestFreeTrialNumbers(object):
 
         # Patch _URL so that the service uses the mock server URL instead of the real URL.
         with patch.dict(
-            "telstra.messaging.v3.oauth.__dict__", {"_URL": mock_oauth_url}
+            "telstra.messaging.oauth.__dict__", {"_URL": mock_oauth_url}
         ):
             oauth.get_token()
 
@@ -92,7 +92,7 @@ class TestFreeTrialNumbers(object):
         # Patch _URL so that the service uses the mock server URL
         # instead of the real URL.
         with patch.dict(
-            "telstra.messaging.v3.free_trial_numbers.__dict__",
+            "telstra.messaging.free_trial_numbers.__dict__",
             {"_URL": mock_trial_numbers_url},
         ):
             mocked = free_trial_numbers.create(phone_numbers=phone_numbers)
@@ -116,7 +116,7 @@ class TestFreeTrialNumbers(object):
         # Patch _URL so that the service uses the mock server URL
         # instead of the real URL.
         with patch.dict(
-            "telstra.messaging.v3.free_trial_numbers.__dict__",
+            "telstra.messaging.free_trial_numbers.__dict__",
             {"_URL": mock_trial_numbers_url},
         ):
             mocked_returned_phone_numbers = free_trial_numbers.get_all()

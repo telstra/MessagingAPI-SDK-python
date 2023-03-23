@@ -5,10 +5,11 @@ from unittest import mock
 
 import pytest
 
-from telstra.messaging.v3 import exceptions, oauth
+from telstra.messaging import exceptions, oauth
 
 TOKEN_TESTS = [
-    pytest.param(1000000, "0", 1000000, True, id="instant expire no time change"),
+    pytest.param(1000000, "0", 1000000, True,
+                 id="instant expire no time change"),
     pytest.param(
         1000000,
         "1",

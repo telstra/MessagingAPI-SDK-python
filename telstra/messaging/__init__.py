@@ -1,1 +1,3 @@
-"""Send and receive messages."""
+"""Messaging."""
+
+__version__ = "3.0.0b1"

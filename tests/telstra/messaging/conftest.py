@@ -8,8 +8,8 @@ from urllib import error, request
 
 import pytest
 
-from telstra.messaging.v3 import exceptions, oauth, virtual_number
-from telstra.messaging.v3.utils import config
+from telstra.messaging import exceptions, oauth, virtual_number
+from telstra.messaging.utils import config
 
 
 @pytest.fixture

@@ -99,7 +99,7 @@ jobs:
       - name: Check if release is required
         id: check
         run: |
-          RELEASED_VERSION=$(python -c "from importlib.metadata import version;print(version('telstra.messaging.v3'))")
+          RELEASED_VERSION=$(python -c "from importlib.metadata import version;print(version('telstra.messaging'))")
           echo released version: $RELEASED_VERSION
           PROJECT_VERSION=$(poetry version -s)
           echo project version: $PROJECT_VERSION

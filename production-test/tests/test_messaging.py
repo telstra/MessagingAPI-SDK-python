@@ -1,6 +1,6 @@
 """Tests for the messaging API."""
 
-from telstra.messaging.v3 import message, virtual_number
+from telstra.messaging import message, virtual_number
 
 
 def test_create_numbers():

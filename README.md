@@ -10,7 +10,7 @@ see here:
 ## Installing
 
 ```bash
-pip install telstra.messaging.v3
+pip install telstra.messaging
 ```
 
 ## Getting Started
@@ -22,7 +22,7 @@ are the `Client id` and `Client secret` you can find here:
 To send your first message:
 
 ```python
-from telstra.messaging.v3 import message
+from telstra.messaging import message
 
 message.send(
   to="+61412345678",
@@ -72,7 +72,7 @@ file, authentication through code is also supported.
 For example:
 
 ```python
-from telstra.messaging.v3.utils.config import CONFIG
+from telstra.messaging.utils.config import CONFIG
 
 CONFIG.telstra_client_id = '<client id>'
 CONFIG.telstra_client_secret = '<client secret>'
@@ -98,13 +98,13 @@ Register numbers for the free trial. For more information, please see
 here:
 <https://dev.telstra.com/content/messaging-api-v3#tag/free-trial-numbers>.
 
-The function `telstra.messaging.v3.free_trial_numbers.create` can be used to register
+The function `telstra.messaging.free_trial_numbers.create` can be used to register
 destinations. It takes the following arguments:
 
 - `phone_numbers`: A list of destinations, expected to be phone numbers of the
   form `+614XXXXXXXX` or `04XXXXXXXX`.
 
-Raises `telstra.messaging.v3.exceptions.FreeTrialNumbersError` if anything goes wrong.
+Raises `telstra.messaging.exceptions.FreeTrialNumbersError` if anything goes wrong.
 
 It returns the list of phone numbers that have been registered.
 
@@ -112,7 +112,7 @@ For example:
 
 ```python
 # Register free trial numbers
-from telstra.messaging.v3 import free_trial_numbers
+from telstra.messaging import free_trial_numbers
 
 phone_numbers = free_trial_numbers.create(phone_numbers=["+61412345678"])
 print(phone_numbers)
@@ -126,11 +126,11 @@ Fetch the Free Trial Number(s) currently assigned to your account. For more info
 please see here:
 <https://dev.telstra.com/content/messaging-api-v3#operation/getTrialNumbers>.
 
-The function `telstra.messaging.v3.free_trial_numbers.get_all`
+The function `telstra.messaging.free_trial_numbers.get_all`
 can be used to retrieve registered destinations.
 It takes no arguments.
 
-Raises `telstra.messaging.v3.exceptions.FreeTrialNumbersError` if anything goes wrong.
+Raises `telstra.messaging.exceptions.FreeTrialNumbersError` if anything goes wrong.
 
 It returns the list of phone numbers that
 have been registered.
@@ -139,7 +139,7 @@ For example:
 
 ```python
 # Get all free trial numbers
-from telstra.messaging.v3 import free_trial_numbers
+from telstra.messaging import free_trial_numbers
 
 phone_numbers = free_trial_numbers.get_all()
 print(phone_numbers)
@@ -160,7 +160,7 @@ If you want to use a Virtual Number, use this function to assign one.
 For more information, please see here:
 <https://dev.telstra.com/content/messaging-api-v3#operation/assignNumber>.
 
-The function `telstra.messaging.v3.virtual_number.create` can be used to create a
+The function `telstra.messaging.virtual_number.create` can be used to create a
 numbers. It takes the following arguments:
 
 - `reply_callback_url` (optional): The URL that replies to the
@@ -169,7 +169,7 @@ numbers. It takes the following arguments:
   sort and report on your Virtual Numbers through our other endpoints.
   You can assign up to 10 tags per number.
 
-Raises `telstra.messaging.v3.exceptions.VirtualNumbersError` if anything goes wrong.
+Raises `telstra.messaging.exceptions.VirtualNumbersError` if anything goes wrong.
 
 It returns an object with the following properties:
 
@@ -183,7 +183,7 @@ For example:
 
 ```python
 # Assign a virtual number
-from telstra.messaging.v3 import virtual_number
+from telstra.messaging import virtual_number
 
 assigned_numbers = virtual_number.assign()
 print(assigned_numbers)
@@ -195,12 +195,12 @@ Fetch the tags, replyCallbackUrl and lastUse date for a Virtual Number.
 For more information, please see here:
 <https://dev.telstra.com/content/messaging-api-v3#operation/getVirtualNumber>.
 
-The function `telstra.messaging.v3.virtual_number.get` can be used to get the current
+The function `telstra.messaging.virtual_number.get` can be used to get the current
 number. It takes the following arguments:
 
 - `virtual_number`: The Virtual Number assigned to your account.
 
-Raises `telstra.messaging.v3.exceptions.VirtualNumbersError` if anything goes wrong.
+Raises `telstra.messaging.exceptions.VirtualNumbersError` if anything goes wrong.
 
 It returns an object with the following
 properties:
@@ -215,7 +215,7 @@ For example:
 
 ```python
 # Get a virtual number
-from telstra.messaging.v3 import virtual_number
+from telstra.messaging import virtual_number
 
 retrieved_number = virtual_number.get(virtual_number="0400000001")
 print(retrieved_number)
@@ -227,7 +227,7 @@ Fetch all Virtual Numbers currently assigned to your account.
 For more information, please see here:
 <https://dev.telstra.com/content/messaging-api-v3#operation/getNumbers>.
 
-The function `telstra.messaging.v3.virtual_number.get_all` can be used to
+The function `telstra.messaging.virtual_number.get_all` can be used to
 get the all virtual numbers associated to your account.
 It takes the following arguments:
 
@@ -236,7 +236,7 @@ It takes the following arguments:
   An offset of 0 will display the first page of results, and so on.
 - `filter`: Filter your Virtual Numbers by tag or by number.
 
-Raises `telstra.messaging.v3.exceptions.VirtualNumbersError` if anything goes wrong.
+Raises `telstra.messaging.exceptions.VirtualNumbersError` if anything goes wrong.
 
 It returns an object with the following
 properties:
@@ -248,7 +248,7 @@ For example:
 
 ```python
 # Get all virtual numbers
-from telstra.messaging.v3 import virtual_number
+from telstra.messaging import virtual_number
 
 retrieved_virtual_numbers = virtual_number.get_all()
 print(retrieved_virtual_numbers)
@@ -260,7 +260,7 @@ Update a virtual number attributes. For more information,
 please see here:
 <https://dev.telstra.com/content/messaging-api-v3#operation/updateNumber>.
 
-The function `telstra.messaging.v3.virtual_number.update` can be used to update a
+The function `telstra.messaging.virtual_number.update` can be used to update a
 virtual number. It takes the following arguments:
 
 - `virtual_number`: The Virtual Number assigned to your account.
@@ -270,7 +270,7 @@ virtual number. It takes the following arguments:
   sort and report on your Virtual Numbers through our other endpoints.
   You can assign up to 10 tags per number.
 
-Raises `telstra.messaging.v3.exceptions.VirtualNumbersError` if anything goes wrong.
+Raises `telstra.messaging.exceptions.VirtualNumbersError` if anything goes wrong.
 
 It returns an object with the following properties:
 
@@ -284,7 +284,7 @@ For example:
 
 ```python
 # Update a virtual number
-from telstra.messaging.v3 import virtual_number
+from telstra.messaging import virtual_number
 
 updated_virtual_number = virtual_number.update(
   virtual_number="0400000001",
@@ -298,18 +298,18 @@ print(updated_virtual_number)
 Delete the a virtual number. For more information, please see here:
 <https://dev.telstra.com/content/messaging-api-v3#operation/deleteNumber>.
 
-The function `telstra.messaging.v3.virtual_number.delete` can be used
+The function `telstra.messaging.virtual_number.delete` can be used
 to delete the current number. It takes the following arguments:
 
 - `virtual_number`: The Virtual Number assigned to your account.
 
-Raises `telstra.messaging.v3.exceptions.VirtualNumbersError` if anything goes wrong.
+Raises `telstra.messaging.exceptions.VirtualNumbersError` if anything goes wrong.
 
 It returns nothing.
 
 ```python
 # Delete a virtual number
-from telstra.messaging.v3 import virtual_number
+from telstra.messaging import virtual_number
 
 virtual_number.delete(virtual_number="0400000001")
 ```
@@ -325,7 +325,7 @@ Send a message to a mobile number, or to multiple mobile numbers.
 For more information, please see here:
 <https://dev.telstra.com/content/messaging-api-v3#operation/sendMessages>.
 
-The function `telstra.messaging.v3.message.send` can be used to send a message.
+The function `telstra.messaging.message.send` can be used to send a message.
 It takes the following arguments:
 
 - `to`: The destination address, expected to be a phone number of the form
@@ -346,9 +346,9 @@ It takes the following arguments:
   status of the message changes.
 - `tags` (optional): Any customisable tags assigned to the message.
 
-Raises `telstra.messaging.v3.exceptions.MessageError` if anything goes wrong.
+Raises `telstra.messaging.exceptions.MessageError` if anything goes wrong.
 
-The dataclass `telstra.messaging.v3.message.Multimedia`
+The dataclass `telstra.messaging.message.Multimedia`
 can be used to build an mms payload.
 It takes the following arguments:
 
@@ -356,7 +356,7 @@ It takes the following arguments:
 - `filename` (optional): Optional field, for example `image.png`.
 - `payload`: The payload of an mms encoded as base64.
 
-Raises `telstra.messaging.v3.exceptions.MessageError` if anything goes wrong.
+Raises `telstra.messaging.exceptions.MessageError` if anything goes wrong.
 
 It returns an object with the following properties:
 
@@ -382,7 +382,7 @@ For example:
 
 ```python
 # Send an SMS
-from telstra.messaging.v3 import message
+from telstra.messaging import message
 
 message.send(
   to="+61412345678",
@@ -413,12 +413,12 @@ reply to an MMS will not be retrieved..
 For more information, please see here:
 <https://dev.telstra.com/content/messaging-api-v3#operation/getMessageById>.
 
-The function `telstra.messaging.v3.message.get` can be used to retrieve
+The function `telstra.messaging.message.get` can be used to retrieve
 the a message. It takes the following arguments:
 
 - `message_id`:Unique identifier for the message.
 
-Raises `telstra.messaging.v3.exceptions.MessageError` if anything goes wrong.
+Raises `telstra.messaging.exceptions.MessageError` if anything goes wrong.
 
 It returns an object with the following properties:
 
@@ -451,7 +451,7 @@ For example:
 
 ```python
 # Get a message
-from telstra.messaging.v3 import message
+from telstra.messaging import message
 
 sent_message = message.send(
   to="+61412345678",
@@ -470,7 +470,7 @@ in reply to an MMS will not be retrieved.
 For more information, please see here:
 <https://dev.telstra.com/content/messaging-api-v3#operation/getMessages>.
 
-The function `telstra.messaging.v3.message.get_all` can be used to fetch
+The function `telstra.messaging.message.get_all` can be used to fetch
 all messages. It takes the
 following arguments:
 
@@ -479,7 +479,7 @@ following arguments:
   An offset of 0 will display the first page of results, and so on.
 - `filter`: Filter your Virtual Numbers by tag or by number.
 
-Raises `telstra.messaging.v3.exceptions.MessageError` if anything goes wrong.
+Raises `telstra.messaging.exceptions.MessageError` if anything goes wrong.
 
 It returns `None` if there are no more replies or an object with the
 following properties:
@@ -491,7 +491,7 @@ For example:
 
 ```python
 # Get all messages
-from telstra.messaging.v3 import message
+from telstra.messaging import message
 
 reply = message.get_all(limit=5,offset=0,filter="Python,SDK")
 print(reply)
@@ -504,7 +504,7 @@ the below parameters, as long as the message hasn't been sent yet.
 For more information, please see here:
 <https://dev.telstra.com/content/messaging-api-v3#operation/updateMessageById>.
 
-The function `telstra.messaging.v3.message.update` can be used to update a message.
+The function `telstra.messaging.message.update` can be used to update a message.
 It takes the following arguments:
 
 - `to`: The destination address, expected to be a phone number of the form
@@ -524,16 +524,16 @@ It takes the following arguments:
   the status of the message changes.
 - `tags` (optional): Any customisable tags assigned to the message.
 
-Raises `telstra.messaging.v3.exceptions.MessageError` if anything goes wrong.
+Raises `telstra.messaging.exceptions.MessageError` if anything goes wrong.
 
-The dataclass `telstra.messaging.v3.message.Multimedia` can be used to build
+The dataclass `telstra.messaging.message.Multimedia` can be used to build
 a mms payload. It takes the following arguments:
 
 - `type`: The content type of the attachment, for example `image/png`.
 - `filename` (optional): Optional field, for example `image.png`.
 - `payload`: The payload of an mms encoded as base64.
 
-Raises `telstra.messaging.v3.exceptions.MessageError` if anything goes wrong.
+Raises `telstra.messaging.exceptions.MessageError` if anything goes wrong.
 
 It returns an object with the following properties:
 
@@ -559,7 +559,7 @@ For example:
 
 ```python
 # Update a message
-from telstra.messaging.v3 import message
+from telstra.messaging import message
 
 message.update(
   message_id="8540d774-4863-4d2b-b788-4ecb19412e85",
@@ -575,13 +575,13 @@ Update message tags, you can update them even after your message has been delive
 For more information, please see here:
 <https://dev.telstra.com/content/messaging-api-v3#operation/updateMessageTags>.
 
-The function `telstra.messaging.v3.message.update_tags` can be used to
+The function `telstra.messaging.message.update_tags` can be used to
 update message tags. It takes the following arguments:
 
 - `message_id`:Unique identifier for the message.
 - `tags` (optional): Any customisable tags assigned to the message.
 
-Raises `telstra.messaging.v3.exceptions.MessageError` if anything goes wrong.
+Raises `telstra.messaging.exceptions.MessageError` if anything goes wrong.
 
 It returns nothing.
 
@@ -589,7 +589,7 @@ For example:
 
 ```python
 # Update message tags
-from telstra.messaging.v3 import message
+from telstra.messaging import message
 
 message.update_tags(message_id="8540d774-4863-4d2b-b788-4ecb19412e85", tags=["Python","V3"])
 ```
@@ -600,12 +600,12 @@ Delete a scheduled message, but hasn't yet sent.
 For more information, please see here:
 <https://dev.telstra.com/content/messaging-api-v3#operation/deleteMessageById>.
 
-The function `telstra.messaging.v3.message.delete` can be used to delete a message.
+The function `telstra.messaging.message.delete` can be used to delete a message.
 It takes the following arguments:
 
 - `message_id`: Unique identifier for the message.
 
-Raises `telstra.messaging.v3.exceptions.MessageError` if anything goes wrong.
+Raises `telstra.messaging.exceptions.MessageError` if anything goes wrong.
 
 It returns nothing.
 
@@ -613,7 +613,7 @@ For example:
 
 ```python
 # Delete a message
-from telstra.messaging.v3 import message
+from telstra.messaging import message
 
 message.delete(message_id="8540d774-4863-4d2b-b788-4ecb19412e85")
 ```
@@ -626,10 +626,10 @@ Check the operational status of the messaging service.
 For more information, please see here:
 <https://dev.telstra.com/content/messaging-api-v3#operation/healthCheck>.
 
-The function `telstra.messaging.v3.health_check.get` can be used to get the status.
+The function `telstra.messaging.health_check.get` can be used to get the status.
 It takes no arguments.
 
-Raises `telstra.messaging.v3.exceptions.HealthCheckError` if anything goes wrong.
+Raises `telstra.messaging.exceptions.HealthCheckError` if anything goes wrong.
 
 It returns nothing.
 
@@ -637,7 +637,7 @@ For example:
 
 ```python
 # Get health check
-from telstra.messaging.v3 import health_check
+from telstra.messaging import health_check
 
 try:
   health_check.get()
@@ -650,5 +650,5 @@ except HealthCheckError as e
 All exceptions that can be raised derive from `MessagingBaseException`:
 
 ```python
-from telstra.messaging.v3.exceptions import MessagingBaseException
+from telstra.messaging.exceptions import MessagingBaseException
 ```

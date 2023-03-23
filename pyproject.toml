@@ -1,6 +1,6 @@
 [tool.poetry]
-name = "telstra.messaging.v3"
-version = "1.1b2"
+name = "telstra.messaging"
+version = "3.0.0b1"
 readme = "README.md"
 description = "SDK for the Telstra Messaging API V3 - Beta"
 license = "Apache-2.0"

@@ -31,7 +31,8 @@ def create(phone_numbers: TFreeTrialNumbers) -> TFreeTrialNumbers:
         )
     result = next(
         filter(
-            lambda result: not result.valid, map(free_trial_number.check, phone_numbers)
+            lambda result: not result.valid, map(
+                free_trial_number.check, phone_numbers)
         ),
         None,
     )
@@ -106,7 +107,8 @@ def get_all() -> TFreeTrialNumbers:
         "Accept": "application/json",
         "Content-Type": "application/json",
     }
-    free_trail_numbers_request = request.Request(_URL, headers=headers, method="GET")
+    free_trail_numbers_request = request.Request(
+        _URL, headers=headers, method="GET")
     try:
         with request.urlopen(free_trail_numbers_request) as response:
             data = response.read().decode()
