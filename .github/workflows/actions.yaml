@@ -95,7 +95,7 @@ jobs:
           python-version: "3.10"
       - name: Install poetry and package
         run: |
-          pip install poetry telstra.messaging
+          pip install --use-deprecated legacy-resolver poetry telstra.messaging
       - name: Check if release is required
         id: check
         run: |
