@@ -21,9 +21,7 @@ class TestFreeTrialNumbers(object):
         )
 
         # Patch _URL so that the service uses the mock server URL instead of the real URL.
-        with patch.dict(
-            "telstra.messaging.oauth.__dict__", {"_URL": mock_oauth_url}
-        ):
+        with patch.dict("telstra.messaging.oauth.__dict__", {"_URL": mock_oauth_url}):
             oauth.get_token()
 
     @pytest.mark.parametrize(

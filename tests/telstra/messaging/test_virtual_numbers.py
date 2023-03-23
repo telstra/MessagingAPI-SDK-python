@@ -20,14 +20,11 @@ class TestNumbers(object):
 
         # Patch _URL so that the service uses the mock server
         # URL instead of the real URL.
-        with patch.dict(
-            "telstra.messaging.oauth.__dict__", {"_URL": mock_oauth_url}
-        ):
+        with patch.dict("telstra.messaging.oauth.__dict__", {"_URL": mock_oauth_url}):
             oauth.get_token()
 
     CREATE_PARAM_TESTS = [
-        pytest.param("tags", ["Python", "SDK"], "tags",
-                     ["Python", "SDK"], id="tags"),
+        pytest.param("tags", ["Python", "SDK"], "tags", ["Python", "SDK"], id="tags"),
         pytest.param(
             "reply_callback_url",
             "https://example.com",

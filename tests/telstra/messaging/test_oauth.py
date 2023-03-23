@@ -8,8 +8,7 @@ import pytest
 from telstra.messaging import exceptions, oauth
 
 TOKEN_TESTS = [
-    pytest.param(1000000, "0", 1000000, True,
-                 id="instant expire no time change"),
+    pytest.param(1000000, "0", 1000000, True, id="instant expire no time change"),
     pytest.param(
         1000000,
         "1",
