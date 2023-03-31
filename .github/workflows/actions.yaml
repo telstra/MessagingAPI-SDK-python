@@ -126,7 +126,6 @@ jobs:
         if: needs.release-required.outputs.result == 'true'
         uses: pypa/gh-action-pypi-publish@v1.4.1
         with:
-          user: __token__
           password: ${{ secrets.SECRET_PUBLISH_AS_TELSTRA_TEST_PYPI_ORG }}
           repository_url: https://test.pypi.org/legacy/
 
