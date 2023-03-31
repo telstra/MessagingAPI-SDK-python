@@ -126,6 +126,7 @@ jobs:
         if: needs.release-required.outputs.result == 'true'
         uses: pypa/gh-action-pypi-publish@v1.4.1
         with:
+          user: __token__
           password: ${{ secrets.test_pypi_password_messaging }}
           repository_url: https://test.pypi.org/legacy/
 
