@@ -36,8 +36,8 @@ jobs:
           poetry update && poetry install --no-root
       - name: run tests
         env:
-          VALID_TELSTRA_CLIENT_ID: ${{ secrets.TELSTRA_CLIENT_ID_MESSAGING }}
-          VALID_TELSTRA_CLIENT_SECRET: ${{ secrets.TELSTRA_CLIENT_SECRET_MESSAGING }}
+          VALID_TELSTRA_CLIENT_ID: ${{ secrets.VALID_TELSTRA_CLIENT_ID }}
+          VALID_TELSTRA_CLIENT_SECRET: ${{ secrets.VALID_TELSTRA_CLIENT_SECRET }}
         run: |
           poetry run pytest || (poetry install --no-root && poetry run pytest)
 
@@ -126,7 +126,7 @@ jobs:
         if: needs.release-required.outputs.result == 'true'
         uses: pypa/gh-action-pypi-publish@v1.4.1
         with:
-          password: ${{ secrets.SECRET_PUBLISH_AS_TELSTRA_TEST_PYPI_ORG }}
+          password: ${{ secrets.test_pypi_password_messaging }}
           repository_url: https://test.pypi.org/legacy/
 
   test-production-test-pypi:
@@ -154,8 +154,8 @@ jobs:
       - name: run tests
         working-directory: production-test
         env:
-          TELSTRA_CLIENT_ID: ${{ secrets.TELSTRA_CLIENT_ID_MESSAGING }}
-          TELSTRA_CLIENT_SECRET: ${{ secrets.TELSTRA_CLIENT_SECRET_MESSAGING }}
+          TELSTRA_CLIENT_ID: ${{ secrets.VALID_TELSTRA_CLIENT_ID }}
+          TELSTRA_CLIENT_SECRET: ${{ secrets.VALID_TELSTRA_CLIENT_SECRET }}
         run: |
           pipenv run test
 
@@ -175,7 +175,7 @@ jobs:
         if: needs.release-required.outputs.result == 'true'
         uses: pypa/gh-action-pypi-publish@v1.4.1
         with:
-          password: ${{ secrets.SECRET_PUBLISH_AS_TELSTRA_PYPI_ORG }}
+          password: ${{ secrets.pypi_password_messaging }}
 
   test-production-pypi:
     runs-on: ubuntu-latest
