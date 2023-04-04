@@ -21,5 +21,9 @@ class FreeTrialNumbersError(MessagingBaseException):
     """Raised when a free trial numbers request failed."""
 
 
+class ReportsError(MessagingBaseException):
+    """Raised when a reports request failed."""
+
+
 class HealthCheckError(MessagingBaseException):
     """Raised when a health check request failed."""
