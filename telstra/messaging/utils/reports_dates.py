@@ -30,14 +30,14 @@ def validate(
 
     # Convert start and end dates to datetime objects
     try:
-        start_date = datetime.datetime.strptime(start_date, "%Y-%m-%d")
+        start_date_datetime = datetime.datetime.strptime(start_date, "%Y-%m-%d")
     except Exception as exc:
         raise exception(
             f'The value of "start_date" is not valid, received "{start_date}"'
         ) from exc
 
     try:
-        end_date = datetime.datetime.strptime(end_date, "%Y-%m-%d")
+        end_date_datetime = datetime.datetime.strptime(end_date, "%Y-%m-%d")
     except Exception as exc:
         raise exception(
             f'The value of "end_date" is not valid, received "{end_date}"'
@@ -47,7 +47,7 @@ def validate(
     today = datetime.datetime.today().date()
     one_day = datetime.timedelta(days=1)
     tomorrow = today + one_day
-    if start_date.date() > tomorrow or end_date.date() > tomorrow:
+    if start_date_datetime.date() > tomorrow or end_date_datetime.date() > tomorrow:
         raise exception(
             'the value of "start_date" or "end_date" is not valid, '
             "expecting a 'YYYY-MM-YY' format date in the past as string, "
@@ -55,7 +55,7 @@ def validate(
         )
 
     # Check if start_date is not ahead of end_date
-    if start_date.date() > end_date.date():
+    if start_date_datetime.date() > end_date_datetime.date():
         raise exception(
             'the value of "start_date" is not valid, '
             "expecting start_date to be older or same as end_date, "
@@ -64,7 +64,7 @@ def validate(
 
     # Check if start date is not older than 3 months
     three_months_ago = today - datetime.timedelta(days=90)
-    if start_date.date() < three_months_ago:
+    if start_date_datetime.date() < three_months_ago:
         raise exception(
             'the value of "start_date" is not valid, '
             "expecting a date not older than 3 months, "

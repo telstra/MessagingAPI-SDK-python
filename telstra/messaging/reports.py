@@ -2,18 +2,13 @@
 
 import dataclasses
 import json
-import re
 import typing
 from urllib import error, request
 
-from telstra.messaging import types
-
-
 from . import exceptions, oauth
+from .utils import callback_url as callback_url_util
 from .utils import error_response as error_response_util
 from .utils import reports_dates as reports_dates_util
-from .utils import callback_url as callback_url_util
-from .utils import free_trial_number
 
 _URL = "https://products.api.telstra.com/messaging/v3/reports"
 
@@ -80,7 +75,7 @@ def get_all() -> TReports:
     reports_request = request.Request(_URL, headers=headers, method="GET")
     try:
         with request.urlopen(reports_request) as response:
-            reports: list[TReports] = []
+            reports: list[TReport] = []
             reports_response_dict = json.loads(response.read().decode())
             reports_list = reports_response_dict.get("reports", [])
 
@@ -213,12 +208,10 @@ def create(
     Args:
         start_date: Start date (inclusive) of reporting period here.
         end_date: End date (inclusive) of reporting period here.
-        reports_callback_url: Url to notify when report is ready for download.
-        filters: Properties to filter the message report by
+        report_callback_url: Url to notify when report is ready for download.
+        filter_: Properties to filter the message report by
 
     """
-    print(f"Start Date: {start_date}")
-    print(f"End Date: {end_date}")
 
     _validate_create_args(
         start_date=start_date,
@@ -243,7 +236,7 @@ def create(
     if filter_ is not None:
         data["filter"] = filter_
     data_str = json.dumps(data).encode()
-    print(f"Payload: {data_str}")
+
     headers = {
         "Authorization": token.authorization,
         "Telstra-api-version": "3.1.0",

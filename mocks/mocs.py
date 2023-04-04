@@ -14,22 +14,11 @@ class MockServerRequestHandler(BaseHTTPRequestHandler):
     AUTH_PATTERN = re.compile(r"/v2/oauth/token")
     TRIAL_NUMBERS_PATTERN = re.compile(r"/v3/free-trial-numbers")
     VIRTUAL_NUMBERS_PATTERN = re.compile(r"/v3/virtual-numbers")
+    REPORTS_PATTERN = re.compile(r"/v3/reports")
 
     def do_GET(self):
         """Make GET request."""
 
-        # if re.search(self.USERS_PATTERN, self.path):
-        #     # Add response status code.
-        #     self.send_response(200)
-
-        #     # Add response headers.
-        #     self.send_header("Content-Type", "application/json; charset=utf-8")
-        #     self.end_headers()
-
-        #     # Add response content.
-        #     response_content = json.dumps([])
-        #     self.wfile.write(response_content.encode("utf-8"))
-        #     return
         if re.search(self.TRIAL_NUMBERS_PATTERN, self.path):
             # Add response status code.
             self.send_response(200)
@@ -40,6 +29,30 @@ class MockServerRequestHandler(BaseHTTPRequestHandler):
 
             # Add response content.
             response_content = json.dumps({"freeTrialNumbers": ["+61412345678"]})
+            self.wfile.write(response_content.encode("utf-8"))
+            return
+
+        if re.search(self.REPORTS_PATTERN, self.path):
+            # Add response status code.
+            self.send_response(200)
+
+            # Add response headers.
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.end_headers()
+
+            # Add response content.
+            response_content = json.dumps(
+                {
+                    "reports": [
+                        {
+                            "reportId": "6940c774-4335-4d2b-b758-4ecb19412e85",
+                            "reportStatus": "completed",
+                            "reportType": "messages",
+                            "reportExpiry": "2023-01-01",
+                        }
+                    ]
+                }
+            )
             self.wfile.write(response_content.encode("utf-8"))
             return
 
@@ -93,6 +106,25 @@ class MockServerRequestHandler(BaseHTTPRequestHandler):
                     "replyCallbackUrl": "https://example.com",
                     "tags": ["V3"],
                     "lastUse": "",
+                }
+            )
+            self.wfile.write(response_content.encode("utf-8"))
+            return
+
+        if re.search(self.REPORTS_PATTERN, self.path):
+            # Add response status code.
+            self.send_response(200)
+
+            # Add response headers.
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.end_headers()
+
+            # Add response content.
+            response_content = json.dumps(
+                {
+                    "reportId": "6940c774-4335-4d2b-b758-4ecb19412e85",
+                    "reportCallbackUrl": "https://www.example.com",
+                    "reportStatus": "queued",
                 }
             )
             self.wfile.write(response_content.encode("utf-8"))

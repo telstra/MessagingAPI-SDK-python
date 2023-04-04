@@ -38,4 +38,5 @@ markers = [
     "message",
     "numbers",
     "trial_numbers",
+    "reports"
 ]
