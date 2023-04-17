@@ -8,3 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0] - 2023-03-14
 
 - Messaging V3 SDK
+
+## [1.1.0] - 2023-04-17
+
+- Updated namespace from Telstra.Messaging.V3 to Telstra.Messaging
+- Added Reports feature bringing parity with API

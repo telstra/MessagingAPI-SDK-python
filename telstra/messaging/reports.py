@@ -255,7 +255,7 @@ def create(
             return TReport(
                 report_id=report_dict.get("reportId"),
                 report_callback_url=report_dict.get("reportCallbackUrl"),
-                report_expiry=report_dict.get("reportExpiry"),
+                report_status=report_dict.get("reportStatus"),
             )
     except error.HTTPError as exc:
         suggested_actions_string = ""

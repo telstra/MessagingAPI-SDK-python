@@ -7,7 +7,7 @@ from unittest.mock import patch
 import pytest
 
 from mocks.mocs import get_free_port, start_mock_server
-from telstra.messaging import exceptions, reports, oauth
+from telstra.messaging import exceptions, oauth, reports
 
 
 class TestReports(object):

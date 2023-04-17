@@ -346,8 +346,6 @@ It takes the following arguments:
   status of the message changes.
 - `tags` (optional): Any customisable tags assigned to the message.
 
-Raises `telstra.messaging.exceptions.MessageError` if anything goes wrong.
-
 The dataclass `telstra.messaging.message.Multimedia`
 can be used to build an mms payload.
 It takes the following arguments:
@@ -616,6 +614,118 @@ For example:
 from telstra.messaging import message
 
 message.delete(message_id="8540d774-4863-4d2b-b788-4ecb19412e85")
+```
+
+## Reports
+
+Create and fetch reports. For more information, please see here:
+<https://dev.telstra.com/content/messaging-api-v3#tag/reports>.
+
+### Request a Report
+
+Request a CSV report of messages (both incoming and outgoing)
+that have been sent to/from your account within the last three months.
+For more information, please see here:
+<https://dev.telstra.com/content/messaging-api-v3#operation/messagesReport>.
+
+The function `telstra.messaging.reports.create` can be used to create a report.
+It takes the following arguments:
+
+- `start_date`: Set the time period you want to generate a
+  report for by typing the start date (inclusive) here. Note that we only
+  retain data for three months, so please ensure your startDate is not more
+  than three months old. Use ISO format(yyyy-mm-dd), e.g. "2019-08-24".
+- `end_date`: Type the end date (inclusive) of your reporting period here.
+  Your endDate must be a date in the past, and less than three months from your startDate.
+  Use ISO format(yyyy-mm-dd), e.g. "2019-08-24".
+- `report_callback_url`: The callbackUrl where notification
+  is sent when report is ready for download.
+- `filter_`: Filter report messages by -
+  tag - use one of the tags assigned to your message(s)
+  number - either the Virtual Number used to send the message,
+  or the Recipient Number the message was sent to.
+
+Raises `telstra.messaging.exceptions.ReportsError` if anything goes wrong.
+
+It returns an object with the following properties:
+
+- `report_id`: Use this UUID with our other endpoints to fetch the report.
+- `report_callback_url`: If you provided a reportCallbackUrl in your request,
+  it will be returned here.
+- `report_status`: The status of the report. It will be either:
+  - queued – the report is in the queue for generation.
+  - completed – the report is ready for download.
+  - failed – the report failed to generate, please try again.
+
+For example:
+
+```python
+# Create a report
+from telstra.messaging import reports
+
+reports_create_response = reports.create(
+        start_date="2023-03-15", end_date="2023-03-30", filter_="0412345678"
+    )
+```
+
+### Fetch a specific report
+
+Use the report_id to fetch a download link for a report generated.
+For more information, please see here:
+<https://dev.telstra.com/content/messaging-api-v3#operation/getReport>.
+
+The function `telstra.messaging.reports.get` can be used to retrieve
+the a report download link. It takes the following arguments:
+
+- `report_id`:Unique identifier for the report.
+
+Raises `telstra.messaging.exceptions.ReportsError` if anything goes wrong.
+
+It returns an object with the following properties:
+
+- `report_id`: Use this UUID with our other endpoints to fetch the report.
+- `report_status`: The status of the report.
+- `report_url`: Download link to download the CSV file.
+
+For example:
+
+```python
+# Get a report download link
+from telstra.messaging import reports
+
+report_reponse = reports.get(report_id = '6940c774-4335-4d2b-b758-4ecb19412e85')
+print(report_response)
+```
+
+### Fetch all reports
+
+Fetch details of all reports recently generated for your account.
+Use it to check the status of a report, plus fetch the report ID,
+status, report type and expiry date.
+For more information, please see here:
+<https://dev.telstra.com/content/messaging-api-v3#operation/getReports>.
+
+The function `telstra.messaging.reports.get_all` can be used to fetch
+all reports. It doesn't take any arguments.
+
+Raises `telstra.messaging.exceptions.ReportsError` if anything goes wrong.
+
+It returns a list of objects with the following properties:
+
+- `report_id`: Use this UUID with our other endpoints to fetch the report.
+- `report_status`: The status of the report.
+- `report_type`: The type of report generated.
+- `report_expiry`: The expiry date of your report. After this date,
+  you will be unable to download your report.
+
+For example:
+
+```python
+# Get all reports
+from telstra.messaging import reports
+
+reply = reports.get_all()
+print(reply)
 ```
 
 ## Health Check
