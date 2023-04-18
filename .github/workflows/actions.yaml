@@ -175,7 +175,7 @@ jobs:
         if: needs.release-required.outputs.result == 'true'
         uses: pypa/gh-action-pypi-publish@v1.4.1
         with:
-          password: ${{ secrets.pypi_password_messaging }}
+          password: ${{ secrets.SECRET_PUBLISH_AS_TELSTRA_PYPI_ORG }}
 
   test-production-pypi:
     runs-on: ubuntu-latest
