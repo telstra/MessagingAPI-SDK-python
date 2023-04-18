@@ -13,3 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Updated namespace from Telstra.Messaging.V3 to Telstra.Messaging
 - Added Reports feature bringing parity with API
+
+## [3.0.2] - 2023-04-19
+
+- Update secrets keys to get Telstra credentials
+- Bumped version

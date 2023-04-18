@@ -154,8 +154,8 @@ jobs:
       - name: run tests
         working-directory: production-test
         env:
-          TELSTRA_CLIENT_ID: ${{ secrets.VALID_TELSTRA_CLIENT_ID }}
-          TELSTRA_CLIENT_SECRET: ${{ secrets.VALID_TELSTRA_CLIENT_SECRET }}
+          TELSTRA_CLIENT_ID: ${{ secrets.TELSTRA_CLIENT_ID_MESSAGING }}
+          TELSTRA_CLIENT_SECRET: ${{ secrets.TELSTRA_CLIENT_SECRET_MESSAGING }}
         run: |
           pipenv run test
 
@@ -202,7 +202,7 @@ jobs:
       - name: run tests
         working-directory: production-test
         env:
-          TELSTRA_CLIENT_ID: ${{ secrets.VALID_TELSTRA_CLIENT_ID }}
-          TELSTRA_CLIENT_SECRET: ${{ secrets.VALID_TELSTRA_CLIENT_SECRET }}
+          TELSTRA_CLIENT_ID: ${{ secrets.TELSTRA_CLIENT_ID_MESSAGING }}
+          TELSTRA_CLIENT_SECRET: ${{ secrets.TELSTRA_CLIENT_SECRET_MESSAGING }}
         run: |
           pipenv run test
