@@ -18,3 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Update secrets keys to get Telstra credentials
 - Bumped version
+
+## [3.0.3] - 2023-04-19
+
+- Update production tests to handle account limit errors
+- Bumped version
