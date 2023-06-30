@@ -66,6 +66,40 @@ class TVirtualNumbers:
     paging: TPaging
 
 
+@dataclasses.dataclass
+class TRecipientOptout:
+    """
+    A recipient optout mobile number.
+
+    Attrs:
+        message_id: A unique identifier for the message sent.
+        optout_number: Recipient optout number.
+        virtual_number: A virtual number assigned to your account.
+        create_timestamp:
+
+    """
+
+    message_id: str
+    virtual_number: str
+    optout_number: str
+    create_timestamp: str
+
+
+@dataclasses.dataclass
+class TRecipientOptouts:
+    """
+    List of recipient optout numbers.
+
+    Attrs:
+        recipient_optouts:
+        paging:
+
+    """
+
+    recipient_optouts: list[TRecipientOptout]
+    paging: TPaging
+
+
 def assign(
     reply_callback_url: typing.Optional[types.TStatusCallbackUrl] = None,
     tags: typing.Optional[typing.List[types.TTags]] = None,
@@ -87,7 +121,7 @@ def assign(
         and isinstance(tags, list)
         and (len(tags) < 1 or len(tags) > 10)
     ):
-        raise exceptions.MessageError(
+        raise exceptions.VirtualNumbersError(
             'the value of "tags" is not valid, expected a list of strings '
             "with alteast one tag or a maximum of 10, "
             f'received "{tags}"'
@@ -114,7 +148,7 @@ def assign(
     data_str = json.dumps(data).encode()
     headers = {
         "Authorization": token.authorization,
-        "Telstra-api-version": "3.1.0",
+        "Telstra-api-version": "3.x",
         "Content-Language": "en-au",
         "Accept-Charset": "utf-8",
         "Accept": "application/json",
@@ -163,7 +197,7 @@ def _validate_get_all_args(
         and isinstance(limit, types.TLimit)
         and (limit < 1 or limit > 50)
     ):
-        raise exceptions.MessageError(
+        raise exceptions.VirtualNumbersError(
             'the value of "limit" is not valid, expected a int value '
             f'between 1 and 50, received "{limit}"'
         )
@@ -174,14 +208,14 @@ def _validate_get_all_args(
         and isinstance(offset, types.TOffset)
         and (offset < 0 or offset > 999999)
     ):
-        raise exceptions.MessageError(
+        raise exceptions.VirtualNumbersError(
             'the value of "offset" is not valid, expected a int value '
             f'between 0 and 999999, received "{offset}"'
         )
 
     # Validate filter
     if filter_ is not None and not isinstance(filter_, types.TFilter):
-        raise exceptions.MessageError(
+        raise exceptions.VirtualNumbersError(
             'the value of "filter" is not valid, expected a string, '
             f'received "{filter_}"'
         )
@@ -210,7 +244,7 @@ def get_all(
 
     headers = {
         "Authorization": token.authorization,
-        "Telstra-api-version": "3.1.0",
+        "Telstra-api-version": "3.x",
         "Content-Language": "en-au",
         "Accept-Charset": "utf-8",
         "Accept": "application/json",
@@ -296,7 +330,7 @@ def get(virtual_number: str) -> TVirtualNumber:
 
     headers = {
         "Authorization": token.authorization,
-        "Telstra-api-version": "3.1.0",
+        "Telstra-api-version": "3.x",
         "Content-Language": "en-au",
         "Accept-Charset": "utf-8",
         "Accept": "application/json",
@@ -364,7 +398,7 @@ def update(
         and isinstance(tags, list)
         and (len(tags) < 1 or len(tags) > 10)
     ):
-        raise exceptions.MessageError(
+        raise exceptions.VirtualNumbersError(
             'the value of "tags" is not valid, expected a list of '
             "strings with alteast one tag or a maximum of 10, "
             f'received "{tags}"'
@@ -392,7 +426,7 @@ def update(
     data_str = json.dumps(data).encode()
     headers = {
         "Authorization": token.authorization,
-        "Telstra-api-version": "3.1.0",
+        "Telstra-api-version": "3.x",
         "Content-Language": "en-au",
         "Accept-Charset": "utf-8",
         "Accept": "application/json",
@@ -456,7 +490,7 @@ def delete(virtual_number: str) -> None:
 
     headers = {
         "Authorization": token.authorization,
-        "Telstra-api-version": "3.1.0",
+        "Telstra-api-version": "3.x",
         "Content-Language": "en-au",
         "Accept-Charset": "utf-8",
         "Accept": "application/json",
@@ -485,4 +519,86 @@ def delete(virtual_number: str) -> None:
             ) from exc
         raise exceptions.VirtualNumbersError(
             f"Could not delete virtual number. {suggested_actions_string}"
+        ) from exc
+
+
+def get_optouts(
+    virtual_number: str,
+    limit: typing.Optional[types.TLimit] = None,
+    offset: typing.Optional[types.TOffset] = None,
+) -> TRecipientOptouts:
+    """
+    Retrieve all virtual numbers assigned to you.
+
+    Raises VirtualNumbersError if anything goes wrong.
+
+    """
+
+    _validate_get_all_args(limit=limit, offset=offset, filter_=None)
+
+    try:
+        token = oauth.get_token()
+    except exceptions.CredentialError as exc:
+        raise exceptions.VirtualNumbersError(
+            f"Could not retrieve an OAuth token: {exc}"
+        ) from exc
+
+    headers = {
+        "Authorization": token.authorization,
+        "Telstra-api-version": "3.x",
+        "Content-Language": "en-au",
+        "Accept-Charset": "utf-8",
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Cache-Control": "no-cache",
+    }
+    optouts_request = request.Request(
+        f"{_URL}"
+        f"/{virtual_number}/optouts"
+        f"{querystring.build(limit=limit, offset=offset)}",
+        headers=headers,
+        method="GET",
+    )
+    try:
+        with request.urlopen(optouts_request) as response:
+            optouts: list[TRecipientOptout] = []
+            optouts_response_dict = json.loads(response.read().decode())
+            optouts_list = optouts_response_dict.get("recipientOptouts", [])
+
+            if optouts_list is not None and len(optouts_list) > 0:
+                optouts = [
+                    TRecipientOptout(
+                        message_id=d.get("messageId"),
+                        virtual_number=d.get("virtualNumber"),
+                        optout_number=d.get("optoutNumber"),
+                        create_timestamp=d.get("createTimestamp"),
+                    )
+                    for d in optouts_list
+                ]
+            paging = TPaging(
+                next_page=optouts_response_dict["paging"].get("nextPage", ""),
+                previous_page=optouts_response_dict["paging"].get("previousPage", ""),
+                last_page=optouts_response_dict["paging"].get("lastPage", ""),
+                total_count=optouts_response_dict["paging"].get("totalCount", 0),
+            )
+            return TRecipientOptouts(
+                recipient_optouts=([] if optouts is None else optouts),
+                paging=paging,
+            )
+    except error.HTTPError as exc:
+        suggested_actions_string = ""
+        try:
+            error_response = json.loads(exc.read().decode())
+            list_of_error_dicts = error_response.get("errors", [])
+            suggested_actions_string = (
+                error_response_util.get_suggeted_actions_list_str(
+                    list_of_error_dicts=list_of_error_dicts, key="suggested_action"
+                )
+            )
+        except Exception:
+            raise exceptions.VirtualNumbersError(
+                f"Could not retrieve the list of optout numbers: {exc}"
+            ) from exc
+        raise exceptions.VirtualNumbersError(
+            f"Could not retrieve the list of optout numbers. {suggested_actions_string}"
         ) from exc

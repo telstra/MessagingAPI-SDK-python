@@ -60,13 +60,13 @@ def get_all() -> TReports:
     try:
         token = oauth.get_token()
     except exceptions.CredentialError as exc:
-        raise exceptions.FreeTrialNumbersError(
+        raise exceptions.ReportsError(
             f"Could not retrieve an OAuth token: {exc}"
         ) from exc
 
     headers = {
         "Authorization": token.authorization,
-        "Telstra-api-version": "3.1.0",
+        "Telstra-api-version": "3.x",
         "Content-Language": "en-au",
         "Accept-Charset": "utf-8",
         "Accept": "application/json",
@@ -104,10 +104,8 @@ def get_all() -> TReports:
                 )
             )
         except Exception:
-            raise exceptions.VirtualNumbersError(
-                f"Could not retrieve reports: {exc}"
-            ) from exc
-        raise exceptions.VirtualNumbersError(
+            raise exceptions.ReportsError(f"Could not retrieve reports: {exc}") from exc
+        raise exceptions.ReportsError(
             f"Could not retrieve reports. {suggested_actions_string}"
         ) from exc
 
@@ -123,13 +121,13 @@ def get(report_id: str) -> TReport:
     try:
         token = oauth.get_token()
     except exceptions.CredentialError as exc:
-        raise exceptions.FreeTrialNumbersError(
+        raise exceptions.ReportsError(
             f"Could not retrieve an OAuth token: {exc}"
         ) from exc
 
     headers = {
         "Authorization": token.authorization,
-        "Telstra-api-version": "3.1.0",
+        "Telstra-api-version": "3.x",
         "Content-Language": "en-au",
         "Accept-Charset": "utf-8",
         "Accept": "application/json",
@@ -157,10 +155,8 @@ def get(report_id: str) -> TReport:
                 )
             )
         except Exception:
-            raise exceptions.VirtualNumbersError(
-                f"Could not retrieve report: {exc}"
-            ) from exc
-        raise exceptions.VirtualNumbersError(
+            raise exceptions.ReportsError(f"Could not retrieve report: {exc}") from exc
+        raise exceptions.ReportsError(
             f"Could not retrieve report. {suggested_actions_string}"
         ) from exc
 
@@ -223,7 +219,7 @@ def create(
     try:
         token = oauth.get_token()
     except exceptions.CredentialError as exc:
-        raise exceptions.VirtualNumbersError(
+        raise exceptions.ReportsError(
             f"Could not retrieve an OAuth token: {exc}"
         ) from exc
 
@@ -239,7 +235,7 @@ def create(
 
     headers = {
         "Authorization": token.authorization,
-        "Telstra-api-version": "3.1.0",
+        "Telstra-api-version": "3.x",
         "Content-Language": "en-au",
         "Accept-Charset": "utf-8",
         "Accept": "application/json",
@@ -268,9 +264,9 @@ def create(
                 )
             )
         except Exception as inner_exc:
-            raise exceptions.VirtualNumbersError(
+            raise exceptions.ReportsError(
                 f"Could not create report: {inner_exc}"
             ) from inner_exc
-        raise exceptions.VirtualNumbersError(
+        raise exceptions.ReportsError(
             f"Could not create report. {suggested_actions_string}"
         ) from exc

@@ -50,7 +50,7 @@ def create(phone_numbers: TFreeTrialNumbers) -> TFreeTrialNumbers:
     data = json.dumps({"freeTrialNumbers": phone_numbers}).encode()
     headers = {
         "Authorization": token.authorization,
-        "Telstra-api-version": "3.1.0",
+        "Telstra-api-version": "3.x",
         "Content-Language": "en-au",
         "Accept-Charset": "utf-8",
         "Accept": "application/json",
@@ -100,7 +100,7 @@ def get_all() -> TFreeTrialNumbers:
 
     headers = {
         "Authorization": token.authorization,
-        "Telstra-api-version": "3.1.0",
+        "Telstra-api-version": "3.x",
         "Content-Language": "en-au",
         "Accept-Charset": "utf-8",
         "Accept": "application/json",

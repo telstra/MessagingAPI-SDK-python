@@ -3,7 +3,7 @@
 The SDK for the Telstra Messaging API enables you to send and receive messages
 to Australian mobile numbers. For more information about this product, please
 see here:
-<https://dev.telstra.com/content/messaging-api-v3>.
+<https://dev.telstra.com/docs/messaging-api/apiReference/apiReferenceOverview?version=3.x>.
 
 > :warning: **This SDK is experimental, everything is subject to change**
 
@@ -88,7 +88,7 @@ it meets your needs. There are some restrictions that apply compared to the
 full API, including a maximum number of messages that can be sent and requiring the
 registration of a limited number of destinations before a message can be sent
 to that destination. For more information, please see here:
-<https://dev.telstra.com/content/messaging-api#tag/Free-Trial>.
+<https://dev.telstra.com/docs/messaging-api/apiReference/apiReferenceOverviewEndpoints?version=3.x#FreeTrial>.
 
 ### Registering Free Trial Numbers
 
@@ -96,13 +96,12 @@ to that destination. For more information, please see here:
 
 Register numbers for the free trial. For more information, please see
 here:
-<https://dev.telstra.com/content/messaging-api-v3#tag/free-trial-numbers>.
+<https://dev.telstra.com/docs/messaging-api/apiReference/apiReferenceOverviewEndpoints?version=3.x#RegisteraFreeTrialNumber>.
 
 The function `telstra.messaging.free_trial_numbers.create` can be used to register
 destinations. It takes the following arguments:
 
-- `phone_numbers`: A list of destinations, expected to be phone numbers of the
-  form `+614XXXXXXXX` or `04XXXXXXXX`.
+- `phone_numbers`: A list of destinations, expected to be phone numbers of the form `04XXXXXXXX`.
 
 Raises `telstra.messaging.exceptions.FreeTrialNumbersError` if anything goes wrong.
 
@@ -124,7 +123,7 @@ print(phone_numbers)
 
 Fetch the Free Trial Number(s) currently assigned to your account. For more information,
 please see here:
-<https://dev.telstra.com/content/messaging-api-v3#operation/getTrialNumbers>.
+<https://dev.telstra.com/docs/messaging-api/apiReference/apiReferenceOverviewEndpoints?version=3.x#FetchyourFreeTrialNumbers>.
 
 The function `telstra.messaging.free_trial_numbers.get_all`
 can be used to retrieve registered destinations.
@@ -150,7 +149,7 @@ print(phone_numbers)
 Gives you a dedicated mobile number tied to an application which
 enables you to receive replies from your customers. For more information,
 please see here:
-<https://dev.telstra.com/content/messaging-api-v3#tag/virtual-numbers>.
+<https://dev.telstra.com/docs/messaging-api/apiReference/apiReferenceOverviewEndpoints?version=3.x#VirtualNumbers>.
 
 ### Assign Virtual Number
 
@@ -158,7 +157,7 @@ When a recipient receives your message, you can choose whether they'll see a pri
 Virtual Number or senderName (paid plans only) in the from field.
 If you want to use a Virtual Number, use this function to assign one.
 For more information, please see here:
-<https://dev.telstra.com/content/messaging-api-v3#operation/assignNumber>.
+<https://dev.telstra.com/docs/messaging-api/apiReference/apiReferenceOverviewEndpoints?version=3.x#AssignaVirtualNumber>.
 
 The function `telstra.messaging.virtual_number.create` can be used to create a
 numbers. It takes the following arguments:
@@ -193,7 +192,7 @@ print(assigned_numbers)
 
 Fetch the tags, replyCallbackUrl and lastUse date for a Virtual Number.
 For more information, please see here:
-<https://dev.telstra.com/content/messaging-api-v3#operation/getVirtualNumber>.
+<https://dev.telstra.com/docs/messaging-api/apiReference/apiReferenceOverviewEndpoints?version=3.x#FetchaVirtualNumber>.
 
 The function `telstra.messaging.virtual_number.get` can be used to get the current
 number. It takes the following arguments:
@@ -225,7 +224,7 @@ print(retrieved_number)
 
 Fetch all Virtual Numbers currently assigned to your account.
 For more information, please see here:
-<https://dev.telstra.com/content/messaging-api-v3#operation/getNumbers>.
+<https://dev.telstra.com/docs/messaging-api/apiReference/apiReferenceOverviewEndpoints?version=3.x#FetchallVirtualNumbers>.
 
 The function `telstra.messaging.virtual_number.get_all` can be used to
 get the all virtual numbers associated to your account.
@@ -258,7 +257,7 @@ print(retrieved_virtual_numbers)
 
 Update a virtual number attributes. For more information,
 please see here:
-<https://dev.telstra.com/content/messaging-api-v3#operation/updateNumber>.
+<https://dev.telstra.com/docs/messaging-api/apiReference/apiReferenceOverviewEndpoints?version=3.x#UpdateaVirtualNumber>.
 
 The function `telstra.messaging.virtual_number.update` can be used to update a
 virtual number. It takes the following arguments:
@@ -296,7 +295,7 @@ print(updated_virtual_number)
 ### Delete Virtual Number
 
 Delete the a virtual number. For more information, please see here:
-<https://dev.telstra.com/content/messaging-api-v3#operation/deleteNumber>.
+<https://dev.telstra.com/docs/messaging-api/apiReference/apiReferenceOverviewEndpoints?version=3.x#DeleteaVirtualNumber>.
 
 The function `telstra.messaging.virtual_number.delete` can be used
 to delete the current number. It takes the following arguments:
@@ -314,16 +313,51 @@ from telstra.messaging import virtual_number
 virtual_number.delete(virtual_number="0400000001")
 ```
 
+### Fetch all Recipient Optouts list
+
+Fetch any mobile number(s) that have opted out of receiving messages
+from a Virtual Number assigned to your account.
+For more information, please see here:
+<https://dev.telstra.com/docs/messaging-api/apiReference/apiReferenceOverviewEndpoints?version=3.x#Fetchallrecipientoptoutslist>.
+
+The function `telstra.messaging.virtual_number.get_optouts` can be used to
+get the list of mobile numbers that have opted out of receiving messages
+from a virtual number associated to your account.
+It takes the following arguments:
+
+- `virtual_number`: The Virtual Number assigned to your account.
+- `limit`: Tell us how many results you want us to return, up to a maximum of 50.
+- `offset`: Use the offset to navigate between the response results.
+  An offset of 0 will display the first page of results, and so on.
+
+Raises `telstra.messaging.exceptions.VirtualNumbersError` if anything goes wrong.
+
+It returns an object with the following
+properties:
+
+- `recipient_optouts`: A list of recipient optouts.
+- `paging`: Paging information.
+
+For example:
+
+```python
+# Get all virtual numbers
+from telstra.messaging import virtual_number
+
+retrieved_optout_numbers = virtual_number.get_optouts(virtual_number="0400000001")
+print(retrieved_optout_numbers)
+```
+
 ## Message
 
 Send and receive messages. For more information, please see here:
-<https://dev.telstra.com/content/messaging-api-v3#tag/messages>.
+<https://dev.telstra.com/docs/messaging-api/apiReference/apiReferenceOverviewEndpoints?version=3.x#Messages>.
 
 ### Send Message
 
 Send a message to a mobile number, or to multiple mobile numbers.
 For more information, please see here:
-<https://dev.telstra.com/content/messaging-api-v3#operation/sendMessages>.
+<https://dev.telstra.com/docs/messaging-api/apiReference/apiReferenceOverviewEndpoints?version=3.x#SendanSMSorMMS>.
 
 The function `telstra.messaging.message.send` can be used to send a message.
 It takes the following arguments:
@@ -341,7 +375,7 @@ It takes the following arguments:
 - `schedule_send` (optional): The time (in Central Standard Time)
   the message is scheduled to send.
 - `delivery_notification` (optional): If set to true, you will receive
-  a notification to the statusCallbackUrl when your SMS is delivered (paid feature).
+  a notification to the statusCallbackUrl when your SMS or MMS is delivered (paid feature).
 - `status_callback_url` (optional): The URL the API will call when the
   status of the message changes.
 - `tags` (optional): Any customisable tags assigned to the message.
@@ -371,7 +405,7 @@ It returns an object with the following properties:
 - `schedule_send`: The time (in Central Standard Time) a message
   is scheduled to send.
 - `delivery_notification`: If set to true, you will receive a notification to the
-  statusCallbackUrl when your SMS is delivered (paid feature).
+  statusCallbackUrl when your SMS or MMS is delivered (paid feature).
 - `status_callback_url`: The URL the API will call when the status of
   the message changes.
 - `tags`: Any customisable tags assigned to the message.
@@ -406,10 +440,8 @@ message.send(
 
 Use the messageId to fetch a message that's been sent from/to
 your account within the last 30 days.
-Note that in the current release, inbound MMS or messages sent in
-reply to an MMS will not be retrieved..
 For more information, please see here:
-<https://dev.telstra.com/content/messaging-api-v3#operation/getMessageById>.
+<https://dev.telstra.com/docs/messaging-api/apiReference/apiReferenceOverviewEndpoints?version=3.x#Fetchamessage>.
 
 The function `telstra.messaging.message.get` can be used to retrieve
 the a message. It takes the following arguments:
@@ -420,7 +452,7 @@ Raises `telstra.messaging.exceptions.MessageError` if anything goes wrong.
 
 It returns an object with the following properties:
 
-- `messageId`: Use this UUID with our other endpoints to fetch,
+- `message_id`: Use this UUID with our other endpoints to fetch,
   update or delete the message.
 - `status`: The status will be either queued, sent, delivered or expired.
 - `create_timestamp`: The time you submitted the message to
@@ -439,7 +471,7 @@ It returns an object with the following properties:
 - `schedule_send`: The time (in Central Standard Time) the message is
   scheduled to send.
 - `delivery_notification`: If set to true, you will receive a notification
-  to the statusCallbackUrl when your SMS is delivered (paid feature).
+  to the statusCallbackUrl when your SMS or MMS is delivered (paid feature).
 - `status_callback_url`: The URL the API will call when the status of
   the message changes.
 - `queue_priority`: The priority assigned to the message.
@@ -463,10 +495,8 @@ print(message)
 ### Get all Messages
 
 Fetch messages that have been sent from/to your account in the last 30 days.
-Note that in the current release, inbound MMS or messages sent
-in reply to an MMS will not be retrieved.
 For more information, please see here:
-<https://dev.telstra.com/content/messaging-api-v3#operation/getMessages>.
+<https://dev.telstra.com/docs/messaging-api/apiReference/apiReferenceOverviewEndpoints?version=3.x#Fetchallsent/receivedmessages>.
 
 The function `telstra.messaging.message.get_all` can be used to fetch
 all messages. It takes the
@@ -500,7 +530,7 @@ print(reply)
 Update a message that's scheduled for sending, you can change any of
 the below parameters, as long as the message hasn't been sent yet.
 For more information, please see here:
-<https://dev.telstra.com/content/messaging-api-v3#operation/updateMessageById>.
+<https://dev.telstra.com/docs/messaging-api/apiReference/apiReferenceOverviewEndpoints?version=3.x#Updateamessage>.
 
 The function `telstra.messaging.message.update` can be used to update a message.
 It takes the following arguments:
@@ -517,7 +547,7 @@ It takes the following arguments:
 - `schedule_send` (optional): The time (in Central Standard Time) the
   message is scheduled to send.
 - `delivery_notification` (optional): If set to true, you will receive a
-  notification to the statusCallbackUrl when your SMS is delivered (paid feature).
+  notification to the statusCallbackUrl when your SMS or MMS is delivered (paid feature).
 - `status_callback_url` (optional): The URL the API will call when
   the status of the message changes.
 - `tags` (optional): Any customisable tags assigned to the message.
@@ -548,7 +578,7 @@ It returns an object with the following properties:
 - `schedule_send`: The time (in Central Standard Time) the message
   is scheduled to send.
 - `delivery_notification`: If set to true, you will receive a notification to the
-  statusCallbackUrl when your SMS is delivered (paid feature).
+  statusCallbackUrl when your SMS or MMS is delivered (paid feature).
 - `status_callback_url`: The URL the API will call when the
   status of the message changes.
 - `tags`: Any customisable tags assigned to the message.
@@ -571,7 +601,7 @@ message.update(
 
 Update message tags, you can update them even after your message has been delivered.
 For more information, please see here:
-<https://dev.telstra.com/content/messaging-api-v3#operation/updateMessageTags>.
+<https://dev.telstra.com/docs/messaging-api/apiReference/apiReferenceOverviewEndpoints?version=3.x#Updatemessagetags>.
 
 The function `telstra.messaging.message.update_tags` can be used to
 update message tags. It takes the following arguments:
@@ -596,7 +626,7 @@ message.update_tags(message_id="8540d774-4863-4d2b-b788-4ecb19412e85", tags=["Py
 
 Delete a scheduled message, but hasn't yet sent.
 For more information, please see here:
-<https://dev.telstra.com/content/messaging-api-v3#operation/deleteMessageById>.
+<https://dev.telstra.com/docs/messaging-api/apiReference/apiReferenceOverviewEndpoints?version=3.x#Deleteamessage>.
 
 The function `telstra.messaging.message.delete` can be used to delete a message.
 It takes the following arguments:
@@ -626,7 +656,7 @@ Create and fetch reports. For more information, please see here:
 Request a CSV report of messages (both incoming and outgoing)
 that have been sent to/from your account within the last three months.
 For more information, please see here:
-<https://dev.telstra.com/content/messaging-api-v3#operation/messagesReport>.
+<https://dev.telstra.com/docs/messaging-api/apiReference/apiReferenceOverviewEndpoints?version=3.x#Submitarequestforamessagesreport>.
 
 The function `telstra.messaging.reports.create` can be used to create a report.
 It takes the following arguments:
@@ -672,7 +702,7 @@ reports_create_response = reports.create(
 
 Use the report_id to fetch a download link for a report generated.
 For more information, please see here:
-<https://dev.telstra.com/content/messaging-api-v3#operation/getReport>.
+<https://dev.telstra.com/docs/messaging-api/apiReference/apiReferenceOverviewEndpoints?version=3.x#FetchaReport>.
 
 The function `telstra.messaging.reports.get` can be used to retrieve
 the a report download link. It takes the following arguments:
@@ -693,7 +723,7 @@ For example:
 # Get a report download link
 from telstra.messaging import reports
 
-report_reponse = reports.get(report_id = '6940c774-4335-4d2b-b758-4ecb19412e85')
+report_response = reports.get(report_id = '6940c774-4335-4d2b-b758-4ecb19412e85')
 print(report_response)
 ```
 
@@ -703,7 +733,7 @@ Fetch details of all reports recently generated for your account.
 Use it to check the status of a report, plus fetch the report ID,
 status, report type and expiry date.
 For more information, please see here:
-<https://dev.telstra.com/content/messaging-api-v3#operation/getReports>.
+<https://dev.telstra.com/docs/messaging-api/apiReference/apiReferenceOverviewEndpoints?version=3.x#Fetchallreports>.
 
 The function `telstra.messaging.reports.get_all` can be used to fetch
 all reports. It doesn't take any arguments.
@@ -734,7 +764,7 @@ print(reply)
 
 Check the operational status of the messaging service.
 For more information, please see here:
-<https://dev.telstra.com/content/messaging-api-v3#operation/healthCheck>.
+<https://dev.telstra.com/docs/messaging-api/apiReference/apiReferenceOverviewEndpoints?version=3.x#HealthCheck>.
 
 The function `telstra.messaging.health_check.get` can be used to get the status.
 It takes no arguments.

@@ -17,13 +17,13 @@ def get() -> None:
     try:
         token = oauth.get_token()
     except exceptions.CredentialError as exc:
-        raise exceptions.FreeTrialNumbersError(
+        raise exceptions.HealthCheckError(
             f"Could not retrieve an OAuth token: {exc}"
         ) from exc
 
     headers = {
         "Authorization": token.authorization,
-        "Telstra-api-version": "3.1.0",
+        "Telstra-api-version": "3.x",
         "Content-Language": "en-au",
         "Accept-Charset": "utf-8",
         "Accept": "application/json",

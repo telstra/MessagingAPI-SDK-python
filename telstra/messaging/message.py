@@ -311,7 +311,7 @@ def send(  # pylint: disable=too-many-arguments,too-many-locals
 
     headers = {
         "Authorization": token.authorization,
-        "Telstra-api-version": "3.1.0",
+        "Telstra-api-version": "3.x",
         "Content-Language": "en-au",
         "Accept-Charset": "utf-8",
         "Accept": "application/json",
@@ -464,7 +464,7 @@ def update(  # pylint: disable=too-many-arguments,too-many-locals
     data_str = json.dumps(data).encode()
     headers = {
         "Authorization": token.authorization,
-        "Telstra-api-version": "3.1.0",
+        "Telstra-api-version": "3.x",
         "Content-Language": "en-au",
         "Accept-Charset": "utf-8",
         "Accept": "application/json",
@@ -560,7 +560,7 @@ def update_tags(  # pylint: disable=too-many-arguments,too-many-locals
     data_str = json.dumps(data).encode()
     headers = {
         "Authorization": token.authorization,
-        "Telstra-api-version": "3.1.0",
+        "Telstra-api-version": "3.x",
         "Content-Language": "en-au",
         "Accept-Charset": "utf-8",
         "Accept": "application/json",
@@ -616,7 +616,7 @@ def get(message_id: types.TMessageId) -> TMessage:
         ) from exc
     headers = {
         "Authorization": token.authorization,
-        "Telstra-api-version": "3.1.0",
+        "Telstra-api-version": "3.x",
         "Content-Language": "en-au",
         "Accept-Charset": "utf-8",
         "Accept": "application/json",
@@ -729,7 +729,7 @@ def get_all(
         ) from exc
     headers = {
         "Authorization": token.authorization,
-        "Telstra-api-version": "3.1.0",
+        "Telstra-api-version": "3.x",
         "Content-Language": "en-au",
         "Accept-Charset": "utf-8",
         "Accept": "application/json",
@@ -818,7 +818,7 @@ def delete(message_id: types.TMessageId) -> None:
         ) from exc
     headers = {
         "Authorization": token.authorization,
-        "Telstra-api-version": "3.1.0",
+        "Telstra-api-version": "3.x",
         "Content-Language": "en-au",
         "Accept-Charset": "utf-8",
         "Accept": "application/json",

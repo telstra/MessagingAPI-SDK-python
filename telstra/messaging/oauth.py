@@ -84,9 +84,7 @@ def _get_token() -> TToken:
             "grant_type": "client_credentials",
             "client_id": config.get().telstra_client_id,
             "client_secret": config.get().telstra_client_secret,
-            "scope": "free-trial-numbers:read free-trial-numbers:write "
-            "virtual-numbers:read virtual-numbers:write messages:read "
-            "messages:write messaging:read messaging:write",
+            "scope": "free-trial-numbers:read free-trial-numbers:write virtual-numbers:read virtual-numbers:write messages:read messaging:write reports:read reports:write",
         }
     ).encode("ascii")
     headers = {"Content-Type": "application/x-www-form-urlencoded", "Accept": "*/*"}
