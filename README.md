@@ -101,7 +101,8 @@ here:
 The function `telstra.messaging.free_trial_numbers.create` can be used to register
 destinations. It takes the following arguments:
 
-- `phone_numbers`: A list of destinations, expected to be phone numbers of the form `04XXXXXXXX`.
+- `phone_numbers`: A list of destinations, expected to be phone numbers
+  of the form `04XXXXXXXX`.
 
 Raises `telstra.messaging.exceptions.FreeTrialNumbersError` if anything goes wrong.
 
@@ -375,7 +376,8 @@ It takes the following arguments:
 - `schedule_send` (optional): The time (in Central Standard Time)
   the message is scheduled to send.
 - `delivery_notification` (optional): If set to true, you will receive
-  a notification to the statusCallbackUrl when your SMS or MMS is delivered (paid feature).
+  a notification to the statusCallbackUrl when your SMS or MMS
+  is delivered (paid feature).
 - `status_callback_url` (optional): The URL the API will call when the
   status of the message changes.
 - `tags` (optional): Any customisable tags assigned to the message.
