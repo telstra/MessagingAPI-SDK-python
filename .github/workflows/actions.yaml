@@ -108,26 +108,26 @@ jobs:
           echo "::set-output name=project-version::$PROJECT_VERSION"
           echo "::set-output name=result::$RESULT"
 
-  # release-test-pypi:
-  #   runs-on: ubuntu-latest
-  #   needs:
-  #     - test
-  #     - build
-  #     - pre-commit
-  #     - release-required
-  #   steps:
-  #     - name: Retrieve packages
-  #       if: needs.release-required.outputs.result == 'true'
-  #       uses: actions/download-artifact@v2.0.7
-  #       with:
-  #         name: wheel
-  #         path: dist/
-  #     - name: Publish distribution 📦 to Test PyPI
-  #       if: needs.release-required.outputs.result == 'true'
-  #       uses: pypa/gh-action-pypi-publish@v1.4.1
-  #       with:
-  #         password: ${{ secrets.SECRET_PUBLISH_AS_TELSTRA_TEST_PYPI_ORG }}
-  #         repository_url: https://test.pypi.org/legacy/
+  release-test-pypi:
+    runs-on: ubuntu-latest
+    needs:
+      - test
+      - build
+      - pre-commit
+      - release-required
+    steps:
+      - name: Retrieve packages
+        if: needs.release-required.outputs.result == 'true'
+        uses: actions/download-artifact@v2.0.7
+        with:
+          name: wheel
+          path: dist/
+      - name: Publish distribution 📦 to Test PyPI
+        if: needs.release-required.outputs.result == 'true'
+        uses: pypa/gh-action-pypi-publish@v1.4.1
+        with:
+          password: ${{ secrets.SECRET_PUBLISH_AS_TELSTRA_TEST_PYPI_ORG }}
+          repository_url: https://test.pypi.org/legacy/
 
   test-production-test-pypi:
     runs-on: ubuntu-latest
