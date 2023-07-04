@@ -12,9 +12,9 @@ name = "messaging-pypi"
 "telstra.messaging" = { version="==${VERSION}", index="messaging-pypi" }
 
 [dev-packages]
-pytest = "6.2.1"
-black = "20.8b1"
-pylint = "2.6.0"
+pytest = "^7.2.2"
+black = {version = "^23.1.0", allow-prereleases = true}
+pylint = "^2.17.0"
 
 [scripts]
 test = "pytest"
