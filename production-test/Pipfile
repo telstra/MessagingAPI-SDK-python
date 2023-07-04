@@ -13,8 +13,8 @@ name = "messaging-pypi"
 
 [dev-packages]
 pytest = ">=6"
-black = "23.1.0"
-pylint = "2.17.0"
+black = ">=23"
+pylint = ">=2.17"
 
 [scripts]
 test = "pytest"
