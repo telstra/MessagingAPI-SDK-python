@@ -74,6 +74,9 @@ jobs:
         if: steps.cache-poetry.outputs.cache-hit != 'true'
         run: |
           poetry install
+      - name: Update lock file
+        run: |
+          poetry lock          
       - name: Build packages
         run: poetry build
       - name: Upload artifacts for release
