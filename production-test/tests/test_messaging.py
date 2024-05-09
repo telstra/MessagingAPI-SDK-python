@@ -29,7 +29,6 @@ def test_send_get_message():
     """
 
     try:
-
         virtual_number.assign()    
         virtual_numbers = virtual_number.get_all()
         account_free_trial_numbers = free_trial_numbers.get_all()
@@ -54,9 +53,7 @@ def test_send_get_message():
                     from_=free_trial_number,
                     message_content="Prod Test",
                 )
-                message.get(message_id=message_response.message_id)          
-    
-    
+                message.get(message_id=message_response.message_id)                              
     except MessageError as exception_:
         if "upgrade to a paid" not in str(exception_):
             raise exception_
