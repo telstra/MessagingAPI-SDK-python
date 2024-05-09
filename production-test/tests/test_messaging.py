@@ -1,4 +1,5 @@
 """Tests for the messaging API."""
+
 import random
 
 from telstra.messaging import free_trial_numbers, message, virtual_number
@@ -30,7 +31,7 @@ def test_send_get_message():
 
     try:
 
-        virtual_number.assign()    
+        virtual_number.assign()
         virtual_numbers = virtual_number.get_all()
         account_free_trial_numbers = free_trial_numbers.get_all()
 
@@ -55,7 +56,7 @@ def test_send_get_message():
                     message_content="Prod Test",
                 )
 
-                message.get(message_id=message_response.message_id)                              
+                message.get(message_id=message_response.message_id)
     except MessageError as exception_:
         if "upgrade to a paid" not in str(exception_):
             raise exception_
