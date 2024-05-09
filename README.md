@@ -26,7 +26,7 @@ from telstra.messaging import message
 
 message.send(
   to="+61412345678",
-  from_="privateNumber",
+  from_="+61412345678",
   message_content="Hello from Python Messaging SDK!"
   )
 ```
@@ -420,14 +420,14 @@ from telstra.messaging import message
 
 message.send(
   to="+61412345678",
-  from_="privateNumber",
+  from_="+61412345678",
   message_content="Hello from Python Messaging SDK!"
 )
 
 # Send an MMS
 message.send(
     to="+61412345678",
-    from_="privateNumber",
+    from_="+61412345678",
     multimedia=[
         message.Multimedia(
             type="image/jpeg",
@@ -487,7 +487,7 @@ from telstra.messaging import message
 
 sent_message = message.send(
   to="+61412345678",
-  from_="privateNumber",
+  from_="+61412345678",
   message_content="Hello from Python Messaging SDK!"
   )
 message = message.get(message_id = sent_message.message_id)
@@ -594,7 +594,7 @@ from telstra.messaging import message
 message.update(
   message_id="8540d774-4863-4d2b-b788-4ecb19412e85",
   to="+61412345678",
-  from_="privateNumber",
+  from_="+61412345678",
   message_content="Hello from Python Messaging SDK!"
   )
 ```
