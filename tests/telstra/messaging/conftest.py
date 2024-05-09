@@ -1,4 +1,5 @@
 """Messaging API fixtures."""
+
 # pylint: disable=unused-argument,redefined-outer-name
 
 import os
