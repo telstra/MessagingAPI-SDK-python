@@ -27,10 +27,12 @@ def test_send_get_message():
     WHEN send is called
     THEN no errors are raised.
     """
-    virtual_number.assign()    
-    virtual_numbers = virtual_number.get_all()
-    account_free_trial_numbers = free_trial_numbers.get_all()
+
     try:
+        virtual_number.assign()    
+        virtual_numbers = virtual_number.get_all()
+        account_free_trial_numbers = free_trial_numbers.get_all()
+
         if len(virtual_numbers.virtual_numbers) > 0:
             vn = virtual_numbers.virtual_numbers[0].virtual_number
             if len(account_free_trial_numbers) > 0:
@@ -53,6 +55,7 @@ def test_send_get_message():
                 )
                 message.get(message_id=message_response.message_id)
                 
+    
     except MessageError as exception_:
         if "upgrade to a paid" not in str(exception_):
             raise exception_
