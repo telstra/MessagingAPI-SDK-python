@@ -27,19 +27,21 @@ def test_send_get_message():
     WHEN send is called
     THEN no errors are raised.
     """
+    virtual_number.assign()    
     virtual_numbers = virtual_number.get_all()
     account_free_trial_numbers = free_trial_numbers.get_all()
     try:
         if len(virtual_numbers.virtual_numbers) > 0:
             vn = virtual_numbers.virtual_numbers[0].virtual_number
-            if vn not in account_free_trial_numbers:
-                free_trial_numbers.create(phone_numbers=[vn])
-            message_response = message.send(
-                to=vn,
-                from_="privateNumber",
-                message_content="Prod Test",
-            )
-            message.get(message_id=message_response.message_id)
+            if len(account_free_trial_numbers) > 0:
+                free_trial_number = random.choice(account_free_trial_numbers)
+                message_response = message.send(
+                    to=free_trial_number,
+                    from_=vn,
+                    message_content="Prod Test",
+                )
+                message.get(message_id=message_response.message_id)
+                virtual_number.delete(virtual_number=vn)
         else:
             if len(account_free_trial_numbers) > 0:
                 free_trial_number = random.choice(account_free_trial_numbers)
@@ -50,7 +52,7 @@ def test_send_get_message():
                     message_content="Prod Test",
                 )
                 message.get(message_id=message_response.message_id)
-                virtual_number.delete(virtual_number=vn)
+                
     except MessageError as exception_:
         if "upgrade to a paid" not in str(exception_):
             raise exception_
