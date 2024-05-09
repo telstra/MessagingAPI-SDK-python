@@ -10,7 +10,6 @@ from urllib import error, parse, request
 from . import exceptions
 from .utils import config
 
-
 _URL = "https://products.api.telstra.com/v2/oauth/token"
 
 
