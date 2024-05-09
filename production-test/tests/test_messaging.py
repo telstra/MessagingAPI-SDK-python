@@ -42,11 +42,11 @@ def test_send_get_message():
             message.get(message_id=message_response.message_id)
         else:
             if len(account_free_trial_numbers) > 0:
-                random_number = random.choice(account_free_trial_numbers)
+                free_trial_number = random.choice(account_free_trial_numbers)
                 # Send the message to the random mobile number
                 message_response = message.send(
-                    to=random_number,
-                    from_=random_number,
+                    to=free_trial_number,
+                    from_=free_trial_number,
                     message_content="Prod Test",
                 )
                 message.get(message_id=message_response.message_id)
