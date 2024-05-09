@@ -4,11 +4,12 @@ import dataclasses
 import json
 import math
 import time
+from typing import Optional
 from urllib import error, parse, request
 
 from . import exceptions
 from .utils import config
-from typing import Optional
+
 
 _URL = "https://products.api.telstra.com/v2/oauth/token"
 
@@ -28,7 +29,13 @@ class TToken:
         authorization: The value of the Authorization header with the token.
 
     """
-    def __init__(self, access_token: str, token_type: str, expires_in: str, scope: Optional[str] = None):
+    def __init__(
+            self,
+            access_token: str,
+            token_type: str,
+            expires_in: str,
+            scope: Optional[str] = None,
+        ):
         """Construct."""
         self.retrieved_at = math.ceil(time.time())
         self.access_token = access_token
