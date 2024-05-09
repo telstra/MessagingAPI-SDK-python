@@ -30,7 +30,6 @@ def test_send_get_message():
     """
 
     try:
-
         virtual_number.assign()
         virtual_numbers = virtual_number.get_all()
         account_free_trial_numbers = free_trial_numbers.get_all()
