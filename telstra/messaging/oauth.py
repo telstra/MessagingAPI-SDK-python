@@ -44,7 +44,7 @@ class TToken:
     # The time it was created
     retrieved_at: int
     # scope
-    scope: str = None
+    scope: str
 
     @property
     def expired(self):
