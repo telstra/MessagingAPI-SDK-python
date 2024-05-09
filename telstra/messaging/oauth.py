@@ -28,7 +28,7 @@ class TToken:
 
     """
 
-    def __init__(self, access_token: str, token_type: str, expires_in: str):
+    def __init__(self, access_token: str, token_type: str, expires_in: str, scope: str = None):
         """Construct."""
         self.retrieved_at = math.ceil(time.time())
         self.access_token = access_token

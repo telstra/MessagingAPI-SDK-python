@@ -72,11 +72,11 @@ jobs:
           poetry config virtualenvs.path ~/.virtualenvs --local
       - name: Update lock file
         run: |
-          poetry lock           
+          poetry lock
       - name: Install dependencies
         if: steps.cache-poetry.outputs.cache-hit != 'true'
         run: |
-          poetry install         
+          poetry install
       - name: Build packages
         run: poetry build
       - name: Upload artifacts for release

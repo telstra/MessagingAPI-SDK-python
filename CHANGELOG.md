@@ -8,8 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [3.2.0] - 2024-05-09
 
 - Update actions.yaml
-- Update scope
-
+- Update scope for access token issue
 
 ## [3.1.0] - 2023-06-07
 
