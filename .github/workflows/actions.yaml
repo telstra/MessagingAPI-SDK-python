@@ -205,7 +205,7 @@ jobs:
       - name: run tests
         working-directory: production-test
         env:
-          TELSTRA_CLIENT_ID: ${{ secrets.TELSTRA_CLIENT_ID_MESSAGING }}
-          TELSTRA_CLIENT_SECRET: ${{ secrets.TELSTRA_CLIENT_SECRET_MESSAGING }}
+          TELSTRA_CLIENT_ID: ${{ secrets.PR_TEST_CLIENT_ID_MESSAGING }}
+          TELSTRA_CLIENT_SECRET: ${{ secrets.PR_TEST_CLIENT_SECRET_MESSAGING }}
         run: |
           pipenv run test
