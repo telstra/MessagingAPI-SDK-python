@@ -1,8 +1,8 @@
 """Tests for the messaging API."""
 import random
+
 from telstra.messaging import free_trial_numbers, message, virtual_number
 from telstra.messaging.exceptions import MessageError, VirtualNumbersError
-
 
 
 def test_create_numbers():
