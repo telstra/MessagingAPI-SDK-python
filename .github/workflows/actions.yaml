@@ -1,0 +1,211 @@
+name: CI-CD
+
+on:
+  push:
+    branches:
+      - release/messaging-v3
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10"]
+    steps:
+      - uses: actions/checkout@v2
+      - name: set up python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: install poetry
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry
+      - uses: actions/cache@v2.1.3
+        id: cache-poetry
+        with:
+          path: ~/.virtualenvs
+          key: ${{ runner.os }}-${{ matrix.python-version }}-poetry-${{ hashFiles('poetry.lock', 'poetry.toml') }}
+      - name: Configure poetry for ci
+        run: |
+          poetry config virtualenvs.in-project false --local
+          poetry config virtualenvs.path ~/.virtualenvs --local
+      - name: Install dependencies
+        if: steps.cache-poetry.outputs.cache-hit != 'true'
+        run: |
+          poetry update && poetry install --no-root
+      - name: run tests
+        env:
+          VALID_TELSTRA_CLIENT_ID: ${{ secrets.VALID_TELSTRA_CLIENT_ID }}
+          VALID_TELSTRA_CLIENT_SECRET: ${{ secrets.VALID_TELSTRA_CLIENT_SECRET }}
+        run: |
+          poetry run pytest || (poetry install --no-root && poetry run pytest)
+
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.10"
+      - uses: pre-commit/action@v2.0.0
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.10"
+      - name: Install poetry
+        run: pip install poetry
+      - uses: actions/cache@v2.1.3
+        id: cache-poetry
+        with:
+          path: ~/.virtualenvs
+          key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock', 'poetry.toml') }}
+      - name: Configure poetry for ci
+        run: |
+          poetry config virtualenvs.in-project false --local
+          poetry config virtualenvs.path ~/.virtualenvs --local
+      - name: Update lock file
+        run: |
+          poetry lock
+      - name: Install dependencies
+        if: steps.cache-poetry.outputs.cache-hit != 'true'
+        run: |
+          poetry install
+      - name: Build packages
+        run: poetry build
+      - name: Upload artifacts for release
+        uses: actions/upload-artifact@v2.2.1
+        with:
+          name: wheel
+          path: dist/
+
+  release-required:
+    runs-on: ubuntu-latest
+    outputs:
+      result: ${{ steps.check.outputs.result }}
+      project-version: ${{ steps.check.outputs.project-version }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.10"
+      - name: Install poetry and package
+        run: |
+          pip install --use-deprecated legacy-resolver poetry telstra.messaging
+      - name: Check if release is required
+        id: check
+        run: |
+          RELEASED_VERSION=$(python -c "from importlib.metadata import version;print(version('telstra.messaging'))")
+          echo released version: $RELEASED_VERSION
+          PROJECT_VERSION=$(poetry version -s)
+          echo project version: $PROJECT_VERSION
+          [[ "$RELEASED_VERSION" == "$PROJECT_VERSION"  ]] && RESULT=false || RESULT=true
+          echo release required: $RESULT
+          echo "::set-output name=project-version::$PROJECT_VERSION"
+          echo "::set-output name=result::$RESULT"
+
+  # release-test-pypi:
+  #   runs-on: ubuntu-latest
+  #   needs:
+  #     - test
+  #     - build
+  #     - pre-commit
+  #     - release-required
+  #   steps:
+  #     - name: Retrieve packages
+  #       if: needs.release-required.outputs.result == 'true'
+  #       uses: actions/download-artifact@v2.0.7
+  #       with:
+  #         name: wheel
+  #         path: dist/
+  #     - name: Publish distribution 📦 to Test PyPI
+  #       if: needs.release-required.outputs.result == 'true'
+  #       uses: pypa/gh-action-pypi-publish@v1.4.1
+  #       with:
+  #         password: ${{ secrets.SECRET_PUBLISH_AS_TELSTRA_TEST_PYPI_ORG }}
+  #         repository_url: https://test.pypi.org/legacy/
+
+  # test-production-test-pypi:
+  #   runs-on: ubuntu-latest
+  #   needs:
+  #     - release-test-pypi
+  #     - release-required
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Set up Python
+  #       uses: actions/setup-python@v2
+  #       with:
+  #         python-version: "3.10"
+  #     - name: install pipenv
+  #       run: |
+  #         python -m pip install --upgrade pip
+  #         pip install pipenv
+  #     - name: install dependencies
+  #       env:
+  #         PYPI_MIRROR: https://test.pypi.org/simple/
+  #         VERSION: ${{ needs.release-required.outputs.project-version }}
+  #       working-directory: production-test
+  #       run: |
+  #         pipenv install --dev || sleep 30 && pipenv install --dev || sleep 30 && pipenv install --dev || sleep 30 && pipenv install --dev
+  #     - name: run tests
+  #       working-directory: production-test
+  #       env:
+  #         TELSTRA_CLIENT_ID: ${{ secrets.PR_TEST_CLIENT_ID_MESSAGING }}
+  #         TELSTRA_CLIENT_SECRET: ${{ secrets.PR_TEST_CLIENT_SECRET_MESSAGING }}
+  #       run: |
+  #         pipenv run test
+
+  release-pypi:
+    runs-on: ubuntu-latest
+    needs:
+      # - test-production-test-pypi
+      - release-required
+    steps:
+      - name: Retrieve packages
+        if: needs.release-required.outputs.result == 'true'
+        uses: actions/download-artifact@v2.0.7
+        with:
+          name: wheel
+          path: dist/
+      - name: Publish distribution 📦 to PyPI
+        if: needs.release-required.outputs.result == 'true'
+        uses: pypa/gh-action-pypi-publish@v1.4.1
+        with:
+          password: ${{ secrets.SECRET_PUBLISH_AS_TELSTRA_PYPI_ORG }}
+
+  # test-production-pypi:
+  #   runs-on: ubuntu-latest
+  #   needs:
+  #     - release-pypi
+  #     - release-required
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Set up Python
+  #       uses: actions/setup-python@v2
+  #       with:
+  #         python-version: "3.10"
+  #     - name: install pipenv
+  #       run: |
+  #         python -m pip install --upgrade pip
+  #         pip install pipenv
+  #     - name: install dependencies
+  #       env:
+  #         PYPI_MIRROR: https://pypi.org/simple/
+  #         VERSION: ${{ needs.release-required.outputs.project-version }}
+  #       working-directory: production-test
+  #       run: |
+  #         pipenv install --dev || sleep 30 && pipenv install --dev || sleep 30 && pipenv install --dev || sleep 30 && pipenv install --dev
+  #     - name: run tests
+  #       working-directory: production-test
+  #       env:
+  #         TELSTRA_CLIENT_ID: ${{ secrets.PR_TEST_CLIENT_ID_MESSAGING }}
+  #         TELSTRA_CLIENT_SECRET: ${{ secrets.PR_TEST_CLIENT_SECRET_MESSAGING }}
+  #       run: |
+  #         pipenv run test
