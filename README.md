@@ -527,10 +527,9 @@ For example:
 # Get all messages
 from telstra.messaging import message
 
-
-reply =message.get_all(limit=5,offset=0,filter="Python,SDK", 
-  status="undeliverable",startTime="2024-08-01T17:39:36.113Z",endTime="2024-08-18T17:39:36.113Z",
-  reverse = True, direction="outgoing")
+reply = message.get_all(limit=5,offset=0,filter="Python,SDK",
+  status="undeliverable",startTime="2024-08-01T17:39:36.113Z",
+  endTime="2024-08-18T17:39:36.113Z",reverse = True, direction="outgoing")
 print(reply)
 ```
 
