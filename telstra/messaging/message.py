@@ -725,7 +725,6 @@ def _validate_get_all_args(
             f'received "{endTime}"'
         )
 
-    
     if reverse is not None and not isinstance(reverse, types.TReverse):
         raise exceptions.MessageError(
             'the value of "reverse" is not valid, expected a bool, '
