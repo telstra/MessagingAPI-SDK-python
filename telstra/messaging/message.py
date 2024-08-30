@@ -678,7 +678,11 @@ def get(message_id: types.TMessageId) -> TMessage:
 def _validate_get_all_args(
     limit: typing.Optional[types.TLimit] = None,
     offset: typing.Optional[types.TOffset] = None,
-    filter_: typing.Optional[types.TFilter] = None,
+    filter: typing.Optional[types.TFilter] = None,
+    startTime: typing.Optional[types.TStartTime] = None,
+    endTime: typing.Optional[types.TEndTime] = None,
+    reverse: typing.Optional[types.TReverse] = None,
+    direction: typing.Optional[types.TDirection] = None,
 ) -> None:
     # Validate limit
     if (limit is not None and not isinstance(limit, types.TLimit)) or (
@@ -703,17 +707,45 @@ def _validate_get_all_args(
         )
 
     # Validate filter
-    if filter_ is not None and not isinstance(filter_, types.TFilter):
+    if filter is not None and not isinstance(filter, types.TFilter):
         raise exceptions.MessageError(
             'the value of "filter" is not valid, expected a string, '
-            f'received "{filter_}"'
+            f'received "{filter}"'
+        )
+
+    if startTime is not None and not isinstance(startTime, types.TStartTime):
+        raise exceptions.MessageError(
+            'the value of "startTime" is not valid, expected a string, '
+            f'received "{startTime}"'
+        )
+
+    if endTime is not None and not isinstance(endTime, types.TEndTime):
+        raise exceptions.MessageError(
+            'the value of "endTime" is not valid, expected a string, '
+            f'received "{endTime}"'
+        )
+
+    if reverse is not None and not isinstance(reverse, types.TReverse):
+        raise exceptions.MessageError(
+            'the value of "reverse" is not valid, expected a bool, '
+            f'received "{reverse}"'
+        )
+
+    if direction is not None and not isinstance(direction, types.TDirection):
+        raise exceptions.MessageError(
+            'the value of "direction" is not valid, expected a string, '
+            f'received "{direction}"'
         )
 
 
 def get_all(
     limit: typing.Optional[types.TLimit] = None,
     offset: typing.Optional[types.TOffset] = None,
-    filter_: typing.Optional[types.TFilter] = None,
+    filter: typing.Optional[types.TFilter] = None,
+    startTime: typing.Optional[types.TStartTime] = None,
+    endTime: typing.Optional[types.TEndTime] = None,
+    reverse: typing.Optional[types.TReverse] = None,
+    direction: typing.Optional[types.TDirection] = None,
 ) -> TMessages:
     """
     Retrieve all messages.
@@ -725,7 +757,15 @@ def get_all(
 
     """
 
-    _validate_get_all_args(limit=limit, offset=offset, filter_=filter_)
+    _validate_get_all_args(
+        limit=limit,
+        offset=offset,
+        filter=filter,
+        startTime=startTime,
+        endTime=endTime,
+        reverse=reverse,
+        direction=direction,
+    )
 
     try:
         token = oauth.get_token()
@@ -742,7 +782,7 @@ def get_all(
         "Content-Type": "application/json",
     }
     messages_get_request = request.Request(
-        f"{_URL}{querystring.build(limit=limit, offset=offset, filter_=filter_)}",
+        f"{_URL}{querystring.build(limit=limit, offset=offset, filter=filter,starTime=startTime,endTime=endTime,reverse=reverse,direction=direction)}",
         headers=headers,
         method="GET",
     )
