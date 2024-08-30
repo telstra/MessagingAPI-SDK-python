@@ -15,6 +15,10 @@ TSentTimestamp = str
 TLimit = int
 TOffset = int
 TFilter = str
+TStartTime = str
+TEndTime = str
+TReverse = bool
+TDirection = str
 
 
 class TMultimediaContentTypes(Enum):

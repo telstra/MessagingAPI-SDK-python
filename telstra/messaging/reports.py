@@ -165,7 +165,7 @@ def _validate_create_args(  # pylint: disable=too-many-arguments
     start_date: typing.Optional[str],
     end_date: typing.Optional[str],
     report_callback_url: typing.Optional[str],
-    filter_: typing.Optional[str],
+    filter: typing.Optional[str],
 ) -> None:
     """Validate the arguments for create report."""
     # Validate dates
@@ -183,10 +183,10 @@ def _validate_create_args(  # pylint: disable=too-many-arguments
     )
 
     # Validate filter
-    if filter_ is not None and not isinstance(filter_, str):
+    if filter is not None and not isinstance(filter, str):
         raise exceptions.ReportsError(
             'The value of "filter" is not valid, expected a string, '
-            f'received "{filter_}"'
+            f'received "{filter}"'
         )
 
 
@@ -194,7 +194,7 @@ def create(
     start_date: typing.Optional[str],
     end_date: typing.Optional[str],
     report_callback_url: typing.Optional[str] = None,
-    filter_: typing.Optional[str] = None,
+    filter: typing.Optional[str] = None,
 ) -> TReport:
     """
     Create a report.
@@ -205,7 +205,7 @@ def create(
         start_date: Start date (inclusive) of reporting period here.
         end_date: End date (inclusive) of reporting period here.
         report_callback_url: Url to notify when report is ready for download.
-        filter_: Properties to filter the message report by
+        filter: Properties to filter the message report by
 
     """
 
@@ -213,7 +213,7 @@ def create(
         start_date=start_date,
         end_date=end_date,
         report_callback_url=report_callback_url,
-        filter_=filter_,
+        filter=filter,
     )
 
     try:
@@ -229,8 +229,8 @@ def create(
     }
     if report_callback_url is not None:
         data["reportCallbackUrl"] = report_callback_url
-    if filter_ is not None:
-        data["filter"] = filter_
+    if filter is not None:
+        data["filter"] = filter
     data_str = json.dumps(data).encode()
 
     headers = {

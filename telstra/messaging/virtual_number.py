@@ -189,7 +189,7 @@ def assign(
 def _validate_get_all_args(
     limit: typing.Optional[types.TLimit] = None,
     offset: typing.Optional[types.TOffset] = None,
-    filter_: typing.Optional[types.TFilter] = None,
+    filter: typing.Optional[types.TFilter] = None,
 ) -> None:
     # Validate limit
     if (limit is not None and not isinstance(limit, types.TLimit)) or (
@@ -214,17 +214,17 @@ def _validate_get_all_args(
         )
 
     # Validate filter
-    if filter_ is not None and not isinstance(filter_, types.TFilter):
+    if filter is not None and not isinstance(filter, types.TFilter):
         raise exceptions.VirtualNumbersError(
             'the value of "filter" is not valid, expected a string, '
-            f'received "{filter_}"'
+            f'received "{filter}"'
         )
 
 
 def get_all(
     limit: typing.Optional[types.TLimit] = None,
     offset: typing.Optional[types.TOffset] = None,
-    filter_: typing.Optional[types.TFilter] = None,
+    filter: typing.Optional[types.TFilter] = None,
 ) -> TVirtualNumbers:
     """
     Retrieve all virtual numbers assigned to you.
@@ -233,7 +233,7 @@ def get_all(
 
     """
 
-    _validate_get_all_args(limit=limit, offset=offset, filter_=filter_)
+    _validate_get_all_args(limit=limit, offset=offset, filter=filter)
 
     try:
         token = oauth.get_token()
@@ -252,7 +252,7 @@ def get_all(
         "Cache-Control": "no-cache",
     }
     virtual_numbers_request = request.Request(
-        f"{_URL}" f"{querystring.build(limit=limit, offset=offset, filter=filter_)}",
+        f"{_URL}" f"{querystring.build(limit=limit, offset=offset, filter=filter)}",
         headers=headers,
         method="GET",
     )
@@ -534,7 +534,7 @@ def get_optouts(
 
     """
 
-    _validate_get_all_args(limit=limit, offset=offset, filter_=None)
+    _validate_get_all_args(limit=limit, offset=offset, filter=None)
 
     try:
         token = oauth.get_token()
