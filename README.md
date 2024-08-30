@@ -508,8 +508,10 @@ following arguments:
 - `startTime`: Use ISO format, e.g. "2024-01-24T15:39:00Z".
 - `endTime`: Use ISO format, e.g. "2024-01-24T16:39:00Z".
 - `reverse`: If set to Ture the results will be returned in reverse order.
+By default value False, the results will be returned in the order they were sent/received.
 - `direction`: Filter your messages by direction: outgoing or incoming.
-- `status`: Filter your messages by status.
+- `status`: Filter your messages by status. Available values : queued, sent, delivered,
+expired
 
 Raises `telstra.messaging.exceptions.MessageError` if anything goes wrong.
 
@@ -525,7 +527,9 @@ For example:
 # Get all messages
 from telstra.messaging import message
 
-reply = message.get_all(limit=5,offset=0,filter="Python,SDK")
+reply =message.get_all(limit=5,offset=0,filter="Python,SDK", 
+  status="undeliverable",startTime="2024-08-01T17:39:36.113Z",endTime="2024-08-18T17:39:36.113Z",
+  reverse = True, direction="outgoing")
 print(reply)
 ```
 
