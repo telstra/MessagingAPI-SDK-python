@@ -507,7 +507,7 @@ following arguments:
 - `filter`: Filter your Virtual Numbers by tag or by number.
 - `startTime`: Use ISO format, e.g. "2024-01-24T15:39:00Z".
 - `endTime`: Use ISO format, e.g. "2024-01-24T16:39:00Z".
-- `reverse`: If set to true the results will be returned in reverse order. The default value is false.
+- `reverse`: If set to Ture the results will be returned in reverse order.
 - `direction`: Filter your messages by direction: outgoing or incoming.
 
 Raises `telstra.messaging.exceptions.MessageError` if anything goes wrong.
