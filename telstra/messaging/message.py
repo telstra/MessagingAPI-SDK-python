@@ -683,6 +683,7 @@ def _validate_get_all_args(
     endTime: typing.Optional[types.TEndTime] = None,
     reverse: typing.Optional[types.TReverse] = None,
     direction: typing.Optional[types.TDirection] = None,
+    status: typing.Optional[types.TStatus] = None,
 ) -> None:
     # Validate limit
     if (limit is not None and not isinstance(limit, types.TLimit)) or (
@@ -737,6 +738,12 @@ def _validate_get_all_args(
             f'received "{direction}"'
         )
 
+    if status is not None and not isinstance(status, types.TStatus):
+        raise exceptions.MessageError(
+            'the value of "status" is not valid, expected a string, '
+            f'received "{status}"'
+        )
+
 
 def get_all(
     limit: typing.Optional[types.TLimit] = None,
@@ -746,6 +753,7 @@ def get_all(
     endTime: typing.Optional[types.TEndTime] = None,
     reverse: typing.Optional[types.TReverse] = None,
     direction: typing.Optional[types.TDirection] = None,
+    status: typing.Optional[types.TStatus] = None,
 ) -> TMessages:
     """
     Retrieve all messages.
@@ -765,6 +773,7 @@ def get_all(
         endTime=endTime,
         reverse=reverse,
         direction=direction,
+        status=status,
     )
 
     try:
@@ -783,7 +792,7 @@ def get_all(
     }
 
     messages_get_request = request.Request(
-        f"{_URL}{querystring.build(limit=limit, offset=offset, filter=filter,startTime=startTime,endTime=endTime,reverse=reverse,direction=direction)}",
+        f"{_URL}{querystring.build(limit=limit, offset=offset, filter=filter,startTime=startTime,endTime=endTime,reverse=reverse,direction=direction,status=status)}",
         headers=headers,
         method="GET",
     )

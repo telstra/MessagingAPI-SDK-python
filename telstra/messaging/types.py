@@ -19,6 +19,7 @@ TStartTime = str
 TEndTime = str
 TReverse = bool
 TDirection = str
+TStatus = str
 
 
 class TMultimediaContentTypes(Enum):
