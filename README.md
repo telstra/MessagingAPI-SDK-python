@@ -505,9 +505,9 @@ following arguments:
 - `offset`: Use the offset to navigate between the response results.
   An offset of 0 will display the first page of results, and so on.
 - `filter`: Filter your Virtual Numbers by tag or by number.
-- `startTime`: By Default messages from last 30 days will be fetched.Use this parameter to fetch the messages from the time you want. Set the time in London Greenwich Mean Time (adjusting for any time difference) and use ISO format, e.g. "2024-01-24T15:39:00Z".
-- `endTime`: By Default messages from last 30 days will be fetched. Use this parameter to fetch the messages till the time you want. Set the time in London Greenwich Mean Time (adjusting for any time difference) and use ISO format, e.g. "2024-01-24T16:39:00Z".
-- `reverse`: If set to true the results will be returned in reverse order. Recent messages will be returned first. By default, the results will be returned in the order they were sent/received.
+- `startTime`: Use ISO format, e.g. "2024-01-24T15:39:00Z".
+- `endTime`: Use ISO format, e.g. "2024-01-24T16:39:00Z".
+- `reverse`: If set to true the results will be returned in reverse order.
 - `direction`: Filter your messages by direction: outgoing or incoming.
 
 Raises `telstra.messaging.exceptions.MessageError` if anything goes wrong.
