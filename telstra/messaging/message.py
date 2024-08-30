@@ -783,7 +783,7 @@ def get_all(
     }
 
     messages_get_request = request.Request(
-        f"{_URL}{querystring.build(limit=limit, offset=offset, filter=filter,starTime=startTime,endTime=endTime,reverse=reverse,direction=direction)}",
+        f"{_URL}{querystring.build(limit=limit, offset=offset, filter=filter,startTime=startTime,endTime=endTime,reverse=reverse,direction=direction)}",
         headers=headers,
         method="GET",
     )
