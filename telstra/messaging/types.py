@@ -17,7 +17,7 @@ TOffset = int
 TFilter = str
 TStartTime = str
 TEndTime = str
-TReverse = bool
+TReverse = str
 TDirection = str
 
 
