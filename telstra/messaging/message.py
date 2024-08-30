@@ -725,6 +725,7 @@ def _validate_get_all_args(
             f'received "{endTime}"'
         )
 
+    
     if reverse is not None and not isinstance(reverse, types.TReverse):
         raise exceptions.MessageError(
             'the value of "reverse" is not valid, expected a bool, '
@@ -781,6 +782,7 @@ def get_all(
         "Accept": "application/json",
         "Content-Type": "application/json",
     }
+
     messages_get_request = request.Request(
         f"{_URL}{querystring.build(limit=limit, offset=offset, filter=filter,starTime=startTime,endTime=endTime,reverse=reverse,direction=direction)}",
         headers=headers,
