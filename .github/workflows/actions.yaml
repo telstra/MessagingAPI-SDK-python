@@ -121,7 +121,7 @@ jobs:
   #   steps:
   #     - name: Retrieve packages
   #       if: needs.release-required.outputs.result == 'true'
-  #       uses: actions/download-artifact@v2.0.7
+  #       uses: actions/download-artifact@v4.1.7
   #       with:
   #         name: wheel
   #         path: dist/
@@ -173,7 +173,7 @@ jobs:
     steps:
       - name: Retrieve packages
         if: needs.release-required.outputs.result == 'true'
-        uses: actions/download-artifact@v2.0.7
+        uses: actions/download-artifact@v4.1.7
         with:
           name: wheel
           path: dist/
